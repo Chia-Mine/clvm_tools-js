@@ -19,3 +19,7 @@ yarn add Chia-Mine/clvm_tools-js#v0.0.1
 # or
 npm install Chia-Mine/clvm_tools-js#v0.0.1
 ```
+
+## Original clvm_tools written in python
+
+https://github.com/Chia-Network/clvm_tools
