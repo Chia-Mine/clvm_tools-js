@@ -240,7 +240,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-bls-signatures@Chia-Mine/bls-signatures#npm:
+"bls-signatures@github:Chia-Mine/bls-signatures#npm":
   version "0.2.1-beta.0"
   resolved "https://codeload.github.com/Chia-Mine/bls-signatures/tar.gz/b71c19f6bb8aedc779103b8b943f94691caad955"
 
@@ -289,10 +289,10 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-clvm@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.1.tgz#b437a775d47f942410c89e65011fe3e516c98a36"
-  integrity sha512-jf+4eNY1lGaS7yrMmwkJdTuOlcfLK33GpjFz9m479VfdHZUD0XdDcLN9C4adKrPkrRlqqTbn951ldmnRiRfTJg==
+clvm@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.3.tgz#7c96f6cd19613b9e7d8559eb8179472aafc0a888"
+  integrity sha512-s92N6ROoXNYJopj328dB4ni298GCfhFOL13lla1CayEFqphoGgtxm0HckX0RpyXZvVFAKDa1x0uRPyrmxdALGQ==
   dependencies:
     bls-signatures Chia-Mine/bls-signatures#npm
     jscrypto "^1.0.0"
