@@ -1,0 +1,136 @@
+import {
+  KEYWORD_FROM_ATOM,
+  KEYWORD_TO_ATOM,
+  int_from_bytes,
+  int_to_bytes,
+  SExp,
+  str,
+  None,
+  Bytes,
+  int,
+  bool,
+  Optional,
+  Tuple,
+  t,
+} from "clvm";
+import {read_ir} from "../ir/reader";
+import {write_ir} from "../ir/writer";
+import {
+  ir_as_symbol,
+  ir_cons,
+  ir_first,
+  ir_listp,
+  ir_null,
+  ir_nullp,
+  ir_rest,
+  ir_symbol,
+  ir_val,
+  is_ir,
+} from "../ir/utils";
+import {Type} from "../ir/Type";
+import {Utf8} from "jscrypto";
+
+function isPrintable(s: str){
+  const regex = /^[0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@\\\[\]^_`{|}~ \t\n\r\x0b\x0c]+$/;
+  return regex.test(s);
+}
+
+export function assemble_from_ir(ir_sexp: SExp): SExp {
+  let keyword = ir_as_symbol(ir_sexp);
+  if(keyword){
+    if(keyword[0] === "#"){
+      keyword = keyword.substring(1);
+    }
+    const atom = KEYWORD_TO_ATOM[keyword as keyof typeof KEYWORD_TO_ATOM];
+    if(atom !== None){
+      return SExp.to(atom);
+    }
+    else{
+      return ir_val(ir_sexp);
+    }
+    // Original code raises an Error, which never reaches.
+    // throw new SyntaxError(`can't parse ${keyrowd} at ${ir_sexp._offset}`);
+  }
+  
+  if(!ir_listp(ir_sexp)){
+    return ir_val(ir_sexp);
+  }
+  
+  if(ir_nullp(ir_sexp)){
+    return SExp.to([]);
+  }
+  
+  // handle "q"
+  const first = ir_first(ir_sexp);
+  keyword = ir_as_symbol(first);
+  if(keyword === "q"){
+    // pass;
+  }
+  
+  const sexp_1 = assemble_from_ir(first);
+  const sexp_2 = assemble_from_ir(ir_rest(ir_sexp));
+  return sexp_1.cons(sexp_2);
+}
+
+export function type_for_atom(atom: Bytes): int {
+  if(atom.length > 2){
+    try{
+      const v = Utf8.stringify(Bytes.from(atom).as_word());
+      if(isPrintable(v)){
+        return Type.QUOTES.i;
+      }
+    }
+    catch (e) {
+      // do nothing
+    }
+    return Type.HEX.i;
+  }
+  if(int_to_bytes(int_from_bytes(atom)).equal_to(atom)){
+    return Type.INT.i;
+  }
+  return Type.HEX.i;
+}
+
+export function disassemble_to_ir<A extends boolean=false>(
+  sexp: SExp,
+  keyword_from_atom: Record<str, str>,
+  allow_keyword?: A,
+): A extends false|undefined ? SExp : SExp|Tuple<int, Bytes> {
+  if(is_ir(sexp) && allow_keyword !== false){
+    return ir_cons(ir_symbol("ir"), sexp);
+  }
+  
+  if(sexp.listp()){
+    if(sexp.first().listp() || allow_keyword !== false){
+      allow_keyword = true as A;
+    }
+    const v0 = disassemble_to_ir(sexp.first(), keyword_from_atom, allow_keyword);
+    const v1 = disassemble_to_ir(sexp.rest(), keyword_from_atom, false);
+    return ir_cons(v0, v1);
+  }
+  
+  const as_atom = sexp.atom as Bytes;
+  if(allow_keyword){
+    const v = keyword_from_atom[as_atom.toString()];
+    if(v && v !== "."){
+      // @ts-ignore
+      return ir_symbol(v); // @todo Find a good way not to use `ts-ignore`
+    }
+  }
+  
+  if(sexp.nullp()){
+    return ir_null();
+  }
+  
+  return SExp.to(t(type_for_atom(as_atom), as_atom));
+}
+
+export function disassemble(sexp: SExp, keyword_from_atom: Record<str, str> = KEYWORD_FROM_ATOM){
+  const symbols = disassemble_to_ir(sexp, keyword_from_atom);
+  return write_ir(symbols);
+}
+
+export function assemble(s: str){
+  const symbols = read_ir(s);
+  return assemble_from_ir(symbols);
+}
