@@ -23,6 +23,11 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
+"@chiamine/bls-signatures@^0.2.1-beta.0":
+  version "0.2.1-beta.0"
+  resolved "https://registry.yarnpkg.com/@chiamine/bls-signatures/-/bls-signatures-0.2.1-beta.0.tgz#2a5b484122cef6cf03f2c8a3880caf096a829517"
+  integrity sha512-Y0FmVXx18YElrwUYN9gVczOMxC7/H2M1GT7bmH7SQFy2ZUeuce5/wlUVfX4UrgDvYj+ukHotQ97ZGSqRx5SPqg==
+
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.2.tgz#f63d0ef06f5c0c57d76c4ab5f63d3835c51b0179"
@@ -240,10 +245,6 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-"bls-signatures@github:Chia-Mine/bls-signatures#npm":
-  version "0.2.1-beta.0"
-  resolved "https://codeload.github.com/Chia-Mine/bls-signatures/tar.gz/b71c19f6bb8aedc779103b8b943f94691caad955"
-
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
@@ -289,13 +290,13 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-clvm@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.3.tgz#7c96f6cd19613b9e7d8559eb8179472aafc0a888"
-  integrity sha512-s92N6ROoXNYJopj328dB4ni298GCfhFOL13lla1CayEFqphoGgtxm0HckX0RpyXZvVFAKDa1x0uRPyrmxdALGQ==
+clvm@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.6.tgz#a76eeddf565da43925f97f78af1f601fa2e029db"
+  integrity sha512-rw537XJrrq4llMMflYJKap9QQsR5mLCeFUq6x6VrTUyhHmdAsSFOE0w0ljZJF/B7JCjujIQpJsKnMBRVnwpKGQ==
   dependencies:
-    bls-signatures Chia-Mine/bls-signatures#npm
-    jscrypto "^1.0.0"
+    "@chiamine/bls-signatures" "^0.2.1-beta.0"
+    jscrypto "^1.0.1"
 
 color-convert@^1.9.0:
   version "1.9.3"
@@ -931,10 +932,10 @@ js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-jscrypto@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/jscrypto/-/jscrypto-1.0.0.tgz#147728c53ad2baa35dc0cc0aa672eb511f2ec7bb"
-  integrity sha512-xYrFBeFxH3Hcm7TGT5N0LfkJe6qDN4aIILn4PLBhBNWCIsN96vWVl6+3Wm6ygOlmDuFDfuvLfsTzU6auXnxgcg==
+jscrypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/jscrypto/-/jscrypto-1.0.1.tgz#786f0f803b1717a4b7c6247ccfaa8a8230fe062b"
+  integrity sha512-xb+lVDVDGe3cL7i7IZqdvQV0ucMyxxD3Jt+xfrc0GedTOdLto65rBHpIlKOJ8W/X3Qg/z5nEcUva5ziDVParSQ==
 
 jsdoctypeparser@^9.0.0:
   version "9.0.0"
