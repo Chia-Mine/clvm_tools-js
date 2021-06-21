@@ -19,8 +19,7 @@ export function make_bindings(bindings_sexp: SExp){
 }
 
 export function do_binding(args: SExp){
-  // @todo Fix the type annotation here
-  if((args.as_javascript() as unknown as Bytes[]).length !== 3){
+  if(args.as_javascript().length !== 3){
     throw new SyntaxError("bind requires 3 arguments");
   }
   const bindings = args.first();
