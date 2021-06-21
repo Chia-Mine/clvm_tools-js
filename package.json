@@ -29,8 +29,8 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.3",
-    "jscrypto": "^1.0.0"
+    "clvm": "^0.0.6",
+    "jscrypto": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^15.0.2",
