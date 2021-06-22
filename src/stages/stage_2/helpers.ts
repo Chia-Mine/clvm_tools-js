@@ -1,4 +1,4 @@
-import {Bytes, CastableType, KEYWORD_TO_ATOM, SExp, t} from "clvm";
+import {CastableType, KEYWORD_TO_ATOM, SExp, t, b} from "clvm";
 import {TOP} from "../../clvm_tools/NodePath";
 
 export const QUOTE_ATOM = KEYWORD_TO_ATOM["q"];
@@ -24,7 +24,7 @@ export function run(prog: SExp, macro_lookup: CastableType){
    */
   const args = TOP.as_path();
   const mac = quote(macro_lookup);
-  return evaluate(SExp.to([Bytes.from("com", "utf8"), prog, mac]), args);
+  return evaluate(SExp.to([b("com"), prog, mac]), args);
 }
 
 export function brun(prog: SExp, args: CastableType){
