@@ -29,7 +29,7 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.7",
+    "clvm": "^0.0.8",
     "jscrypto": "^1.0.1"
   },
   "devDependencies": {

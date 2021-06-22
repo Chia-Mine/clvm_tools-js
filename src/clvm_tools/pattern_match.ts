@@ -1,8 +1,8 @@
-import {Atom, Bytes, None, SExp, str} from "clvm";
+import {Atom, Bytes, None, SExp, str, b} from "clvm";
 import {Utf8} from "jscrypto";
 
-export const ATOM_MATCH = Bytes.from("$");
-export const SEXP_MATCH = Bytes.from(":");
+export const ATOM_MATCH = b("$");
+export const SEXP_MATCH = b(":");
 
 export function unify_bindings(bindings: Record<str, SExp>, new_key: Bytes, new_value: SExp){
   /*
