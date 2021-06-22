@@ -290,10 +290,10 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-clvm@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.6.tgz#a76eeddf565da43925f97f78af1f601fa2e029db"
-  integrity sha512-rw537XJrrq4llMMflYJKap9QQsR5mLCeFUq6x6VrTUyhHmdAsSFOE0w0ljZJF/B7JCjujIQpJsKnMBRVnwpKGQ==
+clvm@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.7.tgz#22ccf58844da1d1254d6a3dfb8b71cc8ad78d98d"
+  integrity sha512-/LVdEhSa8U1RXXBl4RF2a5csqr1nHSHkN8mqOHFX21Ex1Yd+rHf5Q3pZYzCTBsqyfPR8woGbyViEcusQ5Q8UqA==
   dependencies:
     "@chiamine/bls-signatures" "^0.2.1-beta.0"
     jscrypto "^1.0.1"
