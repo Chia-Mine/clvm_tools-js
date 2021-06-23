@@ -21,11 +21,11 @@ import {
 } from "../stage_0";
 import {make_do_com} from "./compile";
 import {make_do_opt} from "./optimize";
-import {FileStream, read, Path} from "../../__io__";
+import {FileStream, fs_read, Path} from "../../__platform__/io";
 
 export function do_read(args: SExp){
   const filename = args.first().atom as Bytes;
-  const s = read(filename.decode());
+  const s = fs_read(filename.decode());
   const ir_sexp = SExp.to(read_ir(s));
   const sexp = assemble_from_ir(ir_sexp);
   return t(1, sexp);

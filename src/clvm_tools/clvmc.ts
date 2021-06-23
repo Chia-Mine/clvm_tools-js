@@ -1,15 +1,50 @@
-/*
-Copyright 2018 Chia Network Inc
+import {log, dep_util} from "../__platform__/distutils";
+import {FileStream, fs_read, os_walk, path_join} from "../__platform__/io";
+import * as reader from "../ir/reader";
+import * as binutils from "../clvm_tools/binutils";
+import * as stage_2 from "../stages/stage_2";
+import {SExp, str, t} from "clvm";
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+export function compile_clvm_text(text: str, search_paths: str[]){
+  const ir_src = reader.read_ir(text);
+  const assembled_sexp = binutils.assemble_from_ir(ir_src);
+  
+  const input_sexp = SExp.to(t(assembled_sexp, []));
+  const run_program = stage_2.run_program_for_search_paths(search_paths);
+  const run_program_output = run_program(stage_2.run, input_sexp);
+  return run_program_output[1] as SExp;
+}
 
-   http://www.apache.org/licenses/LICENSE-2.0
+export function compile_clvm(input_path: str, output_path: str, search_paths: str[] = []){
+  if(dep_util.newer(input_path, output_path)){
+    log.info(`clvmcc ${input_path} -o ${output_path}`);
+    const text = fs_read(input_path);
+    const result = compile_clvm_text(text, search_paths);
+    const hex = result.as_bin().hex();
+    
+    const f = new FileStream(output_path);
+    f.write(hex);
+    f.write("\n");
+    f.flush();
+  }
+  else{
+    log.info(`skipping ${input_path}, compiled recently`);
+  }
+  
+  return output_path;
+}
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+export function find_files(path: str = ""){
+  const r: string[] = [];
+  for(const {dirpath, dirnames, filenames} of os_walk(path)){
+    for(const filename of filenames){
+      if(filename.endsWith(".clvm")){
+        const full_path = path_join(dirpath, filename);
+        const target = `${full_path}.hex}`;
+        compile_clvm(full_path, target);
+        r.push(target);
+      }
+    }
+  }
+  return r;
+}
