@@ -3,7 +3,7 @@ import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
 import {TSymbolTable} from "../stages/stage_2/mod";
-import {write} from "../__io__";
+import {fs_write} from "../__platform__/io";
 
 export type OpCallable = (v1: any, v2: ValStackType) => int;
 export type ValStackType = SExp[];
@@ -82,7 +82,7 @@ export function build_symbol_dump(constants_lookup: Record<str, SExp>, run_progr
     compiled_lookup[sha256tree(v1).hex()] = h(k).decode();
   }
   const output = JSON.stringify(compiled_lookup, null, 2);
-  write(path, output);
+  fs_write(path, output);
 }
 
 export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<str>, env: SExp, result: str){
