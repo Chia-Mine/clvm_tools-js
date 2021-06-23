@@ -10,7 +10,9 @@ import {
   Tuple,
   Optional,
   None,
-  isCons
+  isCons,
+  h,
+  b,
 } from "clvm";
 import {Type, CONS_TYPES} from "./Type";
 import {Utf8} from "jscrypto";
@@ -55,7 +57,7 @@ export function ir_offset(ir_sexp: SExp): int {
     the_offset = val.rest().atom;
   }
   else{
-    the_offset = Bytes.from("0xff", "hex");
+    the_offset = h("0xff");
   }
   return int_from_bytes(the_offset);
 }
@@ -99,7 +101,7 @@ export function ir_rest(ir_sexp: SExp): SExp {
 }
 
 export function ir_symbol(symbol: str): Tuple<int, Bytes> {
-  return t(Type.SYMBOL.i, Bytes.from(symbol, "utf8"));
+  return t(Type.SYMBOL.i, b(symbol));
 }
 
 export function ir_as_symbol(ir_sexp: SExp): Optional<str> {

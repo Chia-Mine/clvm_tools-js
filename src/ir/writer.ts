@@ -1,4 +1,4 @@
-import {SExp, int_from_bytes, sexp_to_stream, str, Stream, Bytes} from "clvm";
+import {SExp, int_from_bytes, sexp_to_stream, str, Stream, b} from "clvm";
 import {Type} from "./Type";
 import {
   ir_nullp,
@@ -62,7 +62,7 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
     yield `NODE[${int_from_bytes(atom)}]`;
   }
   else if(type === Type.HEX.i){
-    yield `0x${atom.toString()}`;
+    yield `0x${atom.hex()}`;
   }
   else if(type === Type.QUOTES.i){
     yield `"${Utf8.stringify(atom.as_word())}"`;
@@ -78,7 +78,7 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
       yield Utf8.stringify(atom.as_word());
     }
     catch(e){
-      yield `(indecipherable symbol: ${atom.toString()})`;
+      yield `(indecipherable symbol: ${atom.hex()})`;
     }
   }
   else{
@@ -88,7 +88,7 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
 
 export function write_ir_to_stream(ir_sexp: SExp, f: Stream){
   for(const _ of iter_ir_format(ir_sexp)){
-    f.write(Bytes.from(_, "utf8"));
+    f.write(b(_));
   }
 }
 

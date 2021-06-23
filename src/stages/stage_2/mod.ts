@@ -65,7 +65,7 @@ export function build_used_constants_names(functions: TNameToSExp, constants: TN
     functions or constants, starting with the MAIN_NAME function.
    */
   const macro_as_dict = macros.reduce((acc, _) => {
-    acc[(_.rest().first().atom as Bytes).toString()] = _;
+    acc[(_.rest().first().atom as Bytes).hex()] = _;
     return acc;
   }, {} as Record<str, SExp>);
   
@@ -80,7 +80,7 @@ export function build_used_constants_names(functions: TNameToSExp, constants: TN
     for(const _ of prior_new_names){
       for(const k of [functions, macro_as_dict]){
         if(_ in k){
-          flatten(k[_]).forEach(a => new_names.add(a.toString()));
+          flatten(k[_]).forEach(a => new_names.add(a.hex()));
         }
       }
     }
@@ -158,22 +158,22 @@ export function parse_mod_sexp(
   }
   
   const name_atom = name.atom as Bytes;
-  if(namespace.has(name_atom.toString())){
+  if(namespace.has(name_atom.hex())){
     throw new SyntaxError(`symbol "${Utf8.stringify(name_atom.as_word())}" redefined`);
   }
-  namespace.add(name_atom.toString());
+  namespace.add(name_atom.hex());
   
   if(op.equal_to(b("defmacro"))){
     macros.push(declaration_sexp);
   }
   else if(op.equal_to(b("defun"))){
-    functions[name_atom.toString()] = declaration_sexp.rest().rest();
+    functions[name_atom.hex()] = declaration_sexp.rest().rest();
   }
   else if(op.equal_to(b("defun-inline"))){
     macros.push(defun_inline_to_macro(declaration_sexp));
   }
   else if(op.equal_to(b("defconstant"))){
-    constants[name_atom.toString()] = SExp.to(quote(declaration_sexp.rest().rest().first()));
+    constants[name_atom.hex()] = SExp.to(quote(declaration_sexp.rest().rest().first()));
   }
   else{
     throw new SyntaxError("expected defun, defmacro, or defconstant");

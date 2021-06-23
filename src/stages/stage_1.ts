@@ -1,4 +1,4 @@
-import {Bytes, CLVMObject, int, None, OPERATOR_LOOKUP, OperatorDict, SExp, str, TPreEvalF, t} from "clvm";
+import {b, Bytes, CLVMObject, int, None, OPERATOR_LOOKUP, OperatorDict, SExp, str, TPreEvalF, t} from "clvm";
 import {run_program as run_program_0} from "./stage_0";
 import * as binutils from "../clvm_tools/binutils";
 
@@ -13,7 +13,7 @@ export function make_bindings(bindings_sexp: SExp){
   const binding_table: Record<str, (args: CLVMObject)=>unknown> = {};
   for(const pair of bindings_sexp.as_iter()){
     const name = pair.first().atom as Bytes;
-    binding_table[name.toString()] = make_invocation(pair.rest().first());
+    binding_table[name.hex()] = make_invocation(pair.rest().first());
   }
   return binding_table;
 }
@@ -52,7 +52,7 @@ export function RunProgram(){
   const operator_lookup = OperatorDict(OPERATOR_LOOKUP as any);
   const bindings_obj: Record<str, Function> = {};
   Object.entries(BINDINGS).forEach(([key, val]) => {
-    const bin_name = Bytes.from(key, "utf8").toString(); // bind: 61696e64
+    const bin_name = b(key).hex(); // bind: 61696e64
     bindings_obj[bin_name] = val;
   });
   merge(operator_lookup as any, bindings_obj);

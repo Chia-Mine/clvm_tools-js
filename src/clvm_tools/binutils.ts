@@ -75,7 +75,7 @@ export function assemble_from_ir(ir_sexp: SExp): SExp {
 export function type_for_atom(atom: Bytes): int {
   if(atom.length > 2){
     try{
-      const v = Utf8.stringify(Bytes.from(atom).as_word());
+      const v = atom.decode();
       if(isPrintable(v)){
         return Type.QUOTES.i;
       }
@@ -111,7 +111,7 @@ export function disassemble_to_ir<A extends boolean=false>(
   
   const as_atom = sexp.atom as Bytes;
   if(allow_keyword){
-    const v = keyword_from_atom[as_atom.toString()];
+    const v = keyword_from_atom[as_atom.hex()];
     if(v && v !== "."){
       // @ts-ignore
       return ir_symbol(v); // @todo Find a good way not to use `ts-ignore`

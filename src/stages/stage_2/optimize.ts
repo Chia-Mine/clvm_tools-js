@@ -1,4 +1,4 @@
-import {Bytes, KEYWORD_TO_ATOM, None, SExp, t} from "clvm";
+import {h, b, Bytes, KEYWORD_TO_ATOM, None, SExp, t} from "clvm";
 import {match} from "../../clvm_tools/pattern_match";
 import {assemble} from "../../clvm_tools/binutils";
 import {NodePath, LEFT, RIGHT} from "../../clvm_tools/NodePath";
@@ -26,7 +26,7 @@ export function seems_constant(sexp: SExp){
   
   const operator = sexp.first();
   if(!operator.listp()){
-    const atom = operator.atom && operator.atom.toString();
+    const atom = operator.atom && operator.atom.hex();
     if(atom === QUOTE_ATOM){
       return true;
     }
@@ -119,7 +119,7 @@ export function sub_args(sexp: SExp, new_args: SExp): SExp {
   }
   else{
     const op = first.atom as Bytes;
-    if(op.toString() === QUOTE_ATOM){
+    if(op.hex() === QUOTE_ATOM){
       return sexp;
     }
   }
@@ -169,7 +169,7 @@ export function var_change_optimizer_cons_eval(r: SExp, eval_f: TRunProgram){
   }
   const opt_operands: SExp[] = new_operands.map(_ => optimize_sexp(_, eval_f));
   const non_constant_count = opt_operands.reduce((acc, val) => {
-    return acc + (val.listp() && val.first().toString() !== QUOTE_ATOM ? 1 : 0);
+    return acc + (val.listp() && !val.first().equal_to(h(QUOTE_ATOM)) ? 1 : 0);
   }, 0);
   if(non_constant_count < 1){
     return SExp.to(opt_operands);
@@ -185,7 +185,7 @@ export function children_optimizer(r: SExp, eval_f: TRunProgram){
   const operator = r.first();
   if(!operator.listp()){
     const op = operator.atom as Bytes;
-    if(op.toString() === QUOTE_ATOM){
+    if(op.hex() === QUOTE_ATOM){
       return r;
     }
   }
@@ -286,7 +286,7 @@ export function optimize_sexp(r: SExp, eval_f: TRunProgram): SExp {
   ];
   
   while(r.listp()){
-    const start_r = r;
+    const start_r = r as SExp;
     let opt: typeof OPTIMIZERS extends Array<infer T> ? T : never = OPTIMIZERS[0];
     for(opt of OPTIMIZERS){
       r = opt(r, eval_f);
