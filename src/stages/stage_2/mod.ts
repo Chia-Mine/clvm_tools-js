@@ -1,4 +1,4 @@
-import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom} from "clvm";
+import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom, Optional} from "clvm";
 import * as binutils from "../../clvm_tools/binutils";
 import {build_symbol_dump} from "../../clvm_tools/debug";
 import {LEFT, NodePath, RIGHT, TOP} from "../../clvm_tools/NodePath";
@@ -203,8 +203,8 @@ export function compile_mod_stage_1(args: SExp, run_program: TRunProgram){
   return [functions, constants, macros] as [TNameToSExp, TNameToSExp, SExp[]];
 }
 
-export type TSymbolTableForTree = Array<[SExp, Bytes]>;
-export function symbol_table_for_tree(tree: SExp, root_node: NodePath): TSymbolTableForTree {
+export type TSymbolTable = Array<[SExp, Bytes]>;
+export function symbol_table_for_tree(tree: SExp, root_node: NodePath): TSymbolTable {
   if(tree.nullp()){
     return [];
   }
@@ -239,7 +239,7 @@ export function compile_functions(
   const compiled_functions: Record<str, SExp> = {};
   for(const [name, lambda_expression] of Object.entries(functions)){
     const local_symbol_table = symbol_table_for_tree(lambda_expression.first(), args_root_node);
-    const all_symbols = (local_symbol_table as Array<[SExp, Bytes]>).concat(constants_symbol_table);
+    const all_symbols = local_symbol_table.concat(constants_symbol_table);
     compiled_functions[name] = SExp.to(
       [b("opt"), [b("com"),
         quote(lambda_expression.rest().first()),
@@ -249,7 +249,7 @@ export function compile_functions(
   return compiled_functions;
 }
 
-export function compile_mod(args: SExp, macro_lookup: SExp, symbol_table: unknown, run_program: TRunProgram){
+export function compile_mod(args: SExp, macro_lookup: SExp, symbol_table: SExp, run_program: TRunProgram){
   // Deal with the "mod" keyword.
   const [functions, constants, macros] = compile_mod_stage_1(args, run_program);
   

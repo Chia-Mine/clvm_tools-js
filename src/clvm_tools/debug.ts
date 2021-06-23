@@ -3,6 +3,7 @@ import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
 import {Utf8} from "jscrypto";
+import {TSymbolTable} from "../stages/stage_2/mod";
 
 export type OpCallable = (v1: any, v2: ValStackType) => int;
 export type ValStackType = SExp[];
@@ -143,7 +144,7 @@ export function display_trace(
 export function trace_to_text(
   trace: Array<[SExp, SExp, Optional<SExp>]>,
   disassemble_f: typeof disassemble,
-  symbol_table: Optional<Record<str, str>>,
+  symbol_table: Record<str, str>,
 ){
   display_trace(trace, disassemble_f, symbol_table, text_trace);
 }
@@ -158,7 +159,7 @@ export function trace_to_table(
 
 export function make_trace_pre_eval(
   log_entries: Array<[SExp, SExp, Optional<SExp>]>,
-  symbol_table: Optional<Record<str, str>> = None,
+  symbol_table: Optional<TSymbolTable> = None,
 ){
   return function pre_eval_f(sexp: SExp, args: SExp){
     const [_sexp, _args] = [sexp, args].map(_ => SExp.to(_));
