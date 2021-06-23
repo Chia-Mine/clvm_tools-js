@@ -13,7 +13,7 @@ export const CONS_ATOM = KEYWORD_TO_ATOM["c"];
 export const PASS_THROUGH_OPERATORS = new Set(Object.values(KEYWORD_TO_ATOM));
 
 for(const _ of ["com", "opt"]){
-  PASS_THROUGH_OPERATORS.add(b(_).toString());
+  PASS_THROUGH_OPERATORS.add(b(_).hex());
 }
 
 export function compile_qq(
@@ -69,11 +69,11 @@ export function compile_symbols(args: SExp, macro_lookup: SExp, symbol_table: SE
 }
 
 export const COMPILE_BINDINGS = {
-  [b("qq").toString()]: compile_qq,
-  [b("macros").toString()]: compile_macros,
-  [b("symbols").toString()]: compile_symbols,
-  [b("lambda").toString()]: compile_mod,
-  [b("mod").toString()]: compile_mod,
+  [b("qq").hex()]: compile_qq,
+  [b("macros").hex()]: compile_macros,
+  [b("symbols").hex()]: compile_symbols,
+  [b("lambda").hex()]: compile_mod,
+  [b("mod").hex()]: compile_mod,
 };
 
 // # Transform "quote" to "q" everywhere. Note that quote will not be compiled if behind qq.
@@ -165,13 +165,13 @@ export function do_com_prog(
     }
   }
   
-  if(atom.toString() in COMPILE_BINDINGS){
-    const f = COMPILE_BINDINGS[atom.toString()];
+  if(atom.hex() in COMPILE_BINDINGS){
+    const f = COMPILE_BINDINGS[atom.hex()];
     const post_prog = f(prog.rest(), macro_lookup, symbol_table, run_program);
     return evaluate(SExp.to(quote(post_prog)), TOP.as_path());
   }
   
-  if(operator.equal_to(Bytes.from(QUOTE_ATOM, "hex"))){
+  if(operator.equal_to(b(QUOTE_ATOM, "hex"))){
     return prog;
   }
   
@@ -182,7 +182,7 @@ export function do_com_prog(
   
   let r = SExp.to([operator].concat(compiled_args));
   
-  if(PASS_THROUGH_OPERATORS.has(atom.toString()) || atom.toString().startsWith(b("_").toString())){
+  if(PASS_THROUGH_OPERATORS.has(atom.hex()) || atom.startswith(b("_"))){
     return r;
   }
   
@@ -200,7 +200,7 @@ export function do_com_prog(
           quote(([b("list")] as [Bytes, ...SExp[]]).concat(list)),
           quote(macro_lookup),
           quote(symbol_table)]]), TOP.as_path());
-      r = SExp.to([Bytes.from(APPLY_ATOM, "hex"), value, [Bytes.from(CONS_ATOM, "hex"), LEFT.as_path(), new_args]]);
+      r = SExp.to([b(APPLY_ATOM, "hex"), value, [b(CONS_ATOM, "hex"), LEFT.as_path(), new_args]]);
       return r;
     }
   }

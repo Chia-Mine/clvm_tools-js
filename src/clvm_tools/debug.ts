@@ -1,9 +1,9 @@
-import {Bytes, int, None, Optional, SExp, str} from "clvm";
+import {b, h, int, None, Optional, SExp, str} from "clvm";
 import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
-import {Utf8} from "jscrypto";
 import {TSymbolTable} from "../stages/stage_2/mod";
+import {write} from "../__io__";
 
 export type OpCallable = (v1: any, v2: ValStackType) => int;
 export type ValStackType = SExp[];
@@ -79,17 +79,16 @@ export function build_symbol_dump(constants_lookup: Record<str, SExp>, run_progr
   const entries = Object.entries(constants_lookup);
   for(const [k, v] of entries){
     const [, v1] = run_program(v, SExp.null());
-    compiled_lookup[sha256tree(v1).toString()] = Utf8.stringify(Bytes.from(k, "hex").as_word());
+    compiled_lookup[sha256tree(v1).hex()] = h(k).decode();
   }
   const output = JSON.stringify(compiled_lookup, null, 2);
-  const fs = require("fs");
-  fs.writeFileSync(path, output);
+  write(path, output);
 }
 
 export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<str>, env: SExp, result: str){
   if(symbol){
     env = env.rest();
-    symbol = disassemble_f(SExp.to(Bytes.from(symbol, "utf8")).cons(env));
+    symbol = disassemble_f(SExp.to(b(symbol)).cons(env));
   }
   else{
     symbol = `${disassemble_f(form)} [${disassemble_f(env)}]`
@@ -135,7 +134,7 @@ export function display_trace(
       rv = disassemble_f(_rv);
     }
     
-    const h = sha256tree(form).toString();
+    const h = sha256tree(form).hex();
     const symbol = symbol_table ? symbol_table[h] : symbol_table;
     display_fun(disassemble_f, form, symbol, env, rv);
   }
@@ -164,7 +163,7 @@ export function make_trace_pre_eval(
   return function pre_eval_f(sexp: SExp, args: SExp){
     const [_sexp, _args] = [sexp, args].map(_ => SExp.to(_));
     if(symbol_table){
-      const h = sha256tree(sexp).toString();
+      const h = sha256tree(sexp).hex();
       if(!(h in symbol_table)){
         return None;
       }

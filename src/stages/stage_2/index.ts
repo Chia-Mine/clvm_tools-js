@@ -15,4 +15,4 @@ limitations under the License.
  */
 
 export {brun, run} from "./bindings";
-export {} from "./operators";
+export {run_program_for_search_paths} from "./operators";

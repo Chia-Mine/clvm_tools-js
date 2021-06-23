@@ -1,4 +1,4 @@
-import {to_sexp_f, CLVMObject, int, str, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
+import {to_sexp_f, b, int, str, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
 
@@ -116,11 +116,11 @@ export function tokenize_quotes(token: str, offset: int){
   }
   
   const q_type = c === "'" ? Type.SINGLE_QUOTE : Type.DOUBLE_QUOTE;
-  return t(t(q_type.i, offset), Bytes.from(token.substring(1, token.length-1), "utf8"));
+  return t(t(q_type.i, offset), b(token.substring(1, token.length-1)));
 }
 
 export function tokenize_symbol(token: str, offset: int){
-  return t(t(Type.SYMBOL.i, offset), Bytes.from(token, "utf8"));
+  return t(t(Type.SYMBOL.i, offset), b(token));
 }
 
 export function tokenize_sexp(token: str, offset: int, stream: Stream){
