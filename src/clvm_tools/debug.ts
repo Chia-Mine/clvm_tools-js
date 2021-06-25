@@ -2,7 +2,6 @@ import {b, h, int, None, Optional, SExp, str} from "clvm";
 import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
-import {TSymbolTable} from "../stages/stage_2/mod";
 import {fs_write} from "../__platform__/io";
 
 export type OpCallable = (v1: any, v2: ValStackType) => int;
@@ -158,7 +157,7 @@ export function trace_to_table(
 
 export function make_trace_pre_eval(
   log_entries: Array<[SExp, SExp, Optional<SExp>]>,
-  symbol_table: Optional<TSymbolTable> = None,
+  symbol_table: Optional<Record<str, str>> = None,
 ){
   return function pre_eval_f(sexp: SExp, args: SExp){
     const [_sexp, _args] = [sexp, args].map(_ => SExp.to(_));

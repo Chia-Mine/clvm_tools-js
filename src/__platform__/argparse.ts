@@ -1,6 +1,6 @@
 export type TArgOption = {
   action: "store"|"store_true"|"append";
-  type: "int"|((v: string) => unknown);
+  type: "str"|"int"|((v: string) => unknown);
   default: unknown;
   help: string;
   nargs: "*"|"+"|"?"|number;
@@ -12,7 +12,11 @@ export type Arg = {
 };
 
 function isOptional(arg: string){
-  return /^[-]/.test(arg);
+  return /^[-]./.test(arg);
+}
+
+function getConverter(){
+  
 }
 
 export type TArgumentParserProps = {
@@ -37,8 +41,46 @@ export class ArgumentParser {
     }
   }
   
+  protected _getConverter(type?: "str"|"int"|((v: string) => unknown)){
+    if(!type || type === "str"){ // string
+      return (v: string) => v;
+    }
+    else if(type === "int"){
+      return (v: string) => {
+        const n = +v;
+        if(isNaN(n) || !isFinite(n)){
+          const usage = this.compileHelpMessages();
+          throw `${usage}\n\nError: Invalid parameter: ${v}`;
+        }
+        return n;
+      };
+    }
+    else if(typeof type === "function"){
+      return type as (v: string) => unknown;
+    }
+    else{
+      const usage = this.compileHelpMessages();
+      throw `${usage}\n\nError: Unknown type: ${type}`;
+    }
+  }
+  
+  protected _getOptionalArgName(arg: Arg){
+    const names = arg.names;
+    const doubleHyphenArgIndex = names.findIndex(n => /^[-]{2}/.test(n));
+    if(doubleHyphenArgIndex > -1){
+      const name = names[doubleHyphenArgIndex];
+      return name.replace(/^[-]+/, "").replace(/[-]/g, "_");
+    }
+    const singleHyphenArgIndex = names.findIndex(n => /^[-][^-]/.test(n));
+    if(singleHyphenArgIndex > -1){
+      const name = names[singleHyphenArgIndex];
+      return name.replace(/^[-]/, "").replace(/[-]/g, "_");
+    }
+    throw new Error("Invalid argument name");
+  }
+  
   public add_argument(argName: string[], options?: Partial<TArgOption>){
-    if(argName.length < 1){
+    if(!argName || argName.length < 1){
       throw new Error("Argument name is missing");
     }
     else if(argName.length === 1 && !isOptional(argName[0])){
@@ -58,69 +100,46 @@ export class ArgumentParser {
   public parse_args(args: string[]){
     const params: Record<string, unknown> = {};
     
-    const getConverter = (type?: "int"|((v: string) => unknown)) => {
-      if(!type){ // string
-        return (v: string) => v;
-      }
-      else if(type === "int"){
-        return (v: string) => {
-          const n = +v;
-          if(isNaN(n) || !isFinite(n)){
-            const usage = this.compileHelpMessages();
-            throw `${usage}\n\nError: Invalid parameter: ${v}`;
-          }
-          return n;
-        };
-      }
-      else if(typeof type === "function"){
-        return type as (v: string) => unknown;
-      }
-      else{
-        const usage = this.compileHelpMessages();
-        throw `${usage}\n\nError: Unknown type: ${type}`;
-      }
-    };
-    
     const input_positional_args: string[] = [];
     for(let i=0;i<args.length;i++){
       const arg = args[i];
-      // named argument
-      if(isOptional(arg)){
-        const optional_arg = this._optional_args.find(a => a.names.includes(arg));
-        if(!optional_arg){
-          const usage = this.compileHelpMessages();
-          throw `${usage}\n\nError: Unknown option: ${arg}`;
-        }
-        
-        const name = optional_arg.names[0];
-        if(optional_arg.options.action === "store_true"){
-          params[name] = true;
-          continue;
-        }
-        
-        const converter = getConverter(optional_arg.options.type);
-  
-        ++i;
-        const value = args[i];
-        if(!value && !optional_arg.options.default){
-          const usage = this.compileHelpMessages();
-          throw `${usage}\n\nError: ${name} requires a value`;
-        }
-        if(!optional_arg.options.action || optional_arg.options.action === "store"){
-          params[name] = converter(value) || optional_arg.options.default;
-        }
-        else if(optional_arg.options.action === "append"){
-          const param_value = (params[name] || []) as unknown[];
-          params[name] = param_value.concat(converter(value) || optional_arg.options.default);
-        }
-        else{
-          const usage = this.compileHelpMessages();
-          throw `${usage}\n\nError: Unknown action: ${optional_arg.options.action}`;
-        }
-      }
+      
       // positional argument
-      else{
+      if(!isOptional(arg)){
         input_positional_args.push(arg);
+        continue;
+      }
+      
+      const optional_arg = this._optional_args.find(a => a.names.includes(arg));
+      if(!optional_arg){
+        const usage = this.compileHelpMessages();
+        throw `${usage}\n\nError: Unknown option: ${arg}`;
+      }
+  
+      const name = this._getOptionalArgName(optional_arg);
+      if(optional_arg.options.action === "store_true"){
+        params[name] = true;
+        continue;
+      }
+  
+      const converter = this._getConverter(optional_arg.options.type);
+  
+      ++i;
+      const value = args[i];
+      if(!value && !optional_arg.options.default){
+        const usage = this.compileHelpMessages();
+        throw `${usage}\n\nError: ${name} requires a value`;
+      }
+      if(!optional_arg.options.action || optional_arg.options.action === "store"){
+        params[name] = converter(value) || optional_arg.options.default;
+      }
+      else if(optional_arg.options.action === "append"){
+        const param_value = (params[name] || []) as unknown[];
+        params[name] = param_value.concat(converter(value) || optional_arg.options.default);
+      }
+      else{
+        const usage = this.compileHelpMessages();
+        throw `${usage}\n\nError: Unknown action: ${optional_arg.options.action}`;
       }
     }
     
@@ -131,10 +150,10 @@ export class ArgumentParser {
   
       const name = positional_arg_k.names[0];
       const nargs = positional_arg_k.options.nargs;
-      const converter = getConverter(positional_arg_k.options.type);
+      const converter = this._getConverter(positional_arg_k.options.type);
   
       if(typeof nargs === "undefined"){
-        params[name] = input_arg;
+        params[name] = converter(input_arg);
         i++;
       }
       else if(typeof nargs === "number"){
@@ -152,14 +171,15 @@ export class ArgumentParser {
       else if(nargs === "?"){
         if(i >= input_positional_args.length){
           if(typeof positional_arg_k.options.default === "undefined"){
-            const usage = this.compileHelpMessages();
-            throw `${usage}\n\nError: Requires ${nargs} positional arguments but got ${i}`;
+            params[name] = converter("");
+            i++;
+            continue;
           }
           params[name] = positional_arg_k.options.default;
           i++;
         }
         else{
-          params[name] = input_arg;
+          params[name] = converter(input_arg);
           i++;
         }
       }
@@ -201,12 +221,18 @@ export class ArgumentParser {
     
     const messages = [
       `usage: ${this._prog} ` + this._optional_args.concat(this._positional_args).map(a => `[${a.names[0]}]`).join(" "),
-      "",
-      "positional arguments:",
-      ...this._positional_args.map(iterator),
-      "",
-      ...this._optional_args.map(iterator),
     ];
+    
+    if(this._positional_args.length > 0){
+      messages.push("");
+      messages.push("positional arguments:");
+      messages.push(...this._positional_args.map(iterator));
+    }
+    if(this._optional_args.length > 0){
+      messages.push("");
+      messages.push("optional arguments:");
+      messages.push(...this._optional_args.map(iterator));
+    }
     
     return messages.join("\n");
   }
