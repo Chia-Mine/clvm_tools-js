@@ -8,8 +8,6 @@ import {
   None,
   Bytes,
   int,
-  bool,
-  Optional,
   Tuple,
   t,
 } from "clvm";
@@ -28,10 +26,10 @@ import {
   is_ir,
 } from "../ir/utils";
 import {Type} from "../ir/Type";
-import {Utf8} from "jscrypto";
 
 function isPrintable(s: str){
-  const regex = /^[0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@\\\[\]^_`{|}~ \t\n\r\x0b\x0c]+$/;
+  // eslint-disable-next-line no-control-regex
+  const regex = /^[0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@\\[]^_`{|}~ \t\n\r\x0b\x0c]+$/;
   return regex.test(s);
 }
 
@@ -113,6 +111,7 @@ export function disassemble_to_ir<A extends boolean=false>(
   if(allow_keyword){
     const v = keyword_from_atom[as_atom.hex()];
     if(v && v !== "."){
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return ir_symbol(v); // @todo Find a good way not to use `ts-ignore`
     }

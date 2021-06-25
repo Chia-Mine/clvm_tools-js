@@ -11,9 +11,10 @@ import {Bytes, h, None, SExp, t} from "clvm";
 # and `(q 0)` with `0`
  */
 
-export const CURRY_OBJ_CODE = assemble(`
-(a (q #a 4 (c 2 (c 5 (c 7 0)))) (c (q (c (q . 2) (c (c (q . 1) 5) (c (a 6 (c 2 (c 11 (q 1)))) 0))) #a (i 5 (q 4 (q . 4) (c (c (q . 1) 9) (c (a 6 (c 2 (c 13 (c 11 0)))) 0))) (q . 11)) 1) 1))
-`);
+export const CURRY_OBJ_CODE = assemble(
+  // eslint-disable-next-line max-len
+  "(a (q #a 4 (c 2 (c 5 (c 7 0)))) (c (q (c (q . 2) (c (c (q . 1) 5) (c (a 6 (c 2 (c 11 (q 1)))) 0))) #a (i 5 (q 4 (q . 4) (c (c (q . 1) 9) (c (a 6 (c 2 (c 13 (c 11 0)))) 0))) (q . 11)) 1) 1))"
+);
 
 export function curry(program: SExp, args: SExp){
   /*
@@ -43,6 +44,7 @@ export function uncurry(curried_program: SExp){
   let core = r["core"];
   
   const args: SExp[] = [];
+  // eslint-disable-next-line no-constant-condition
   while(true){
     const r2 = match(UNCURRY_PATTERN_CORE, core);
     if(!r2){

@@ -1,4 +1,4 @@
-import {h, b, Bytes, KEYWORD_TO_ATOM, None, SExp, t} from "clvm";
+import {h, Bytes, KEYWORD_TO_ATOM, None, SExp, t} from "clvm";
 import {match} from "../../clvm_tools/pattern_match";
 import {assemble} from "../../clvm_tools/binutils";
 import {NodePath, LEFT, RIGHT} from "../../clvm_tools/NodePath";
