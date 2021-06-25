@@ -15,7 +15,6 @@ import {
   b,
 } from "clvm";
 import {Type, CONS_TYPES} from "./Type";
-import {Utf8} from "jscrypto";
 
 export function ir_new(type: SExp|int|Tuple<any, any>|None, val: CastableType, offset?: int): SExp {
   const type_and_offset = typeof offset === "number" ? SExp.to(t(type, offset)) : type;
@@ -107,7 +106,7 @@ export function ir_symbol(symbol: str): Tuple<int, Bytes> {
 export function ir_as_symbol(ir_sexp: SExp): Optional<str> {
   if(ir_sexp.listp() && ir_type(ir_sexp) === Type.SYMBOL.i){
     const b = Bytes.from(ir_as_sexp(ir_sexp).atom);
-    return Utf8.stringify(b.as_word());
+    return b.decode();
   }
   return None;
 }

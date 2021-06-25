@@ -5,7 +5,6 @@ import {LEFT, NodePath, RIGHT, TOP} from "../../clvm_tools/NodePath";
 import {evaluate, quote} from "./helpers";
 import {optimize_sexp} from "./optimize";
 import {TRunProgram} from "../stage_0";
-import {Utf8} from "jscrypto";
 
 export const QUOTE_ATOM = KEYWORD_TO_ATOM["q"];
 export const CONS_ATOM = KEYWORD_TO_ATOM["c"];
