@@ -3,6 +3,7 @@ import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
 import {fs_write} from "../__platform__/io";
+import {print} from "../__platform__/print";
 
 export type OpCallable = (v1: any, v2: ValStackType) => int;
 export type ValStackType = SExp[];
@@ -46,26 +47,26 @@ export function dump_invocation(
   result: SExp,
   disassemble_f: typeof disassemble = disassemble,
 ){
-  console.log(`<hr><div class="invocation" id="${form}">`);
-  console.log(`<span class="form"><a name="id_${form}">${dump_sexp(form, disassemble)}</a></span>`);
-  console.log("<ul>")
+  print(`<hr><div class="invocation" id="${form}">`);
+  print(`<span class="form"><a name="id_${form}">${dump_sexp(form, disassemble)}</a></span>`);
+  print("<ul>")
   if (form != rewrit_form){
-    console.log(
+    print(
       `<li>Rewritten as:<span class="form">`,
       `<a name="id_${rewrit_form}">${dump_sexp(rewrit_form, disassemble)}</a></span></li>`,
     );
   }
   env.forEach((e, i) => {
-    console.log(`<li>x${i}: <a href="#id_${e}">${dump_sexp(e, disassemble_f)}</a>`);
+    print(`<li>x${i}: <a href="#id_${e}">${dump_sexp(e, disassemble_f)}</a>`);
   });
-  console.log("</ul>");
-  console.log(`<span class="form">${dump_sexp(result, disassemble_f)}</span>`);
+  print("</ul>");
+  print(`<span class="form">${dump_sexp(result, disassemble_f)}</span>`);
   if(form.listp() && form.list_len() > 1){
-    console.log(`<ul>`);
+    print(`<ul>`);
     // @todo Implement here if original python code is fixed.
   }
-  console.log(`</ul>`)
-  console.log("</div>")
+  print(`</ul>`)
+  print("</div>")
 }
 
 export function trace_to_html(){
@@ -92,7 +93,7 @@ export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol
   else{
     symbol = `${disassemble_f(form)} [${disassemble_f(env)}]`
   }
-  console.log(`${symbol} => ${result}`);
+  print(`${symbol} => ${result}`);
 }
 
 export function table_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<str>, env: SExp, result: str){
@@ -107,14 +108,14 @@ export function table_trace(disassemble_f: typeof disassemble, form: SExp, symbo
     args = SExp.null();
   }
   
-  console.log(`exp: ${disassemble_f(sexp)}`);
-  console.log(`arg: ${disassemble_f(args)}`);
-  console.log(`env: ${disassemble_f(env)}`);
-  console.log(`val: ${result}`);
-  console.log(`bexp: ${sexp.as_bin()}`);
-  console.log(`barg: ${args.as_bin()}`);
-  console.log(`benv: ${env.as_bin()}`);
-  console.log("--");
+  print(`exp: ${disassemble_f(sexp)}`);
+  print(`arg: ${disassemble_f(args)}`);
+  print(`env: ${disassemble_f(env)}`);
+  print(`val: ${result}`);
+  print(`bexp: ${sexp.as_bin()}`);
+  print(`barg: ${args.as_bin()}`);
+  print(`benv: ${env.as_bin()}`);
+  print("--");
 }
 
 export function display_trace(

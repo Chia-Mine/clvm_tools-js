@@ -4,6 +4,7 @@ import {assemble} from "../../clvm_tools/binutils";
 import {NodePath, LEFT, RIGHT} from "../../clvm_tools/NodePath";
 import {quote} from "./helpers";
 import {TRunProgram} from "../stage_0";
+import {print} from "../../__platform__/print";
 
 export const QUOTE_ATOM = KEYWORD_TO_ATOM["q"];
 export const APPLY_ATOM = KEYWORD_TO_ATOM["a"];
@@ -298,7 +299,7 @@ export function optimize_sexp(r: SExp, eval_f: TRunProgram): SExp {
       return r;
     }
     if(DEBUG_OPTIMIZATIONS){
-      console.log(`OPT-${opt.name}[${start_r}] => ${r}`);
+      print(`OPT-${opt.name}[${start_r}] => ${r}`);
     }
   }
   
