@@ -1,14 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 
-function copyFileToPublish(fileName){
-  const srcPath = path.join(__dirname, fileName);
-  const distPath = path.join(distDir, fileName);
-  if(fs.existsSync(srcPath)){
-    fs.copyFileSync(srcPath, distPath);
-  }
-}
-
 const devMode = process.argv.length !== 3 || process.argv[2] !== "--prod";
 
 // clean and create output dir
@@ -36,10 +28,21 @@ if(!fs.existsSync(blsWasmSrcPath)){
 fs.copyFileSync(blsWasmSrcPath, blsWasmDestPath);
 
 
-if(devMode){
-  const packageJson = require("./package.json");
-  packageJson.main = "./index.js";
-  packageJson.typings = "./index.d.ts";
-  
-  fs.writeFileSync(path.join(distDir, "package.json"), JSON.stringify(packageJson, null, 2));
+const packageJson = require("./package.json");
+packageJson.main = "./index.js";
+packageJson.typings = "./index.d.ts";
+delete packageJson.files;
+
+fs.writeFileSync(path.join(distDir, "package.json"), JSON.stringify(packageJson, null, 2));
+
+function copyFileToPublish(fileName){
+  const srcPath = path.join(__dirname, fileName);
+  const distPath = path.join(distDir, fileName);
+  if(fs.existsSync(srcPath)){
+    fs.copyFileSync(srcPath, distPath);
+  }
 }
+
+copyFileToPublish("CHANGELOG.md");
+copyFileToPublish("LICENSE");
+copyFileToPublish("README.md");
