@@ -1,16 +1,20 @@
 import {
   to_sexp_f,
   KEYWORD_FROM_ATOM,
-  KEYWORD_TO_ATOM,
   SExp,
   EvalError,
   sexp_from_stream,
   sexp_to_stream,
-  OP_REWRITE,
   str,
   Tuple,
   None,
-  t, Bytes, int, h, TPreEvalF, Optional, CLVMObject,
+  t,
+  Bytes,
+  int,
+  h,
+  TPreEvalF,
+  Optional,
+  CLVMObject,
 } from "clvm";
 import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
@@ -24,6 +28,7 @@ import * as stage_1 from "../stages/stage_1";
 import * as stage_2 from "../stages/stage_2";
 import {TRunProgram} from "../stages/stage_0";
 import {now} from "../__platform__/performance";
+import {print} from "../__platform__/print";
 
 export function path_or_code(arg: string){
   try{
@@ -62,10 +67,10 @@ export function call_tool(tool_name: str, desc: str, conversion: TConversion, in
     }
     const [sexp, text] = conversion(program);
     if(args["script_hash"]){
-      console.log(sha256tree(sexp).hex());
+      print(sha256tree(sexp).hex());
     }
     else if(text){
-      console.log(text);
+      print(text);
     }
   }
 }
@@ -245,7 +250,7 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
       src_sexp = reader.read_ir(src_text);
     }
     catch(ex){
-      console.log(`FAIL: ${ex}`);
+      print(`FAIL: ${ex}`);
       return -1;
     }
     const assembled_sexp = binutils.assemble_from_ir(src_sexp);
@@ -296,18 +301,18 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
     
     if(parsedArgs["cost"]){
       cost += cost > 0 ? cost_offset : 0;
-      console.log(`cost = ${cost}`);
+      print(`cost = ${cost}`);
     }
     
     if(parsedArgs["time"]){
       if(parsedArgs["hex"]){
-        console.log(`read_hex: ${time_read_hex - time_start}`);
+        print(`read_hex: ${time_read_hex - time_start}`);
       }
       else{
-        console.log(`assemble_from_ir: ${time_assemble - time_start}`);
-        console.log(`to_sexp_f: ${time_parse_input - time_assemble}`);
+        print(`assemble_from_ir: ${time_assemble - time_start}`);
+        print(`to_sexp_f: ${time_parse_input - time_assemble}`);
       }
-      console.log(`run_program: ${time_done - time_parse_input}`);
+      print(`run_program: ${time_done - time_parse_input}`);
     }
     
     if(parsedArgs["dump"]){
@@ -331,9 +336,9 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
     throw new Error(ex.message);
   }
   finally {
-    console.log(output);
+    print(output);
     if(parsedArgs["verbose"] || symbol_table){
-      console.log("");
+      print("");
       trace_to_text(log_entries, binutils.disassemble, symbol_table || {});
     }
     if(parsedArgs["table"]){
@@ -351,7 +356,7 @@ export function read_ir(args: str[]){
   
   const sexp = reader.read_ir(parsedArgs["script"] as string);
   const blob = stream_to_bin(f => sexp_to_stream(sexp, f));
-  console.log(blob.hex());
+  print(blob.hex());
 }
 
 /*
