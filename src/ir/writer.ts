@@ -9,7 +9,6 @@ import {
   ir_as_atom,
   ir_val,
 } from "./utils";
-import {Utf8} from "jscrypto";
 
 export function* iter_sexp_format(ir_sexp: SExp): Generator<str>{
   yield "(";
@@ -65,17 +64,17 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
     yield `0x${atom.hex()}`;
   }
   else if(type === Type.QUOTES.i){
-    yield `"${Utf8.stringify(atom.as_word())}"`;
+    yield `"${atom.decode()}"`;
   }
   else if(type === Type.DOUBLE_QUOTE.i){
-    yield `"${Utf8.stringify(atom.as_word())}"`;
+    yield `"${atom.decode()}"`;
   }
   else if(type === Type.SINGLE_QUOTE.i){
-    yield `'${Utf8.stringify(atom.as_word())}'`;
+    yield `'${atom.decode()}'`;
   }
   else if(type === Type.SYMBOL.i || type === Type.OPERATOR.i){
     try{
-      yield Utf8.stringify(atom.as_word());
+      yield atom.decode();
     }
     catch(e){
       yield `(indecipherable symbol: ${atom.hex()})`;
@@ -95,5 +94,5 @@ export function write_ir_to_stream(ir_sexp: SExp, f: Stream){
 export function write_ir(ir_sexp: SExp): str {
   const s = new Stream();
   write_ir_to_stream(ir_sexp, s);
-  return Utf8.stringify(s.getValue().as_word());
+  return s.getValue().decode();
 }

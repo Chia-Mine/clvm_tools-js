@@ -1,5 +1,4 @@
 import {Atom, Bytes, None, SExp, str, b} from "clvm";
-import {Utf8} from "jscrypto";
 
 export const ATOM_MATCH = b("$");
 export const SEXP_MATCH = b(":");
@@ -9,7 +8,7 @@ export function unify_bindings(bindings: Record<str, SExp>, new_key: Bytes, new_
     Try to add a new binding to the list, rejecting it if it conflicts
     with an existing binding.
    */
-  const new_key_str = Utf8.stringify(new_key.as_word());
+  const new_key_str = new_key.decode();
   if(new_key_str in bindings){
     if(bindings[new_key_str] !== new_value){
       return None;
