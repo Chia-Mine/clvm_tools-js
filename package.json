@@ -15,8 +15,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "node pre_build.js && tsc --project tsconfig.json --allowJS false --declaration --declarationDir ./build --outDir ./build",
-    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --allowJS false --declaration --declarationDir ./dist --outDir ./dist"
+    "build": "node pre_build.js && tsc --project tsconfig.json --declarationDir ./build --outDir ./build",
+    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist"
   },
   "keywords": [
     "chia",
