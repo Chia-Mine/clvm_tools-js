@@ -7,6 +7,7 @@ export type Stream = Generator<Token>;
 
 export function consume_whitespace(s: str, offset: int): int {
   // This also deals with comments
+  // eslint-disable-next-line no-constant-condition
   while(true){
     while(offset < s.length && /[ ]/.test(s[offset])){
       offset += 1;
@@ -82,7 +83,9 @@ export function tokenize_int(token: str, offset: int): Optional<SExp> {
     
     return ir_new(Type.INT.i, nToken, offset);
   }
-  catch (e){ }
+  catch (e){
+    // Skip
+  }
   return None;
 }
 

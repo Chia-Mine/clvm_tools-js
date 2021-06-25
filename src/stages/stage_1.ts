@@ -1,4 +1,4 @@
-import {b, Bytes, CLVMObject, int, None, OPERATOR_LOOKUP, OperatorDict, SExp, str, TPreEvalF, t} from "clvm";
+import {b, Bytes, CLVMObject, int, None, OPERATOR_LOOKUP, OperatorDict, SExp, str, TPreEvalF, t, Tuple} from "clvm";
 import {run_program as run_program_0} from "./stage_0";
 import * as binutils from "../clvm_tools/binutils";
 
@@ -50,7 +50,7 @@ function merge(obj1: Record<string, unknown>, obj2: Record<string, unknown>){
 
 export function RunProgram(){
   const operator_lookup = OperatorDict(OPERATOR_LOOKUP as any);
-  const bindings_obj: Record<str, Function> = {};
+  const bindings_obj: Record<str, (v: SExp) => Tuple<int, SExp>> = {};
   Object.entries(BINDINGS).forEach(([key, val]) => {
     const bin_name = b(key).hex(); // bind: 61696e64
     bindings_obj[bin_name] = val;

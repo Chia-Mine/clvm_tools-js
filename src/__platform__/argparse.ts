@@ -15,10 +15,6 @@ function isOptional(arg: string){
   return /^[-]./.test(arg);
 }
 
-function getConverter(){
-  
-}
-
 export type TArgumentParserProps = {
   description: string;
   prog: string;

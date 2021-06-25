@@ -36,7 +36,7 @@ export function compile_clvm(input_path: str, output_path: str, search_paths: st
 
 export function find_files(path: str = ""){
   const r: string[] = [];
-  for(const {dirpath, dirnames, filenames} of os_walk(path)){
+  for(const {dirpath, filenames} of os_walk(path)){
     for(const filename of filenames){
       if(filename.endsWith(".clvm")){
         const full_path = path_join(dirpath, filename);

@@ -82,7 +82,7 @@ export function build_default_macro_lookup(eval_f: TRunProgram){
   for(const macro_src of DEFAULT_MACROS_SRC){
     const macro_sexp = binutils.assemble(macro_src);
     const env = SExp.to(t(macro_sexp, DEFAULT_MACRO_LOOKUP));
-    const [cost, new_macro] = eval_f(run, env);
+    const new_macro = eval_f(run, env)[1];
     DEFAULT_MACRO_LOOKUP = new_macro.cons(DEFAULT_MACRO_LOOKUP);
   }
   return DEFAULT_MACRO_LOOKUP;

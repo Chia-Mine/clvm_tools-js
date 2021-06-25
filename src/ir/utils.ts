@@ -51,7 +51,7 @@ export function ir_as_int(ir_sexp: SExp): int {
 }
 
 export function ir_offset(ir_sexp: SExp): int {
-  let val = ir_sexp.first();
+  const val = ir_sexp.first();
   let the_offset;
   if(val.listp()){
     the_offset = val.rest().atom;

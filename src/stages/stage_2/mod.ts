@@ -1,4 +1,4 @@
-import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom, Optional} from "clvm";
+import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom} from "clvm";
 import * as binutils from "../../clvm_tools/binutils";
 import {build_symbol_dump} from "../../clvm_tools/debug";
 import {LEFT, NodePath, RIGHT, TOP} from "../../clvm_tools/NodePath";
@@ -110,8 +110,9 @@ export function parse_include(
   run_program: TRunProgram,
 ){
   const prog = binutils.assemble("(_read (_full_path_for_name 1))");
-  const [cost, assembled_sexp] = run_program(prog, name);
+  const assembled_sexp = run_program(prog, name)[1];
   for(const sexp of assembled_sexp.as_iter()){
+    parse_mod_sexp(sexp, namespace, functions, constants, macros, run_program);
   }
 }
 
@@ -159,7 +160,7 @@ export function parse_mod_sexp(
   
   const name_atom = name.atom as Bytes;
   if(namespace.has(name_atom.hex())){
-    throw new SyntaxError(`symbol "${Utf8.stringify(name_atom.as_word())}" redefined`);
+    throw new SyntaxError(`symbol "${name_atom.decode()}" redefined`);
   }
   namespace.add(name_atom.hex());
   
@@ -189,6 +190,7 @@ export function compile_mod_stage_1(args: SExp, run_program: TRunProgram){
   const main_local_arguments = args.first();
   
   const namespace = new Set<str>();
+  // eslint-disable-next-line no-constant-condition
   while (true){
     args = args.rest();
     if(args.rest().nullp()){
@@ -223,7 +225,7 @@ export function build_macro_lookup_program(macro_lookup: SExp, macros: SExp[], r
   for(const macro of macros){
     macro_lookup_program = evaluate(SExp.to(
       [b("opt"), [b("com"), quote([CONS_ATOM, macro, macro_lookup_program]), macro_lookup_program]]),
-      TOP.as_path(),
+    TOP.as_path(),
     );
     macro_lookup_program = optimize_sexp(macro_lookup_program, run_program);
   }
