@@ -35,6 +35,11 @@ export class ArgumentParser {
         this._prog = props.prog;
       }
     }
+    
+    this._optional_args.push({
+      names: ["-h", "--help"],
+      options: {help: "Show help message", action: "store_true"},
+    })
   }
   
   protected _getConverter(type?: "str"|"int"|((v: string) => unknown)){
@@ -199,6 +204,11 @@ export class ArgumentParser {
       else{
         throw `Unknown nargs: ${nargs}. It is a program bug. Contact a developer and report this error.`;
       }
+    }
+    
+    if(params["help"]){
+      const usage = this.compileHelpMessages();
+      throw `${usage}`;
     }
     
     return params;

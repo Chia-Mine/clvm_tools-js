@@ -3,7 +3,6 @@ import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
 
 export type Token = Tuple<str, int>;
-export type Stream = Generator<Token>;
 
 export function consume_whitespace(s: str, offset: int): int {
   // This also deals with comments
@@ -30,7 +29,7 @@ export function consume_until_whitespace(s: str, offset: int): Token {
   return t(s.substring(start, offset), offset);
 }
 
-export function next_cons_token(stream: Stream): Token {
+export function next_cons_token(stream: Generator<Token>): Token {
   let found = false;
   let token: str = "";
   let offset: int = -1;
@@ -47,7 +46,7 @@ export function next_cons_token(stream: Stream): Token {
   return t(token, offset);
 }
 
-export function tokenize_cons(token: str, offset: int, stream: Stream): SExp {
+export function tokenize_cons(token: str, offset: int, stream: Generator<Token>): SExp {
   if(token === ")"){
     return ir_new(Type.NULL.i, 0, offset);
   }
@@ -126,7 +125,7 @@ export function tokenize_symbol(token: str, offset: int){
   return t(t(Type.SYMBOL.i, offset), b(token));
 }
 
-export function tokenize_sexp(token: str, offset: int, stream: Stream){
+export function tokenize_sexp(token: str, offset: int, stream: Generator<Token>){
   if(token === "("){
     const [token, offset] = next_cons_token(stream);
     return tokenize_cons(token, offset, stream);
