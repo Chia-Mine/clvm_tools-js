@@ -1,6 +1,6 @@
 {
   "name": "clvm_tools",
-  "version": "0.0.0-beta.0",
+  "version": "0.1.0",
   "author": "Admin ChiaMineJP <admin@chiamine.jp>",
   "description": "Javascript implementation of clvm_tools",
   "license": "MIT",
@@ -11,12 +11,15 @@
   "bugs": "https://github.com/Chia-Mine/clvm_tools-js/issues",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
+  "bin": {
+    "clvm_tools": "./bin/cli.js"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "node ./pre_publish.js && tsc --project tsconfig.json --allowJS false --declaration --declarationDir ./build --outDir ./build",
-    "build:prod": "node ./pre_publish.js --prod && tsc --project tsconfig.json --allowJS false --declaration --declarationDir ./dist --outDir ./dist"
+    "build": "node pre_build.js && tsc --project tsconfig.json --declarationDir ./build --outDir ./build",
+    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist"
   },
   "keywords": [
     "chia",
@@ -29,7 +32,8 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.1"
+    "clvm": "^0.0.13",
+    "jscrypto": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^15.0.2",

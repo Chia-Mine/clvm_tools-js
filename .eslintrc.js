@@ -63,7 +63,7 @@ module.exports = {
     ],
     "@typescript-eslint/consistent-type-assertions": "error",
     "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/dot-notation": "warn",
+    "@typescript-eslint/dot-notation": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/indent": [
       "error",
@@ -83,7 +83,7 @@ module.exports = {
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/member-ordering": "off",
     "@typescript-eslint/naming-convention": [
-      "error",
+      "off",
       {
         "selector": "variable",
         "format": [
@@ -112,7 +112,7 @@ module.exports = {
     "@typescript-eslint/no-namespace": "error",
     "@typescript-eslint/no-parameter-properties": "off",
     "@typescript-eslint/no-this-alias": [
-      "error",
+      "off",
       {
         "allowDestructuring": true
       }
@@ -193,14 +193,14 @@ module.exports = {
     "no-return-await": "error",
     "no-sequences": "error",
     "no-shadow": [
-      "error",
+      "off",
       {
         "hoist": "all"
       }
     ],
     "no-sparse-arrays": "error",
     "no-template-curly-in-string": "error",
-    "no-throw-literal": "error",
+    "no-throw-literal": "off",
     "no-trailing-spaces": [
       "error",
       {
@@ -222,7 +222,7 @@ module.exports = {
     "prefer-object-spread": "error",
     "quotes": ["error", "double"],
     "quote-props": [
-      "error",
+      "off",
       "as-needed"
     ],
     "radix": "error",

@@ -1,0 +1,44 @@
+{
+  "name": "clvm_tools",
+  "version": "0.1.0",
+  "author": "Admin ChiaMineJP <admin@chiamine.jp>",
+  "description": "Javascript implementation of clvm_tools",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chia-Mine/clvm_tools-js.git"
+  },
+  "bugs": "https://github.com/Chia-Mine/clvm_tools-js/issues",
+  "main": "./index.js",
+  "typings": "./index.d.ts",
+  "bin": {
+    "clvm_tools": "./bin/cli.js"
+  },
+  "scripts": {
+    "build": "node pre_build.js && tsc --project tsconfig.json --declarationDir ./build --outDir ./build",
+    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist"
+  },
+  "keywords": [
+    "chia",
+    "clvm",
+    "chialisp",
+    "clvm_tools",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=12.13.0"
+  },
+  "dependencies": {
+    "clvm": "^0.0.13",
+    "jscrypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.1.0",
+    "@typescript-eslint/parser": "^4.1.0",
+    "eslint": "^7.8.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsdoc": "^30.4.1",
+    "typescript": "^4.2.4"
+  }
+}
