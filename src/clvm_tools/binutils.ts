@@ -10,6 +10,7 @@ import {
   int,
   Tuple,
   t,
+  h,
 } from "clvm";
 import {read_ir} from "../ir/reader";
 import {write_ir} from "../ir/writer";
@@ -29,7 +30,7 @@ import {Type} from "../ir/Type";
 
 function isPrintable(s: str){
   // eslint-disable-next-line no-control-regex
-  const regex = /^[0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@\\[]^_`{|}~ \t\n\r\x0b\x0c]+$/;
+  const regex = /^[0-9a-zA-Z!"#$%&'()*+,-./:;<=>?@\\[\]^_`{|}~ \t\n\r\x0b\x0c]+$/;
   return regex.test(s);
 }
 
@@ -40,8 +41,8 @@ export function assemble_from_ir(ir_sexp: SExp): SExp {
       keyword = keyword.substring(1);
     }
     const atom = KEYWORD_TO_ATOM[keyword as keyof typeof KEYWORD_TO_ATOM];
-    if(atom !== None){
-      return SExp.to(atom);
+    if(atom){
+      return SExp.to(h(atom));
     }
     else{
       return ir_val(ir_sexp);

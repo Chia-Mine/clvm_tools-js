@@ -1,4 +1,4 @@
-import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom} from "clvm";
+import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom, h} from "clvm";
 import * as binutils from "../../clvm_tools/binutils";
 import {build_symbol_dump} from "../../clvm_tools/debug";
 import {LEFT, NodePath, RIGHT, TOP} from "../../clvm_tools/NodePath";
@@ -11,7 +11,7 @@ export const CONS_ATOM = KEYWORD_TO_ATOM["c"];
 
 export const MAIN_NAME = "";
 
-export type TBuildTree = str | Tuple<TBuildTree, TBuildTree> | [];
+export type TBuildTree = Bytes | Tuple<TBuildTree, TBuildTree> | [];
 export function build_tree(items: str[]): TBuildTree {
   // This function takes a Python list of items and turns it into a binary tree
   // of the items, suitable for casting to an s-expression.
@@ -20,7 +20,7 @@ export function build_tree(items: str[]): TBuildTree {
     return [];
   }
   else if(size === 1){
-    return items[0];
+    return b(items[0]);
   }
   const half_size = size >> 1;
   const left = build_tree(items.slice(0, half_size));
@@ -28,13 +28,13 @@ export function build_tree(items: str[]): TBuildTree {
   return t(left, right);
 }
 
-export type TBuildTreeProgram = SExp | [str, TBuildTree, TBuildTree] | [Tuple<str, SExp>];
+export type TBuildTreeProgram = SExp | [Bytes, TBuildTree, TBuildTree] | [Tuple<Bytes, SExp>];
 export function build_tree_program(items: SExp[]): TBuildTreeProgram {
   // This function takes a Python list of items and turns it into a program that
   //  a binary tree of the items, suitable for casting to an s-expression.
   const size = items.length;
   if(size === 0){
-    return [quote([])] as [Tuple<str, SExp>];
+    return [quote([])] as [Tuple<Bytes, SExp>];
   }
   else if(size === 1){
     return items[0];
@@ -42,7 +42,7 @@ export function build_tree_program(items: SExp[]): TBuildTreeProgram {
   const half_size = size >> 1;
   const left = build_tree_program(items.slice(0, half_size));
   const right = build_tree_program(items.slice(half_size));
-  return [CONS_ATOM, left, right] as [str, TBuildTree, TBuildTree];
+  return [h(CONS_ATOM), left, right] as [Bytes, TBuildTree, TBuildTree];
 }
 
 export function flatten(sexp: SExp): Bytes[] {
@@ -223,7 +223,7 @@ export function build_macro_lookup_program(macro_lookup: SExp, macros: SExp[], r
   let macro_lookup_program = SExp.to(quote(macro_lookup));
   for(const macro of macros){
     macro_lookup_program = evaluate(SExp.to(
-      [b("opt"), [b("com"), quote([CONS_ATOM, macro, macro_lookup_program]), macro_lookup_program]]),
+      [b("opt"), [b("com"), quote([h(CONS_ATOM), macro, macro_lookup_program]), macro_lookup_program]]),
     TOP.as_path(),
     );
     macro_lookup_program = optimize_sexp(macro_lookup_program, run_program);

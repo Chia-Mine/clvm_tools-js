@@ -101,6 +101,18 @@ export class ArgumentParser {
   public parse_args(args: string[]){
     const params: Record<string, unknown> = {};
     
+    // Set default value
+    for(let k=0;k<this._optional_args.length;k++){
+      const optional_arg_k = this._optional_args[k];
+      const defaultValue = optional_arg_k.options.default;
+      if(typeof defaultValue === "undefined"){
+        continue;
+      }
+  
+      const name = this._getOptionalArgName(optional_arg_k);
+      params[name] = defaultValue;
+    }
+    
     const input_positional_args: string[] = [];
     for(let i=0;i<args.length;i++){
       const arg = args[i];

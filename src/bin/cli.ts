@@ -23,8 +23,6 @@ main().catch(e => {
 });
 
 async function main(){
-  console.log(`args: ${process.argv.join(" ")}`);
-  
   if(process.argv.length < 3){
     console.error("Insufficient argument");
     return;

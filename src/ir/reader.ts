@@ -1,6 +1,7 @@
 import {to_sexp_f, b, int, str, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
+import {for_of} from "../__platform__/for_of";
 
 export type Token = Tuple<str, int>;
 
@@ -8,7 +9,7 @@ export function consume_whitespace(s: str, offset: int): int {
   // This also deals with comments
   // eslint-disable-next-line no-constant-condition
   while(true){
-    while(offset < s.length && /[ ]/.test(s[offset])){
+    while(offset < s.length && /\s+/.test(s[offset])){
       offset += 1;
     }
     if(offset >= s.length || s[offset] !== ";"){
@@ -23,23 +24,30 @@ export function consume_whitespace(s: str, offset: int): int {
 
 export function consume_until_whitespace(s: str, offset: int): Token {
   const start = offset;
-  while(offset < s.length && !/[ ]/.test(s[offset]) && s[offset] !== ")"){
+  while(offset < s.length && !/\s+/.test(s[offset]) && s[offset] !== ")"){
     offset += 1;
   }
   return t(s.substring(start, offset), offset);
 }
 
 export function next_cons_token(stream: Generator<Token>): Token {
-  let found = false;
   let token: str = "";
   let offset: int = -1;
   
+  // Fix generator spec incompatibility between python and javascript.
+  // Javascript iterator cannot be re-used while python can.
+  /*
   for(const s of stream){
     found = true;
     ([token, offset] = s);
     break;
   }
-  if(!found){
+   */
+  const isExecutedOnce = for_of(stream, (value) => {
+    ([token, offset] = value);
+    return "stop";
+  });
+  if(!isExecutedOnce){
     throw new SyntaxError("missing )");
   }
   
@@ -54,9 +62,9 @@ export function tokenize_cons(token: str, offset: int, stream: Generator<Token>)
   const initial_offset = offset;
   const first_sexp = tokenize_sexp(token, offset, stream);
   
-  let rest_sexp;
-  
   ([token, offset] = next_cons_token(stream));
+  
+  let rest_sexp;
   if(token === "."){
     const dot_offset = offset;
     // grab the last item
@@ -89,7 +97,7 @@ export function tokenize_int(token: str, offset: int): Optional<SExp> {
 }
 
 export function tokenize_hex(token: str, offset: int): Optional<SExp> {
-  if(token.slice(0, 2).toUpperCase() === "0X"){
+  if(token.slice(0, 2).toLowerCase() === "0x"){
     try{
       token = token.substring(2);
       if(token.length % 2 === 1){
@@ -184,8 +192,20 @@ export function* token_stream(s: str): Generator<Token> {
 export function read_ir(s: str, to_sexp: typeof to_sexp_f = to_sexp_f){
   const stream = token_stream(s);
   
+  // Fix generator spec incompatibility between python and javascript.
+  // Javascript iterator cannot be re-used while python can.
+  /*
   for(const [token, offset] of stream){
     return to_sexp(tokenize_sexp(token, offset, stream));
   }
-  throw new SyntaxError("unexpected end of stream");
+   */
+  let retVal: SExp|undefined;
+  const isExecutedOnce = for_of(stream, (value) => {
+    const [token, offset] = value;
+    retVal = to_sexp(tokenize_sexp(token, offset, stream));
+  });
+  if(!isExecutedOnce){
+    throw new SyntaxError("unexpected end of stream");
+  }
+  return retVal as SExp;
 }
