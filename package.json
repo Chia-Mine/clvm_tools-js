@@ -1,6 +1,6 @@
 {
   "name": "clvm_tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Admin ChiaMineJP <admin@chiamine.jp>",
   "description": "Javascript implementation of clvm_tools",
   "license": "MIT",

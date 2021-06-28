@@ -14,6 +14,17 @@ yarn add clvm_tools
 ```
 
 ## Quick examples
+### Command line
+```shell
+$ npx clvm_tools run "(mod ARGUMENT (+ ARGUMENT 3))"
+(+ 1 (q . 3))
+```
+```shell
+$ npx clvm_tools brun "(+ 1 (q . 3))" "2"
+5
+```
+
+### NodeJS
 ```javascript
 const clvm_tools = require("clvm_tools");
 clvm_tools.run(["run", "(mod ARGUMENT (+ ARGUMENT 3))"]);
