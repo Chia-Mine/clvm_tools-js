@@ -13,12 +13,15 @@ npm install clvm_tools
 yarn add clvm_tools
 ```
 
-Breeding edge version of `clvm_tools` is available by
-```shell
-yarn add Chia-Mine/clvm_tools-js#v0.0.1
-# or
-npm install Chia-Mine/clvm_tools-js#v0.0.1
+## Quick examples
+```javascript
+const clvm_tools = require("clvm_tools");
+clvm_tools.run(["run", "(mod ARGUMENT (+ ARGUMENT 3))"]);
+// Output: (+ 1 (q . 3))
+clvm_tools.brun(["brun", "(+ 1 (q . 3))", "2"]);
+// Output: 5
 ```
+
 
 ## Original clvm_tools written in python
 
