@@ -86,7 +86,7 @@ export function cons_f(args: SExp){
   if(t){
     return t["first"];
   }
-  return SExp.to([FIRST_ATOM, args]);
+  return SExp.to([h(FIRST_ATOM), args]);
 }
 
 export function cons_r(args: SExp){
@@ -94,7 +94,7 @@ export function cons_r(args: SExp){
   if(t){
     return t["rest"];
   }
-  return SExp.to([REST_ATOM, args]);
+  return SExp.to([h(REST_ATOM), args]);
 }
 
 export function path_from_args(sexp: SExp, new_args: SExp): SExp {

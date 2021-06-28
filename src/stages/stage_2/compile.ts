@@ -1,4 +1,4 @@
-import {KEYWORD_TO_ATOM, b, SExp, int, Bytes, None, t} from "clvm";
+import {KEYWORD_TO_ATOM, b, SExp, int, Bytes, None, t, h} from "clvm";
 import {disassemble} from "../../clvm_tools/binutils";
 import {LEFT, TOP} from "../../clvm_tools/NodePath";
 import {default_macro_lookup} from "./defaults";
@@ -42,7 +42,7 @@ export function compile_qq(
     const op = sexp.first().atom as Bytes;
     if(op.equal_to(b("qq"))){
       const subexp = compile_qq(sexp.rest(), macro_lookup, symbol_table, run_program, level+1);
-      return com(SExp.to([CONS_ATOM, op, [CONS_ATOM, subexp, quote(0)]]));
+      return com(SExp.to([h(CONS_ATOM), op, [h(CONS_ATOM), subexp, quote(0)]]));
     }
     else if(op.equal_to(b("unquote"))){
       if(level === 1){
@@ -50,14 +50,14 @@ export function compile_qq(
         return com(sexp.rest().first());
       }
       const subexp = compile_qq(sexp.rest(), macro_lookup, symbol_table, run_program, level-1);
-      return com(SExp.to([CONS_ATOM, op, [CONS_ATOM, subexp, quote(0)]]));
+      return com(SExp.to([h(CONS_ATOM), op, [h(CONS_ATOM), subexp, quote(0)]]));
     }
   }
   
   // (qq (a . B)) => (c (qq a) (qq B))
   const A = com(SExp.to([b("qq"), sexp.first()]));
   const B = com(SExp.to([b("qq"), sexp.rest()]));
-  return SExp.to([CONS_ATOM, A, B]);
+  return SExp.to([h(CONS_ATOM), A, B]);
 }
 
 export function compile_macros(args: SExp, macro_lookup: SExp, symbol_table: SExp, run_program: TRunProgram){
@@ -92,7 +92,7 @@ export function lower_quote(
     if(b("quote").equal_to(prog.first().atom as Bytes)){
       // Note: quote should have exactly one arg, so the length of
       // quoted list should be 2: "(quote arg)"
-      if(prog.rest().rest().nullp()){
+      if(!prog.rest().rest().nullp()){
         throw new SyntaxError(`Compilation error while compiling [${disassemble(prog)}]. quote takes exactly one argument.`);
       }
       return SExp.to(quote(lower_quote(prog.rest().first())));
@@ -171,7 +171,7 @@ export function do_com_prog(
     return evaluate(SExp.to(quote(post_prog)), TOP.as_path());
   }
   
-  if(operator.equal_to(b(QUOTE_ATOM, "hex"))){
+  if(operator.equal_to(h(QUOTE_ATOM))){
     return prog;
   }
   
@@ -200,7 +200,7 @@ export function do_com_prog(
           quote(([b("list")] as [Bytes, ...SExp[]]).concat(list)),
           quote(macro_lookup),
           quote(symbol_table)]]), TOP.as_path());
-      r = SExp.to([b(APPLY_ATOM, "hex"), value, [b(CONS_ATOM, "hex"), LEFT.as_path(), new_args]]);
+      r = SExp.to([h(APPLY_ATOM), value, [h(CONS_ATOM), LEFT.as_path(), new_args]]);
       return r;
     }
   }

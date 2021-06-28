@@ -10,15 +10,16 @@ import {
   Tuple,
   Optional,
   None,
-  isCons,
   h,
   b,
 } from "clvm";
 import {Type, CONS_TYPES} from "./Type";
 
 export function ir_new(type: SExp|int|Tuple<any, any>|None, val: CastableType, offset?: int): SExp {
-  const type_and_offset = typeof offset === "number" ? SExp.to(t(type, offset)) : type;
-  return SExp.to(t(type_and_offset, val));
+  if(typeof offset === "number"){
+    type = SExp.to(t(type, offset));
+  }
+  return SExp.to(t(type, val));
 }
 
 export function ir_cons(first: SExp|Tuple<any, any>|None, rest: SExp|Tuple<any, any>|None, offset?: int): SExp {
@@ -73,12 +74,12 @@ export function ir_listp(ir_sexp: SExp): bool {
   return CONS_TYPES.includes(ir_type(ir_sexp));
 }
 
-export function ir_as_sexp(ir_sexp: SExp): SExp {
+export function ir_as_sexp(ir_sexp: SExp): SExp|[] {
   if(ir_nullp(ir_sexp)){
-    return SExp.null(); // @todo Check this is correct. Original source returns empty list `[]`.
+    return [];
   }
   else if(ir_type(ir_sexp) === Type.CONS.i){
-    return ir_as_sexp(ir_first(ir_sexp)).cons(ir_as_sexp(ir_rest(ir_sexp)));
+    return (ir_as_sexp(ir_first(ir_sexp)) as SExp).cons(ir_as_sexp(ir_rest(ir_sexp)));
   }
   return ir_sexp.rest();
 }
@@ -105,7 +106,7 @@ export function ir_symbol(symbol: str): Tuple<int, Bytes> {
 
 export function ir_as_symbol(ir_sexp: SExp): Optional<str> {
   if(ir_sexp.listp() && ir_type(ir_sexp) === Type.SYMBOL.i){
-    const b = Bytes.from(ir_as_sexp(ir_sexp).atom);
+    const b = Bytes.from((ir_as_sexp(ir_sexp) as SExp).atom);
     return b.decode();
   }
   return None;
@@ -119,11 +120,11 @@ export function* ir_iter(ir_sexp: SExp){
 }
 
 export function is_ir(sexp: SExp): bool {
-  if(!isCons(sexp)){
+  if(sexp.atom !== None){
     return false;
   }
   
-  const [type_sexp, val_sexp] = sexp.pair;
+  const [type_sexp, val_sexp] = sexp.pair as Tuple<SExp, SExp>;
   const f = type_sexp.atom;
   if(f === None || f.length > 1){
     return false;
