@@ -5,3 +5,4 @@ webpack.*.js
 test/
 bin/
 nyc.config.ts
+playground/
