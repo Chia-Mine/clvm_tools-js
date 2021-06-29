@@ -1,4 +1,3 @@
-import {SHA256} from "jscrypto";
 import {h, Atom, Bytes, isCons, SExp} from "clvm";
 
 export function sha256tree(v: SExp): Bytes {
@@ -12,6 +11,5 @@ export function sha256tree(v: SExp): Bytes {
     s = h("0x01").concat((v as Atom).atom);
   }
   
-  const hashedWords = SHA256.hash(s.as_word());
-  return Bytes.from(hashedWords);
+  return Bytes.SHA256(s);
 }

@@ -33,8 +33,7 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.13",
-    "jscrypto": "^1.0.1"
+    "clvm": "^0.0.14"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
