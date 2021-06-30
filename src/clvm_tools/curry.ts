@@ -35,7 +35,7 @@ export const UNCURRY_PATTERN_FUNCTION = assemble("(a (q . (: . function)) (: . c
 export const UNCURRY_PATTERN_CORE = assemble("(c (q . (: . parm)) (: . core))");
 
 export function uncurry(curried_program: SExp){
-  const r = match(UNCURRY_PATTERN_FUNCTION, curried_program);
+  let r = match(UNCURRY_PATTERN_FUNCTION, curried_program);
   if(!r){
     return r;
   }
@@ -46,8 +46,8 @@ export function uncurry(curried_program: SExp){
   const args: SExp[] = [];
   // eslint-disable-next-line no-constant-condition
   while(true){
-    const r2 = match(UNCURRY_PATTERN_CORE, core);
-    if(!r2){
+    r = match(UNCURRY_PATTERN_CORE, core);
+    if(!r){
       break;
     }
     args.push(r["parm"]);
