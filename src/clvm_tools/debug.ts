@@ -81,7 +81,7 @@ export function build_symbol_dump(constants_lookup: Record<str, SExp>, run_progr
     const [, v1] = run_program(v, SExp.null());
     compiled_lookup[sha256tree(v1).hex()] = h(k).decode();
   }
-  const output = JSON.stringify(compiled_lookup, null, 2);
+  const output = JSON.stringify(compiled_lookup);
   fs_write(path, output);
 }
 

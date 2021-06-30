@@ -276,7 +276,7 @@ export function optimize_sexp(r: SExp, eval_f: TRunProgram): SExp {
   }
   
   const OPTIMIZERS = [
-    constant_optimizer,
+    cons_optimizer,
     constant_optimizer,
     cons_q_a_optimizer,
     var_change_optimizer_cons_eval,

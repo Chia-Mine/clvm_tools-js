@@ -20,7 +20,7 @@ export function build_tree(items: str[]): TBuildTree {
     return [];
   }
   else if(size === 1){
-    return b(items[0]);
+    return h(items[0]); // items[0] is expected to be a hex string representing constant name atom
   }
   const half_size = size >> 1;
   const left = build_tree(items.slice(0, half_size));
@@ -57,6 +57,10 @@ export function flatten(sexp: SExp): Bytes[] {
 }
 
 export type TNameToSExp = Record<str, SExp>;
+
+/**
+ * @return Used constants name array in `hex string` format.
+ */
 export function build_used_constants_names(functions: TNameToSExp, constants: TNameToSExp, macros: SExp[]){
   /*
     Do a naïve pruning of unused symbols. It may be too big, but it shouldn't
@@ -79,7 +83,7 @@ export function build_used_constants_names(functions: TNameToSExp, constants: TN
     for(const _ of prior_new_names){
       for(const k of [functions, macro_as_dict]){
         if(_ in k){
-          flatten(k[_]).forEach(a => new_names.add(a.hex()));
+          flatten(k[_]).forEach(atom => new_names.add(atom.hex()));
         }
       }
     }
