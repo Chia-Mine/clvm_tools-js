@@ -11,7 +11,7 @@
     ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "skipLibCheck": true,
     "noImplicitAny": true,
     "declaration": true,

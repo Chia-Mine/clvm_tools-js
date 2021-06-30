@@ -6,3 +6,4 @@ test/
 bin/
 nyc.config.ts
 playground/
+jest.config.js
