@@ -18,7 +18,7 @@ function build_tree(items) {
         return [];
     }
     else if (size === 1) {
-        return clvm_1.b(items[0]);
+        return clvm_1.h(items[0]); // items[0] is expected to be a hex string representing constant name atom
     }
     const half_size = size >> 1;
     const left = build_tree(items.slice(0, half_size));
@@ -53,6 +53,9 @@ function flatten(sexp) {
     return [sexp.atom];
 }
 exports.flatten = flatten;
+/**
+ * @return Used constants name array in `hex string` format.
+ */
 function build_used_constants_names(functions, constants, macros) {
     /*
       Do a naïve pruning of unused symbols. It may be too big, but it shouldn't
@@ -73,7 +76,7 @@ function build_used_constants_names(functions, constants, macros) {
         for (const _ of prior_new_names) {
             for (const k of [functions, macro_as_dict]) {
                 if (_ in k) {
-                    flatten(k[_]).forEach(a => new_names.add(a.hex()));
+                    flatten(k[_]).forEach(atom => new_names.add(atom.hex()));
                 }
             }
         }

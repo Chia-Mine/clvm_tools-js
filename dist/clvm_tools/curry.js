@@ -33,7 +33,7 @@ exports.curry = curry;
 exports.UNCURRY_PATTERN_FUNCTION = binutils_1.assemble("(a (q . (: . function)) (: . core))");
 exports.UNCURRY_PATTERN_CORE = binutils_1.assemble("(c (q . (: . parm)) (: . core))");
 function uncurry(curried_program) {
-    const r = pattern_match_1.match(exports.UNCURRY_PATTERN_FUNCTION, curried_program);
+    let r = pattern_match_1.match(exports.UNCURRY_PATTERN_FUNCTION, curried_program);
     if (!r) {
         return r;
     }
@@ -42,8 +42,8 @@ function uncurry(curried_program) {
     const args = [];
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const r2 = pattern_match_1.match(exports.UNCURRY_PATTERN_CORE, core);
-        if (!r2) {
+        r = pattern_match_1.match(exports.UNCURRY_PATTERN_CORE, core);
+        if (!r) {
             break;
         }
         args.push(r["parm"]);
