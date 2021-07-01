@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "node pre_build.js && tsc --project tsconfig.json --declarationDir ./build --outDir ./build",
-    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist",
+    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist --sourcemap false",
     "test": "jest"
   },
   "keywords": [
