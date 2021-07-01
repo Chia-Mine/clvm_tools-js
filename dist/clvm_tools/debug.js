@@ -75,7 +75,7 @@ function build_symbol_dump(constants_lookup, run_program, path) {
         const [, v1] = run_program(v, clvm_1.SExp.null());
         compiled_lookup[sha256tree_1.sha256tree(v1).hex()] = clvm_1.h(k).decode();
     }
-    const output = JSON.stringify(compiled_lookup, null, 2);
+    const output = JSON.stringify(compiled_lookup);
     io_1.fs_write(path, output);
 }
 exports.build_symbol_dump = build_symbol_dump;

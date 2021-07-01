@@ -1,6 +1,6 @@
 {
   "name": "clvm_tools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Admin ChiaMineJP <admin@chiamine.jp>",
   "description": "Javascript implementation of clvm_tools",
   "license": "MIT",
@@ -19,7 +19,8 @@
   ],
   "scripts": {
     "build": "node pre_build.js && tsc --project tsconfig.json --declarationDir ./build --outDir ./build",
-    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist"
+    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist --sourcemap false",
+    "test": "jest"
   },
   "keywords": [
     "chia",
@@ -32,16 +33,20 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.13",
-    "jscrypto": "^1.0.1"
+    "clvm": "^0.0.14"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",
+    "@types/tmp": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
     "eslint": "^7.8.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsdoc": "^30.4.1",
+    "jest": "^27.0.6",
+    "tmp": "^0.2.1",
+    "ts-jest": "^27.0.3",
     "typescript": "^4.2.4"
   }
 }

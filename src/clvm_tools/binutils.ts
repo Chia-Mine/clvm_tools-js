@@ -5,7 +5,6 @@ import {
   int_to_bytes,
   SExp,
   str,
-  None,
   Bytes,
   int,
   Tuple,
