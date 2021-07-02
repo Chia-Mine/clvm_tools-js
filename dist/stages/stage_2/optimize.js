@@ -254,7 +254,7 @@ function optimize_sexp(r, eval_f) {
         return r;
     }
     const OPTIMIZERS = [
-        constant_optimizer,
+        cons_optimizer,
         constant_optimizer,
         cons_q_a_optimizer,
         var_change_optimizer_cons_eval,

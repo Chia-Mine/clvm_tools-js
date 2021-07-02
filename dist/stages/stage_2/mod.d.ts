@@ -10,6 +10,9 @@ export declare type TBuildTreeProgram = SExp | [Bytes, TBuildTree, TBuildTree] |
 export declare function build_tree_program(items: SExp[]): TBuildTreeProgram;
 export declare function flatten(sexp: SExp): Bytes[];
 export declare type TNameToSExp = Record<str, SExp>;
+/**
+ * @return Used constants name array in `hex string` format.
+ */
 export declare function build_used_constants_names(functions: TNameToSExp, constants: TNameToSExp, macros: SExp[]): string[];
 export declare function parse_include(name: SExp, namespace: Set<str>, functions: TNameToSExp, constants: TNameToSExp, macros: SExp[], run_program: TRunProgram): void;
 export declare function unquote_args(code: SExp, args: Bytes[]): SExp;
