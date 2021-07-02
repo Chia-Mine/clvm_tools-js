@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.5]
+### Changed
+- Updated to clvm version to 0.0.15 
+
+## [0.1.4]
+### Changed
+- Updated .eslintignore
+
 ## [0.1.2]
 ### Fixed
 - Fixed bugs found in test

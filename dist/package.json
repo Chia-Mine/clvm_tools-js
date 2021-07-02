@@ -1,6 +1,6 @@
 {
   "name": "clvm_tools",
-  "version": "0.1.4",
+  "version": "0.0.15",
   "author": "Admin ChiaMineJP <admin@chiamine.jp>",
   "description": "Javascript implementation of clvm_tools",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.14"
+    "clvm": "^0.0.15"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
