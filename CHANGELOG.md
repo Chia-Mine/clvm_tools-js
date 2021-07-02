@@ -2,7 +2,7 @@
 
 ## [0.1.5]
 ### Changed
-- Updated to clvm version to 0.0.15 
+- Updated to clvm version to 0.1.5
 
 ## [0.1.4]
 ### Changed
