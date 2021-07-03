@@ -34,6 +34,6 @@ clvm_tools.brun(["brun", "(+ 1 (q . 3))", "2"]);
 ```
 
 
-## Original clvm_tools written in python
-
-https://github.com/Chia-Network/clvm_tools
+## clvm license
+`clvm_tools-js` is based on [clvm_tools](https://github.com/Chia-Network/clvm_tools) with the
+[Apache license 2.0](https://github.com/Chia-Network/clvm_tools/blob/main/LICENSE)
