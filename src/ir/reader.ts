@@ -83,6 +83,10 @@ export function tokenize_cons(token: str, offset: int, stream: Generator<Token>)
 
 export function tokenize_int(token: str, offset: int): Optional<SExp> {
   try{
+    // Don't recognize hex string to int
+    if(token.slice(0, 2).toUpperCase() === "0X"){
+      return None;
+    }
     const nToken = +token;
     if(isNaN(nToken) || !isFinite(nToken)){
       return None;
@@ -97,7 +101,7 @@ export function tokenize_int(token: str, offset: int): Optional<SExp> {
 }
 
 export function tokenize_hex(token: str, offset: int): Optional<SExp> {
-  if(token.slice(0, 2).toLowerCase() === "0x"){
+  if(token.slice(0, 2).toUpperCase() === "0X"){
     try{
       token = token.substring(2);
       if(token.length % 2 === 1){
