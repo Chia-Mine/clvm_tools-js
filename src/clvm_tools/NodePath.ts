@@ -26,7 +26,7 @@ bit controls the first branch, then the next-least the second, and so on. That l
 ugly-numbered tree.
  */
 
-import {int, int_from_bytes, int_to_bytes, h, uint32} from "clvm";
+import {int, int_from_bytes, h, uint32, Bytes} from "clvm";
 
 export function compose_paths(path_0: int, path_1: int){
   /*
@@ -69,8 +69,7 @@ export class NodePath {
   
   public constructor(index: int = 1) {
     if(index < 0){
-      const blob = int_to_bytes(index);
-      index = int_from_bytes(h(blob.length%2 ? `0${blob}` : `00${blob}`));
+      index = index >>> 0;
     }
     
     this._index = index;
@@ -78,7 +77,11 @@ export class NodePath {
   
   public as_short_path(){
     const index = this._index;
-    return int_to_bytes(index);
+    let hexStr = (index >>> 0).toString(16);
+    if(index >= 0){
+      hexStr = hexStr.length % 2 ? `0${hexStr}` : hexStr;
+    }
+    return h(hexStr);
   }
   
   public add(other_node: NodePath){
