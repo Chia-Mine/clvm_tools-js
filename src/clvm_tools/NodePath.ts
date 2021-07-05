@@ -26,7 +26,7 @@ bit controls the first branch, then the next-least the second, and so on. That l
 ugly-numbered tree.
  */
 
-import {int, int_from_bytes, h, uint32, Bytes} from "clvm";
+import {int, h, uint32} from "clvm";
 
 export function compose_paths(path_0: int, path_1: int){
   /*
