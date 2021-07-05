@@ -10,7 +10,7 @@ export function unify_bindings(bindings: Record<str, SExp>, new_key: Bytes, new_
    */
   const new_key_str = new_key.decode();
   if(new_key_str in bindings){
-    if(bindings[new_key_str] !== new_value){
+    if(!bindings[new_key_str].equal_to(new_value)){
       return None;
     }
     return bindings;
