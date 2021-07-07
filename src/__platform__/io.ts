@@ -12,6 +12,20 @@ export function fs_read(path: string){
   return FS.readFileSync(path, {encoding: "utf8"});
 }
 
+export function* fs_readlineSync(path: string): Generator<string, any, boolean>{
+  const data = fs_read(path);
+  const lines = data.split(/\r?\n/);
+  let outputOnce = false;
+  for(let i=0;i<lines.length;i++){
+    if(outputOnce){
+      yield lines.slice(i).join("\n");
+      return;
+    }
+    outputOnce = yield lines[i];
+  }
+  return;
+}
+
 export function fs_readdir(path: string){
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const FS = require("fs");

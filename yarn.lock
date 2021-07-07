@@ -1087,13 +1087,13 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
-clvm@^0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.15.tgz#aa1be082250fd23fc4cc7061d3897fc8bc96eb47"
-  integrity sha512-nLhR9hO/a8WsUAPhZk1SHmuc0WPv7gmSINULjclAS+xa5Or2LQUyT/SwcHqy7DDCpjKet9sA1tHckMtIYPZPFQ==
+clvm@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.17.tgz#b6174bedb2cbb7448955d987c804e0fafd52a4f6"
+  integrity sha512-XZ3dJ3rDRIQQk12SQN770L0CnqdoKUIhA37iNin5uwjLl9daNbVfF5u0LRDMX2bIN76KjigoCnAmTVMS/553dQ==
   dependencies:
     "@chiamine/bls-signatures" "^0.2.1-beta.0"
-    jscrypto "^1.0.1"
+    jscrypto "^1.0.2"
 
 co@^4.6.0:
   version "4.6.0"
@@ -2485,10 +2485,10 @@ js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-jscrypto@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/jscrypto/-/jscrypto-1.0.1.tgz#786f0f803b1717a4b7c6247ccfaa8a8230fe062b"
-  integrity sha512-xb+lVDVDGe3cL7i7IZqdvQV0ucMyxxD3Jt+xfrc0GedTOdLto65rBHpIlKOJ8W/X3Qg/z5nEcUva5ziDVParSQ==
+jscrypto@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/jscrypto/-/jscrypto-1.0.2.tgz#2775430a39589693efb31d41421b103200c87dae"
+  integrity sha512-r+oNJLGTv1nkNMBBq3c70xYrFDgJOYVgs2OHijz5Ht+0KJ0yObD0oYxC9mN72KLzVfXw+osspg6t27IZvuTUxw==
 
 jsdoctypeparser@^9.0.0:
   version "9.0.0"
@@ -3172,6 +3172,11 @@ shebang-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
+
+shlex@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/shlex/-/shlex-2.1.0.tgz#4f8fbf75c4a9956283e4095fa5eac3f4969f6a6b"
+  integrity sha512-Tk8PjohJbWpGu2NtAlsEi/9AS4GU2zW2ZWLFrWRDskZpSJmyBIU3nTkBtocxD90r3w4BwRevsNtIqIP9HMuYiQ==
 
 signal-exit@^3.0.2, signal-exit@^3.0.3:
   version "3.0.3"

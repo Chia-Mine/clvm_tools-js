@@ -7,7 +7,7 @@ export * from "./clvm_tools/NodePath";
 export * from "./clvm_tools/pattern_match";
 export * from "./clvm_tools/sha256tree";
 
-import {setPrinter, TPrinter} from "./__platform__/print";
+import {setStdout, TPrinter} from "./__platform__/print";
 import {initialize as initClvm} from "clvm";
 
 /**
@@ -16,7 +16,7 @@ import {initialize as initClvm} from "clvm";
  * @param {(...msg: string[]) => void} printer
  */
 export function setPrintFunction(printer: TPrinter){
-  setPrinter(printer);
+  setStdout(printer);
 }
 
 /**

@@ -83,7 +83,7 @@ export function opc(args: string[]){
       return t(sexp, sexp.as_bin().hex());
     }
     catch(ex){
-      console.error(`${ex instanceof Error ? ex.message : JSON.stringify(ex)}`);
+      print(`${ex instanceof Error ? ex.message : JSON.stringify(ex)}`);
       return t(None, None);
     }
   }
