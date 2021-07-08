@@ -121,8 +121,15 @@ function inject(...paths: string[]){
 
 inject("opc");
 inject("opd");
-// inject("stage_1");
+inject("stage_1");
 // inject("stage_2");
 // inject("clvm_runtime");
 // inject("cmd");
-// inject("opc");
+
+/*
+test("stage_1", () => {
+  const test_cases = get_test_cases("stage_1");
+  const [name, i, o, comments, path] = test_cases[0];
+  make_f(i, o, comments, path)();
+});
+ */

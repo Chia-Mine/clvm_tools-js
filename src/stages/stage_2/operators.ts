@@ -2,22 +2,18 @@ import {
   Bytes,
   CLVMObject,
   EvalError,
-  int,
-  None,
   OPERATOR_LOOKUP as ORIGINAL_OPERATOR_LOOKUP,
   OperatorDict,
   SExp,
   str,
   t,
   b,
-  TOperatorDict,
-  TPreEvalF,
 } from "clvm";
 import {read_ir} from "../../ir/reader";
 import {write_ir_to_stream} from "../../ir/writer";
 import {assemble_from_ir, disassemble_to_ir} from "../../clvm_tools/binutils";
 import {
-  run_program as run_program_0,
+  run_program as run_program_0, RunProgramOption,
 } from "../stage_0";
 import {make_do_com} from "./compile";
 import {make_do_opt} from "./optimize";
@@ -57,13 +53,11 @@ export function run_program_for_search_paths(search_paths: str[]){
   const run_program = (
     program: SExp,
     args: CLVMObject,
-    operator_lookup: TOperatorDict|None = None,
-    max_cost: int|None = None,
-    pre_eval_f: TPreEvalF|None = None,
-    strict: boolean = false,
+    option?: RunProgramOption,
   ) => {
-    operator_lookup = operator_lookup || _operator_lookup;
-    return run_program_0(program, args, operator_lookup, max_cost, pre_eval_f, strict);
+    const operator_lookup = (option && option.operator_lookup) || _operator_lookup;
+    option = option ? {...option, operator_lookup} : {operator_lookup};
+    return run_program_0(program, args, option);
   };
   
   const BINDINGS = {

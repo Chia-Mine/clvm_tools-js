@@ -1,5 +1,5 @@
-import {b, Bytes, CLVMObject, int, None, OPERATOR_LOOKUP, OperatorDict, SExp, str, TPreEvalF, t, Tuple} from "clvm";
-import {run_program as run_program_0} from "./stage_0";
+import {b, Bytes, CLVMObject, int, OPERATOR_LOOKUP, OperatorDict, SExp, str, t, Tuple} from "clvm";
+import {run_program as run_program_0, RunProgramOption} from "./stage_0";
 import * as binutils from "../clvm_tools/binutils";
 
 
@@ -60,11 +60,10 @@ export function RunProgram(){
   const f = function(
     program: SExp,
     args: CLVMObject,
-    max_cost: int|None = None,
-    pre_eval_f: TPreEvalF|None = None,
-    strict: boolean = false,
+    option?: Omit<RunProgramOption, "operator_lookup">,
   ){
-    return run_program_0(program, args, operator_lookup, max_cost, pre_eval_f, strict);
+    const option2 = option ? {...option, operator_lookup: f.operator_lookup} : {operator_lookup: f.operator_lookup};
+    return run_program_0(program, args, option2);
   };
   
   f.operator_lookup = operator_lookup;

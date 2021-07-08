@@ -293,7 +293,7 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
     }
     time_parse_input = now();
     const run_program_result = run_program(
-      run_script, input_sexp, undefined, max_cost, pre_eval_f, parsedArgs["strict"] as boolean
+      run_script, input_sexp, {max_cost, pre_eval_f, strict: parsedArgs["strict"] as boolean}
     );
     cost = run_program_result[0] as int;
     result = run_program_result[1] as SExp;

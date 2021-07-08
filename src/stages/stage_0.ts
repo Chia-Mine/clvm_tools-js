@@ -16,14 +16,23 @@ import * as binutils from "../clvm_tools/binutils";
 export const run = binutils.assemble("(a 2 3)");
 export const brun = run;
 
+export type RunProgramOption = Partial<{
+  operator_lookup: TOperatorDict;
+  max_cost: int|None;
+  pre_eval_f: TPreEvalF|None;
+  strict: boolean;
+}>;
+
 export function run_program(
   program: SExp,
   args: CLVMObject,
-  operator_lookup: TOperatorDict = OPERATOR_LOOKUP,
-  max_cost: int|None=None,
-  pre_eval_f: TPreEvalF|None = None,
-  strict: boolean = false,
+  option?: RunProgramOption,
 ){
+  let operator_lookup = (option && option.operator_lookup) || OPERATOR_LOOKUP;
+  const strict = (option && option.strict) || false;
+  const max_cost = (option && typeof option.max_cost === "number") ? option.max_cost : None;
+  const pre_eval_f = (option && option.pre_eval_f) ? option.pre_eval_f : None;
+  
   if(strict){
     const fatal_error = (op: Bytes, args: SExp) => {
       throw new EvalError("unimplemented operator", SExp.to(op));
