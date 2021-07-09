@@ -99,6 +99,7 @@ export class ArgumentParser {
   }
   
   public parse_args(args: string[]){
+    const normalizedArgs = this.normalizeArgs(args);
     const params: Record<string, unknown> = {};
     
     // Set default value
@@ -114,8 +115,8 @@ export class ArgumentParser {
     }
     
     const input_positional_args: string[] = [];
-    for(let i=0;i<args.length;i++){
-      const arg = args[i];
+    for(let i=0;i<normalizedArgs.length;i++){
+      const arg = normalizedArgs[i];
       
       // positional argument
       if(!isOptional(arg)){
@@ -138,7 +139,7 @@ export class ArgumentParser {
       const converter = this._getConverter(optional_arg.options.type);
   
       ++i;
-      const value = args[i];
+      const value = normalizedArgs[i];
       if(!value && !optional_arg.options.default){
         const usage = this.compileHelpMessages();
         throw `${usage}\n\nError: ${name} requires a value`;
@@ -228,9 +229,9 @@ export class ArgumentParser {
   
   public compileHelpMessages(){
     const iterator = (a: Arg) => {
-      let msg = `${a.names[0]}`;
+      let msg = " " + a.names.join(", ");
       if(a.options.help){
-        msg += ` ${a.options.help}`;
+        msg += `  ${a.options.help}`;
         msg = msg.replace(/%\(prog\)s/, this._prog);
         msg = msg.replace(/%\(default\)s/, (a.options.default as string) || "");
       }
@@ -253,5 +254,50 @@ export class ArgumentParser {
     }
     
     return messages.join("\n");
+  }
+  
+  /**
+   * Separate short form argument which doesn't have space character between name and value. 
+   * For example, turn:
+   *   "-x1" => ["-x", "1"]
+   *   "-x 1" => ["-x", "1"]
+   *   "-xxxxx" => ["-x", "xxxx"]
+   * @param args - arguments passed
+   */
+  public normalizeArgs(args: string[]) {
+    if(this._optional_args.length < 1){
+      return args;
+    }
+    
+    const norm: string[] = [];
+    for(let i=0;i<args.length;i++){
+      const arg = args[i];
+      // Only short form args like '-x' are targets.
+      if(!/^[-][^-]/.test(arg)){
+        norm.push(arg);
+        continue;
+      }
+      
+      let optionalArgWithoutSpaceFound = false;
+      for(let k=0;k<this._optional_args.length;k++){
+        const opt = this._optional_args[k];
+        const index = opt.names.findIndex(n => /^[-][^-]$/.test(n) && n !== arg && new RegExp(`^${n}`).test(arg));
+        if(index < 0){
+          continue;
+        }
+        const name = opt.names[index];
+        const index2 = arg.indexOf(name) + name.length;
+        const value = arg.substring(index2);
+        norm.push(name, value);
+        optionalArgWithoutSpaceFound = true;
+        break;
+      }
+      
+      if(!optionalArgWithoutSpaceFound){
+        norm.push(arg);
+      }
+    }
+    
+    return norm;
   }
 }

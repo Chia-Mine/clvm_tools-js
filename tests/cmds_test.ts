@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as shlex from "shlex";
 import * as console_scripts from "../src/clvm_tools/cmds";
 import {fs_readlineSync, os_walk} from "../src/__platform__/io";
-import {print, setStdout, setStderr} from "../src/__platform__/print";
+import {setStdout, setStderr} from "../src/__platform__/print";
 
 // # If the REPAIR environment variable is set, any tests failing due to
 // # wrong output will be corrected. Be sure to do a "git diff" to validate that
@@ -61,11 +61,9 @@ function invoke_tool(cmd_line: string){
   
   setStdout((...args: any[]) => {
     stdout_buffer.push(args.map(a => a.toString()).join(" "));
-    stdout_buffer.push("");
   });
   setStderr((...args: any[]) => {
     stderr_buffer.push(args.map(a => a.toString()).join(" "));
-    stderr_buffer.push("");
   });
   
   const args = shlex.split(cmd_line);
@@ -74,7 +72,10 @@ function invoke_tool(cmd_line: string){
   setStdout(console.log);
   setStderr(console.error);
   
-  return [v, stdout_buffer.join("\n"), stderr_buffer.join("\n")];
+  const stdout = stdout_buffer.join("\n") + "\n";
+  const stderr = stderr_buffer.join("\n") + "\n";
+  
+  return [v, stdout, stderr];
 }
 
 function make_f(cmd_lines: string[], expected_output: string, comments: string[], path: string){
@@ -127,9 +128,9 @@ inject("stage_2");
 // inject("cmd");
 
 /*
-test("stage_1", () => {
+test("stage_2", () => {
   const test_cases = get_test_cases("stage_2");
-  const [name, i, o, comments, path] = test_cases[50];
+  const [name, i, o, comments, path] = test_cases[1];
   make_f(i, o, comments, path)();
 });
 // */

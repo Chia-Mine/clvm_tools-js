@@ -94,6 +94,7 @@ export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol
     symbol = `${disassemble_f(form)} [${disassemble_f(env)}]`
   }
   print(`${symbol} => ${result}`);
+  print("");
 }
 
 export function table_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<str>, env: SExp, result: str){

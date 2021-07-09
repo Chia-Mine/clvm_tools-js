@@ -144,6 +144,7 @@ export function calculate_cost_offset(run_program: TRunProgram, run_script: SExp
 
 export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage: int = 0){
   const parser = new argparse.ArgumentParser({
+    prog: ["clvm_tools", tool_name].join(" "),
     description: "Execute a clvm script.",
   });
   parser.add_argument(
