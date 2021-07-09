@@ -2,8 +2,8 @@ import {b, h, int, None, Optional, SExp, str} from "clvm";
 import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
-import {fs_write} from "../__platform__/io";
-import {print} from "../__platform__/print";
+import {fs_write} from "../platform/io";
+import {print} from "../platform/print";
 
 export type OpCallable = (v1: any, v2: ValStackType) => int;
 export type ValStackType = SExp[];

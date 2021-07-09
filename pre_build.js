@@ -1,11 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 
-const devMode = process.argv.length !== 3 || process.argv[2] !== "--prod";
-
 // clean and create output dir
-const distDirName = devMode ? "build" : "dist";
-const distDir = path.join(__dirname, distDirName);
+const distDir = path.join(__dirname, ".dist", "npm");
 if(fs.existsSync(distDir)){
   fs.rmdirSync(distDir, {recursive: true});
 }

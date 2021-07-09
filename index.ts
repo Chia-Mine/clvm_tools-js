@@ -7,7 +7,7 @@ export * from "./clvm_tools/NodePath";
 export * from "./clvm_tools/pattern_match";
 export * from "./clvm_tools/sha256tree";
 
-import {setStdout, TPrinter} from "./__platform__/print";
+import {setStdout, TPrinter} from "./platform/print";
 import {initialize as initClvm} from "clvm";
 
 /**

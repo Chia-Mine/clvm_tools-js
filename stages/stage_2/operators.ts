@@ -17,7 +17,7 @@ import {
 } from "../stage_0";
 import {make_do_com} from "./compile";
 import {make_do_opt} from "./optimize";
-import {FileStream, fs_read, Path} from "../../__platform__/io";
+import {FileStream, fs_read, Path} from "../../platform/io";
 
 export function do_read(args: SExp){
   const filename = args.first().atom as Bytes;

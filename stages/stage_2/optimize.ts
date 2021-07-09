@@ -4,7 +4,7 @@ import {assemble} from "../../clvm_tools/binutils";
 import {NodePath, LEFT, RIGHT} from "../../clvm_tools/NodePath";
 import {quote} from "./helpers";
 import {TRunProgram} from "../stage_0";
-import {print} from "../../__platform__/print";
+import {print} from "../../platform/print";
 
 export const QUOTE_ATOM = KEYWORD_TO_ATOM["q"];
 export const APPLY_ATOM = KEYWORD_TO_ATOM["a"];

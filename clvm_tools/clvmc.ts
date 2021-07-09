@@ -1,5 +1,5 @@
-import {log, dep_util} from "../__platform__/distutils";
-import {FileStream, fs_read, os_walk, path_join} from "../__platform__/io";
+import {log, dep_util} from "../platform/distutils";
+import {FileStream, fs_read, os_walk, path_join} from "../platform/io";
 import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
 import * as stage_2 from "../stages/stage_2";

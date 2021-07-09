@@ -20,15 +20,15 @@ import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
 import {make_trace_pre_eval, trace_to_text, trace_to_table} from "./debug";
 import {sha256tree} from "./sha256tree";
-import {fs_exists, fs_isFile, fs_read, path_join} from "../__platform__/io";
+import {fs_exists, fs_isFile, fs_read, path_join} from "../platform/io";
 import {Stream} from "clvm/dist/__type_compatibility__";
-import * as argparse from "../__platform__/argparse";
+import * as argparse from "../platform/argparse";
 import * as stage_0 from "../stages/stage_0";
 import * as stage_1 from "../stages/stage_1";
 import * as stage_2 from "../stages/stage_2/index";
 import {TRunProgram} from "../stages/stage_0";
-import {now} from "../__platform__/performance";
-import {print} from "../__platform__/print";
+import {now} from "../platform/performance";
+import {print} from "../platform/print";
 
 export function path_or_code(arg: string){
   try{

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 import {initialize} from "../index";
 import {
   read_ir,

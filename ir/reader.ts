@@ -1,7 +1,7 @@
 import {to_sexp_f, b, int, str, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
-import {for_of} from "../__platform__/for_of";
+import {for_of} from "../platform/for_of";
 
 export type Token = Tuple<str, int>;
 

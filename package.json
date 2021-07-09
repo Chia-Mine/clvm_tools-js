@@ -14,12 +14,8 @@
   "bin": {
     "clvm_tools": "./bin/cli.js"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "node pre_build.js && tsc --project tsconfig.json --declarationDir ./build --outDir ./build",
-    "build:prod": "node pre_build.js --prod && tsc --project tsconfig.json --declarationDir ./dist --outDir ./dist --sourcemap false",
+    "build": "node pre_build.js && tsc",
     "test": "jest"
   },
   "keywords": [
