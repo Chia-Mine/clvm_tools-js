@@ -1,5 +1,5 @@
-import * as reader from "../src/ir/reader";
-import * as writer from "../src/ir/writer";
+import * as reader from "../ir/reader";
+import * as writer from "../ir/writer";
 
 function do_test(sexp_text: string){
   const ir_sexp = reader.read_ir(sexp_text);

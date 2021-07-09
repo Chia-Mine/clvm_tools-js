@@ -4,7 +4,7 @@ import {
   TOP,
   LEFT,
   RIGHT,
-} from "../src/clvm_tools/NodePath";
+} from "../clvm_tools/NodePath";
 
 const LEFT_RIGHT_LEFT = LEFT.add(RIGHT).add(LEFT);
 

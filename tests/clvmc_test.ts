@@ -7,7 +7,7 @@ test of the compiler, just the `clvmc` api.
 import * as path from "path";
 import * as fs from "fs";
 import * as tmp from "tmp";
-import * as clvmc from "../src/clvm_tools/clvmc";
+import * as clvmc from "../clvm_tools/clvmc";
 
 const INCLUDE_CODE = "((defconstant FOO 6001))"
 const MAIN_CODE = `(mod (VALUE) (include "include.clvm") (+ VALUE FOO))`

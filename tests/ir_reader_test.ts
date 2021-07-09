@@ -1,4 +1,4 @@
-import * as reader from "../src/ir/reader";
+import * as reader from "../ir/reader";
 
 describe("test_reader_1", () => {
   test("(100 0x0100)", () => {

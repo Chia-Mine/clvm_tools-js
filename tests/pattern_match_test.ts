@@ -1,5 +1,5 @@
-import {assemble} from "../src/clvm_tools/binutils";
-import {match} from "../src/clvm_tools/pattern_match";
+import {assemble} from "../clvm_tools/binutils";
+import {match} from "../clvm_tools/pattern_match";
 
 test("test_pattern_match", () => {
   let r;

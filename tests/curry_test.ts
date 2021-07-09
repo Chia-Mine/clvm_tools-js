@@ -1,6 +1,6 @@
 import {h, KEYWORD_TO_ATOM, SExp, Tuple} from "clvm";
-import {assemble, disassemble} from "../src/clvm_tools/binutils";
-import {curry, uncurry} from "../src/clvm_tools/curry";
+import {assemble, disassemble} from "../clvm_tools/binutils";
+import {curry, uncurry} from "../clvm_tools/curry";
 
 function check_idempotency(f: SExp, args: SExp){
   const [cost, curried] = curry(f, args);

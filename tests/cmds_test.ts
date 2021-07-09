@@ -1,9 +1,9 @@
 import * as os_path from "path";
 import * as fs from "fs";
 import * as shlex from "shlex";
-import * as console_scripts from "../src/clvm_tools/cmds";
-import {fs_readlineSync, os_walk} from "../src/__platform__/io";
-import {setStdout, setStderr} from "../src/__platform__/print";
+import * as console_scripts from "../clvm_tools/cmds";
+import {fs_readlineSync, os_walk} from "../__platform__/io";
+import {setStdout, setStderr} from "../__platform__/print";
 
 // # If the REPAIR environment variable is set, any tests failing due to
 // # wrong output will be corrected. Be sure to do a "git diff" to validate that

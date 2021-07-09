@@ -1,5 +1,5 @@
-import {read_ir} from "../src/ir/reader";
-import {write_ir} from "../src/ir/writer";
+import {read_ir} from "../ir/reader";
+import {write_ir} from "../ir/writer";
 
 test("test_tokenize_comments", () => {
   const script_source = "(equal 7 (+ 5 ;foo bar\n   2))";

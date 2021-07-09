@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import {initialize} from "../";
+import {initialize} from "../index";
 import {
   read_ir,
   opc,

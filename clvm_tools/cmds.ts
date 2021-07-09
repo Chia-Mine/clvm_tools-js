@@ -25,7 +25,7 @@ import {Stream} from "clvm/dist/__type_compatibility__";
 import * as argparse from "../__platform__/argparse";
 import * as stage_0 from "../stages/stage_0";
 import * as stage_1 from "../stages/stage_1";
-import * as stage_2 from "../stages/stage_2";
+import * as stage_2 from "../stages/stage_2/index";
 import {TRunProgram} from "../stages/stage_0";
 import {now} from "../__platform__/performance";
 import {print} from "../__platform__/print";
