@@ -3,7 +3,7 @@ module.exports = {
   preset: "ts-jest",
   modulePathIgnorePatterns: ["<rootDir>/build", "<rootDir>/dist"],
   testEnvironment: "node",
-  testMatch: ["<rootDir>/test/**/*_test.ts"],
+  testMatch: ["<rootDir>/tests/**/*_test.ts"],
   collectCoverage: false,
   globals: {
     "ts-jest": {
