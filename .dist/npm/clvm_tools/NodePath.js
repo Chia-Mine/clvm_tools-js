@@ -61,7 +61,10 @@ class NodePath {
     constructor(index = 1) {
         this.as_path = this.as_short_path;
         if (index < 0) {
-            index = index >>> 0;
+            const byte_count = ((-index).toString(2).length + 7) >>> 3;
+            let hex = (index >>> 0).toString(16);
+            hex = hex.substring(hex.length - byte_count * 2);
+            index = parseInt(hex, 16);
         }
         this._index = index;
     }

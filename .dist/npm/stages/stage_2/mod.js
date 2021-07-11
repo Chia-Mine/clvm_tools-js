@@ -235,7 +235,7 @@ function compile_mod(args, macro_lookup, symbol_table, run_program) {
     if (has_constants_tree) {
         const all_constants_lookup = {};
         Object.entries(compiled_functions).forEach(([k, v]) => {
-            if (k in all_constants_names) {
+            if (all_constants_names.includes(k)) {
                 all_constants_lookup[k] = v;
             }
         });

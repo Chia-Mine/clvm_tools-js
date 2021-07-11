@@ -140,7 +140,7 @@ function make_trace_pre_eval(log_entries, symbol_table = clvm_1.None) {
     return function pre_eval_f(sexp, args) {
         const [_sexp, _args] = [sexp, args].map(_ => clvm_1.SExp.to(_));
         if (symbol_table) {
-            const h = sha256tree_1.sha256tree(sexp).hex();
+            const h = sha256tree_1.sha256tree(_sexp).hex();
             if (!(h in symbol_table)) {
                 return clvm_1.None;
             }

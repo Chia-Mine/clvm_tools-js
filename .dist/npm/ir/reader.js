@@ -196,6 +196,7 @@ function read_ir(s, to_sexp = clvm_1.to_sexp_f) {
     const isExecutedOnce = for_of_1.for_of(stream, (value) => {
         const [token, offset] = value;
         retVal = to_sexp(tokenize_sexp(token, offset, stream));
+        return "stop";
     });
     if (!isExecutedOnce) {
         throw new SyntaxError("unexpected end of stream");

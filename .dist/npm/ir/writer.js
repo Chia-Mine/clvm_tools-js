@@ -34,7 +34,7 @@ function* iter_ir_format(ir_sexp) {
     if (type === Type_1.Type.CODE.i) {
         const bio = new clvm_1.Stream();
         clvm_1.sexp_to_stream(utils_1.ir_val(ir_sexp), bio);
-        const code = bio.getValue().as_word().toString();
+        const code = bio.getValue().hex();
         yield `CODE[${code}]`;
         return;
     }
