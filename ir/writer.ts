@@ -42,7 +42,7 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
   if(type === Type.CODE.i){
     const bio = new Stream();
     sexp_to_stream(ir_val(ir_sexp), bio);
-    const code = bio.getValue().as_word().toString();
+    const code = bio.getValue().hex();
     yield `CODE[${code}]`;
     return;
   }

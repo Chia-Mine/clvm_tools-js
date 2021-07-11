@@ -207,6 +207,7 @@ export function read_ir(s: str, to_sexp: typeof to_sexp_f = to_sexp_f){
   const isExecutedOnce = for_of(stream, (value) => {
     const [token, offset] = value;
     retVal = to_sexp(tokenize_sexp(token, offset, stream));
+    return "stop";
   });
   if(!isExecutedOnce){
     throw new SyntaxError("unexpected end of stream");

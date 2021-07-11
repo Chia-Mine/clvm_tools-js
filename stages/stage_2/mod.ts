@@ -293,7 +293,7 @@ export function compile_mod(args: SExp, macro_lookup: SExp, symbol_table: SExp, 
   if(has_constants_tree){
     const all_constants_lookup: typeof compiled_functions = {};
     Object.entries(compiled_functions).forEach(([k, v]) => {
-      if(k in all_constants_names){
+      if(all_constants_names.includes(k)){
         all_constants_lookup[k] = v;
       }
     });
