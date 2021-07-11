@@ -15,7 +15,7 @@
     "clvm_tools": "./bin/cli.js"
   },
   "scripts": {
-    "build": "node pre_build.js && tsc",
+    "build": "node pre_build.js && tsc --sourcemap false",
     "test": "jest"
   },
   "keywords": [
@@ -29,7 +29,7 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^0.0.17"
+    "clvm": "^0.0.18"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
