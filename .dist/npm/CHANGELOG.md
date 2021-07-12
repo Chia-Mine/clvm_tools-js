@@ -3,6 +3,7 @@
 ## [0.1.6]
 ### Added
 - Added license information to README.md
+- Added tests and fixed bugs found
 
 ## [0.1.5]
 ### Changed
