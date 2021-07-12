@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./build",
+    "outDir": "./.dist/npm",
     "module": "CommonJS",
     "target": "es2016",
     "allowJs": false,
@@ -18,7 +18,13 @@
     "newLine": "lf"
   },
   "include": [
-    "src/**/*"
+    "bin/**/*",
+    "clvm_runtime/**/*",
+    "clvm_tools/**/*",
+    "ir/**/*",
+    "platform/**/*",
+    "stages/**/*",
+    "index.ts"
   ],
   "exclude": ["node_modules"]
 }
