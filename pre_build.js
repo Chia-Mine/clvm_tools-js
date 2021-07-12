@@ -26,10 +26,6 @@ fs.copyFileSync(blsWasmSrcPath, blsWasmDestPath);
 
 
 const packageJson = require("./package.json");
-packageJson.main = "./index.js";
-packageJson.typings = "./index.d.ts";
-delete packageJson.files;
-
 fs.writeFileSync(path.join(distDir, "package.json"), JSON.stringify(packageJson, null, 2));
 
 function copyFileToPublish(fileName){
