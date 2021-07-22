@@ -48,7 +48,7 @@ export function run_program_for_search_paths(search_paths: str[]){
     throw new EvalError(`can't open ${filename}`, args);
   };
   
-  const _operator_lookup = OperatorDict(ORIGINAL_OPERATOR_LOOKUP as any);
+  const _operator_lookup = OperatorDict(ORIGINAL_OPERATOR_LOOKUP);
   
   const run_program = (
     program: SExp,

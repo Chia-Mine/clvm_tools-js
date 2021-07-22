@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.7]
+### Changed
+- Changed `OperatorDict` arguments format.
+### Added
+- Added benchmark scripts.
+
 ## [0.1.6]
 ### Added
 - Added license information to README.md

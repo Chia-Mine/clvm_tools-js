@@ -27,7 +27,7 @@ export function do_binding(args: SExp){
   const env = args.rest().rest().first();
   const new_bindings = make_bindings(bindings);
   const original_operator_lookup = run_program.operator_lookup;
-  run_program.operator_lookup = OperatorDict(original_operator_lookup as any);
+  run_program.operator_lookup = OperatorDict(original_operator_lookup);
   merge(run_program.operator_lookup as Record<str, unknown>, new_bindings);
   const [cost, r] = run_program(sexp, env);
   run_program.operator_lookup = original_operator_lookup;
@@ -49,7 +49,7 @@ function merge(obj1: Record<string, unknown>, obj2: Record<string, unknown>){
 }
 
 export function RunProgram(){
-  const operator_lookup = OperatorDict(OPERATOR_LOOKUP as any);
+  const operator_lookup = OperatorDict(OPERATOR_LOOKUP);
   const bindings_obj: Record<str, (v: SExp) => Tuple<int, SExp>> = {};
   Object.entries(BINDINGS).forEach(([key, val]) => {
     const bin_name = b(key).hex(); // bind: 61696e64

@@ -37,7 +37,7 @@ export function run_program(
     const fatal_error = (op: Bytes, args: SExp) => {
       throw new EvalError("unimplemented operator", SExp.to(op));
     }
-    operator_lookup = OperatorDict(operator_lookup as any, undefined, undefined, fatal_error);
+    operator_lookup = OperatorDict(operator_lookup, {unknown_op_handler: fatal_error});
   }
   
   return default_run_program(program, args, operator_lookup, max_cost, pre_eval_f);
