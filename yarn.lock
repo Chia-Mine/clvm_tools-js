@@ -309,10 +309,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chiamine/bls-signatures@^0.2.1-beta.0":
-  version "0.2.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@chiamine/bls-signatures/-/bls-signatures-0.2.1-beta.0.tgz#2a5b484122cef6cf03f2c8a3880caf096a829517"
-  integrity sha512-Y0FmVXx18YElrwUYN9gVczOMxC7/H2M1GT7bmH7SQFy2ZUeuce5/wlUVfX4UrgDvYj+ukHotQ97ZGSqRx5SPqg==
+"@chiamine/bls-signatures@^0.2.1-beta.1":
+  version "0.2.1-beta.1"
+  resolved "https://registry.yarnpkg.com/@chiamine/bls-signatures/-/bls-signatures-0.2.1-beta.1.tgz#9dc1e71a03c55b2b3a5a8c41b2293e045804dadb"
+  integrity sha512-Ojtoo8z1C4G2p7WRUIndws06bphou/leQlsEE9HP9JaIds96MCzfX+knP04sht01O9CR/bY8ak60nxAs72apAg==
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
@@ -1087,12 +1087,12 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
-clvm@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.18.tgz#ab594b9baef2a1cc2f9bd109353fa734e4eccb83"
-  integrity sha512-U8FG9fldmnB7xRatuNHf9Xq3vzW18lLQXMpfwQg0frhd/WGnZ972GOaLKxNMQUeVfYdNfaGr61LjHf4yU28kTQ==
+clvm@^0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-0.0.19.tgz#921b0e44eaa0df2002a6c611c60a4ecf0752e297"
+  integrity sha512-0G6QwfjqzvadEQTx0vLsEQAB4eJ2LhTEHkrm86M/RzPDbAHP6K7ncXwkKAfjpi+AGeigU96W9Xnjey74N+2hyw==
   dependencies:
-    "@chiamine/bls-signatures" "^0.2.1-beta.0"
+    "@chiamine/bls-signatures" "^0.2.1-beta.1"
     jscrypto "^1.0.2"
 
 co@^4.6.0:

@@ -3,6 +3,7 @@
 ## [0.1.7]
 ### Changed
 - Changed `OperatorDict` arguments format.
+- Huge performance improvement by upgrading `clvm` to v0.0.19.
 ### Added
 - Added benchmark scripts.
 

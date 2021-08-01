@@ -89,7 +89,9 @@ export function ir_is_atom(ir_sexp: SExp): bool {
 }
 
 export function ir_as_atom(ir_sexp: SExp): Bytes {
-  return Bytes.from(ir_sexp.rest().atom);
+  // This keeps reference of Uint8Array in the `atom.
+  // So modifying raw uint8 value propagates original data.
+  return new Bytes(ir_sexp.rest().atom);
 }
 
 export function ir_first(ir_sexp: SExp): SExp {
@@ -106,7 +108,9 @@ export function ir_symbol(symbol: str): Tuple<int, Bytes> {
 
 export function ir_as_symbol(ir_sexp: SExp): Optional<str> {
   if(ir_sexp.listp() && ir_type(ir_sexp) === Type.SYMBOL.i){
-    const b = Bytes.from((ir_as_sexp(ir_sexp) as SExp).atom);
+    // This keeps reference of Uint8Array in the `atom.
+    // So modifying raw uint8 value propagates original data.
+    const b = new Bytes((ir_as_sexp(ir_sexp) as SExp).atom);
     return b.decode();
   }
   return None;

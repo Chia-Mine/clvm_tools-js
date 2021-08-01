@@ -42,7 +42,7 @@ test("test_cons_box", () => {
 
 test("test_long_blobs", () => {
   let text = new Bytes();
-  for(let i=0;i<300;i++) text = text.concat(TEXT);
+  text = text.repeat(300);
   
   for(let _=0;_<text.length;_++){
     const t1 = text.slice(0, _);
@@ -51,15 +51,14 @@ test("test_long_blobs", () => {
 });
 
 test("test_very_long_blobs", () => {
-  // Skip 0x100000, 0x8000000 for they take too much time for test
-  for(let size of [0x40, 0x2000/*, 0x100000, 0x8000000*/]){
+  for(let size of [0x40, 0x2000, 0x100000, 0x8000000]){
     const count = Math.floor(size / TEXT.length);
     let text = new Bytes();
-    for(let i=0;i<count;i++) text = text.concat(TEXT);
+    text = TEXT.repeat(count);
     expect(text.length).toBeLessThan(size);
     check_serde(text);
   
-    for(let i=0;i<count+1;i++) text = text.concat(TEXT);
+    text = TEXT.repeat(count+1);
     expect(text.length).toBeGreaterThan(size);
     check_serde(text);
   }

@@ -21,7 +21,7 @@ import * as binutils from "./binutils";
 import {make_trace_pre_eval, trace_to_text, trace_to_table} from "./debug";
 import {sha256tree} from "./sha256tree";
 import {fs_exists, fs_isFile, fs_read, path_join} from "../platform/io";
-import {Stream} from "clvm/dist/__type_compatibility__";
+import {Stream} from "clvm/__type_compatibility__";
 import * as argparse from "../platform/argparse";
 import * as stage_0 from "../stages/stage_0";
 import * as stage_1 from "../stages/stage_1";
