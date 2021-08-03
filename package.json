@@ -29,7 +29,7 @@
     "node": ">=12.13.0"
   },
   "dependencies": {
-    "clvm": "^1.0.0"
+    "clvm": "^1.0.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
