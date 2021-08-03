@@ -1,4 +1,4 @@
-import {b, Bytes, str, Stream, isBytes} from "clvm";
+import {b, Bytes, Stream, isBytes} from "clvm";
 
 export function fs_write(path: string, data: string){
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -90,7 +90,7 @@ export class FileStream extends Stream {
     this._path = path;
   }
   
-  public write(data: Bytes|str): number {
+  public write(data: Bytes|string): number {
     const d = isBytes(data) ? data : b(data);
     return super.write(d);
   }

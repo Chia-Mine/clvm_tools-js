@@ -4,9 +4,7 @@ import {
   int_from_bytes,
   int_to_bytes,
   SExp,
-  str,
   Bytes,
-  int,
   Tuple,
   t,
   h,
@@ -27,7 +25,7 @@ import {
 } from "../ir/utils";
 import {Type} from "../ir/Type";
 
-function isPrintable(s: str){
+function isPrintable(s: string){
   // eslint-disable-next-line no-control-regex
   const regex = /^[0-9a-zA-Z!"#$%&'()*+,-./:;<=>?@\\[\]^_`{|}~ \t\n\r\x0b\x0c]+$/;
   return regex.test(s);
@@ -70,7 +68,7 @@ export function assemble_from_ir(ir_sexp: SExp): SExp {
   return sexp_1.cons(sexp_2);
 }
 
-export function type_for_atom(atom: Bytes): int {
+export function type_for_atom(atom: Bytes): number {
   if(atom.length > 2){
     try{
       const v = atom.decode();
@@ -91,9 +89,9 @@ export function type_for_atom(atom: Bytes): int {
 
 export function disassemble_to_ir<A extends boolean=false>(
   sexp: SExp,
-  keyword_from_atom: Record<str, str>,
+  keyword_from_atom: Record<string, string>,
   allow_keyword?: A,
-): A extends false|undefined ? SExp : SExp|Tuple<int, Bytes> {
+): A extends false|undefined ? SExp : SExp|Tuple<number, Bytes> {
   if(is_ir(sexp) && allow_keyword !== false){
     return ir_cons(ir_symbol("ir"), sexp);
   }
@@ -124,12 +122,12 @@ export function disassemble_to_ir<A extends boolean=false>(
   return SExp.to(t(type_for_atom(as_atom), as_atom));
 }
 
-export function disassemble(sexp: SExp, keyword_from_atom: Record<str, str> = KEYWORD_FROM_ATOM){
+export function disassemble(sexp: SExp, keyword_from_atom: Record<string, string> = KEYWORD_FROM_ATOM){
   const symbols = disassemble_to_ir(sexp, keyword_from_atom);
   return write_ir(symbols);
 }
 
-export function assemble(s: str){
+export function assemble(s: string){
   const symbols = read_ir(s);
   return assemble_from_ir(symbols);
 }

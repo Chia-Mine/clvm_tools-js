@@ -3,9 +3,9 @@ import {FileStream, fs_read, os_walk, path_join} from "../platform/io";
 import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
 import * as stage_2 from "../stages/stage_2";
-import {SExp, str, t} from "clvm";
+import {SExp, t} from "clvm";
 
-export function compile_clvm_text(text: str, search_paths: str[]){
+export function compile_clvm_text(text: string, search_paths: string[]){
   const ir_src = reader.read_ir(text);
   const assembled_sexp = binutils.assemble_from_ir(ir_src);
   
@@ -15,7 +15,7 @@ export function compile_clvm_text(text: str, search_paths: str[]){
   return run_program_output[1] as SExp;
 }
 
-export function compile_clvm(input_path: str, output_path: str, search_paths: str[] = []){
+export function compile_clvm(input_path: string, output_path: string, search_paths: string[] = []){
   if(dep_util.newer(input_path, output_path)){
     log.info(`clvmcc ${input_path} -o ${output_path}`);
     const text = fs_read(input_path);
@@ -34,7 +34,7 @@ export function compile_clvm(input_path: str, output_path: str, search_paths: st
   return output_path;
 }
 
-export function find_files(path: str = ""){
+export function find_files(path: string = ""){
   const r: string[] = [];
   for(const {dirpath, filenames} of os_walk(path)){
     for(const filename of filenames){

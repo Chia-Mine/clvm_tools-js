@@ -1,4 +1,4 @@
-import {Bytes, KEYWORD_TO_ATOM, SExp, str, t, Tuple, b, isAtom, h} from "clvm";
+import {Bytes, KEYWORD_TO_ATOM, SExp, t, Tuple, b, isAtom, h} from "clvm";
 import * as binutils from "../../clvm_tools/binutils";
 import {build_symbol_dump} from "../../clvm_tools/debug";
 import {LEFT, NodePath, RIGHT, TOP} from "../../clvm_tools/NodePath";
@@ -12,7 +12,7 @@ export const CONS_ATOM = KEYWORD_TO_ATOM["c"];
 export const MAIN_NAME = "";
 
 export type TBuildTree = Bytes | Tuple<TBuildTree, TBuildTree> | [];
-export function build_tree(items: str[]): TBuildTree {
+export function build_tree(items: string[]): TBuildTree {
   // This function takes a Python list of items and turns it into a binary tree
   // of the items, suitable for casting to an s-expression.
   const size = items.length;
@@ -56,7 +56,7 @@ export function flatten(sexp: SExp): Bytes[] {
   return [sexp.atom as Bytes];
 }
 
-export type TNameToSExp = Record<str, SExp>;
+export type TNameToSExp = Record<string, SExp>;
 
 /**
  * @return Used constants name array in `hex string` format.
@@ -70,13 +70,13 @@ export function build_used_constants_names(functions: TNameToSExp, constants: TN
   const macro_as_dict = macros.reduce((acc, _) => {
     acc[(_.rest().first().atom as Bytes).hex()] = _;
     return acc;
-  }, {} as Record<str, SExp>);
+  }, {} as Record<string, SExp>);
   
   const possible_symbols = new Set(Object.keys(functions));
   Object.keys(constants).forEach(c => possible_symbols.add(c));
   
-  let new_names = new Set<str>([MAIN_NAME]);
-  const used_names = new Set<str>(new_names);
+  let new_names = new Set<string>([MAIN_NAME]);
+  const used_names = new Set<string>(new_names);
   while(new_names.size){
     const prior_new_names = new Set(new_names);
     new_names = new Set();
@@ -93,7 +93,7 @@ export function build_used_constants_names(functions: TNameToSExp, constants: TN
     new_names.forEach(n => used_names.add(n));
   }
   // used_names.intersection_update(possible_symbols)
-  const used_name_list: str[] = [];
+  const used_name_list: string[] = [];
   used_names.forEach(n => {
     if(possible_symbols.has(n) && n !== MAIN_NAME){
       used_name_list.push(n);
@@ -106,7 +106,7 @@ export function build_used_constants_names(functions: TNameToSExp, constants: TN
 
 export function parse_include(
   name: SExp,
-  namespace: Set<str>,
+  namespace: Set<string>,
   functions: TNameToSExp,
   constants: TNameToSExp,
   macros: SExp[],
@@ -147,7 +147,7 @@ export function defun_inline_to_macro(declaration_sexp: SExp){
 
 export function parse_mod_sexp(
   declaration_sexp: SExp,
-  namespace: Set<str>,
+  namespace: Set<string>,
   functions: TNameToSExp,
   constants: TNameToSExp,
   macros: SExp[],
@@ -192,7 +192,7 @@ export function compile_mod_stage_1(args: SExp, run_program: TRunProgram){
   const macros: SExp[] = [];
   const main_local_arguments = args.first();
   
-  const namespace = new Set<str>();
+  const namespace = new Set<string>();
   // eslint-disable-next-line no-constant-condition
   while (true){
     args = args.rest();
@@ -241,7 +241,7 @@ export function compile_functions(
   constants_symbol_table: Array<[SExp, Bytes]>,
   args_root_node: NodePath,
 ){
-  const compiled_functions: Record<str, SExp> = {};
+  const compiled_functions: Record<string, SExp> = {};
   for(const [name, lambda_expression] of Object.entries(functions)){
     const local_symbol_table = symbol_table_for_tree(lambda_expression.first(), args_root_node);
     const all_symbols = local_symbol_table.concat(constants_symbol_table);

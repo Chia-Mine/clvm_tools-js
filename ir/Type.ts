@@ -1,4 +1,4 @@
-import {b, Bytes, int, int_from_bytes, int_to_bytes, limbs_for_int} from "clvm";
+import {b, Bytes, int_from_bytes, int_to_bytes, limbs_for_int} from "clvm";
 
 
 function i(b: Bytes){
@@ -19,7 +19,7 @@ const types = {
   NODE: i(b("NODE")),
 };
 
-function isValidType(i: int){
+function isValidType(i: number){
   return Object.values(types).includes(i);
 }
 
@@ -49,7 +49,7 @@ export class Type {
     return int_to_bytes(this.i);
   }
   
-  public constructor(i: int|Type) {
+  public constructor(i: number|Type) {
     if(typeof i === "number"){
       if(!isValidType(i)){
         throw new Error(`${i} is not a valid Type`);

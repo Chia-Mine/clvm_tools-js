@@ -1,11 +1,11 @@
-import {to_sexp_f, b, int, str, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
+import {to_sexp_f, b, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
 import {for_of} from "../platform/for_of";
 
-export type Token = Tuple<str, int>;
+export type Token = Tuple<string, number>;
 
-export function consume_whitespace(s: str, offset: int): int {
+export function consume_whitespace(s: string, offset: number): number {
   // This also deals with comments
   // eslint-disable-next-line no-constant-condition
   while(true){
@@ -22,7 +22,7 @@ export function consume_whitespace(s: str, offset: int): int {
   return offset;
 }
 
-export function consume_until_whitespace(s: str, offset: int): Token {
+export function consume_until_whitespace(s: string, offset: number): Token {
   const start = offset;
   while(offset < s.length && !/\s+/.test(s[offset]) && s[offset] !== ")"){
     offset += 1;
@@ -31,8 +31,8 @@ export function consume_until_whitespace(s: str, offset: int): Token {
 }
 
 export function next_cons_token(stream: Generator<Token>): Token {
-  let token: str = "";
-  let offset: int = -1;
+  let token: string = "";
+  let offset: number = -1;
   
   // Fix generator spec incompatibility between python and javascript.
   // Javascript iterator cannot be re-used while python can.
@@ -54,7 +54,7 @@ export function next_cons_token(stream: Generator<Token>): Token {
   return t(token, offset);
 }
 
-export function tokenize_cons(token: str, offset: int, stream: Generator<Token>): SExp {
+export function tokenize_cons(token: string, offset: number, stream: Generator<Token>): SExp {
   if(token === ")"){
     return ir_new(Type.NULL.i, 0, offset);
   }
@@ -81,7 +81,7 @@ export function tokenize_cons(token: str, offset: int, stream: Generator<Token>)
   return ir_cons(first_sexp, rest_sexp, initial_offset);
 }
 
-export function tokenize_int(token: str, offset: int): Optional<SExp> {
+export function tokenize_int(token: string, offset: number): Optional<SExp> {
   try{
     // Don't recognize hex string to int
     if(token.slice(0, 2).toUpperCase() === "0X"){
@@ -100,7 +100,7 @@ export function tokenize_int(token: str, offset: int): Optional<SExp> {
   return None;
 }
 
-export function tokenize_hex(token: str, offset: int): Optional<SExp> {
+export function tokenize_hex(token: string, offset: number): Optional<SExp> {
   if(token.slice(0, 2).toUpperCase() === "0X"){
     try{
       token = token.substring(2);
@@ -116,7 +116,7 @@ export function tokenize_hex(token: str, offset: int): Optional<SExp> {
   return None;
 }
 
-export function tokenize_quotes(token: str, offset: int){
+export function tokenize_quotes(token: string, offset: number){
   if(token.length < 2){
     return None;
   }
@@ -133,11 +133,11 @@ export function tokenize_quotes(token: str, offset: int){
   return t(t(q_type.i, offset), b(token.substring(1, token.length-1)));
 }
 
-export function tokenize_symbol(token: str, offset: int){
+export function tokenize_symbol(token: string, offset: number){
   return t(t(Type.SYMBOL.i, offset), b(token));
 }
 
-export function tokenize_sexp(token: str, offset: int, stream: Generator<Token>){
+export function tokenize_sexp(token: string, offset: number, stream: Generator<Token>){
   if(token === "("){
     const [token, offset] = next_cons_token(stream);
     return tokenize_cons(token, offset, stream);
@@ -158,7 +158,7 @@ export function tokenize_sexp(token: str, offset: int, stream: Generator<Token>)
   return None;
 }
 
-export function* token_stream(s: str): Generator<Token> {
+export function* token_stream(s: string): Generator<Token> {
   let offset = 0;
   while(offset < s.length){
     offset = consume_whitespace(s, offset);
@@ -193,7 +193,7 @@ export function* token_stream(s: str): Generator<Token> {
   }
 }
 
-export function read_ir(s: str, to_sexp: typeof to_sexp_f = to_sexp_f){
+export function read_ir(s: string, to_sexp: typeof to_sexp_f = to_sexp_f){
   const stream = token_stream(s);
   
   // Fix generator spec incompatibility between python and javascript.

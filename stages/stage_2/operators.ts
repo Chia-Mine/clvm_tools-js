@@ -5,7 +5,6 @@ import {
   OPERATOR_LOOKUP as ORIGINAL_OPERATOR_LOOKUP,
   OperatorDict,
   SExp,
-  str,
   t,
   b,
 } from "clvm";
@@ -36,7 +35,7 @@ export function do_write(args: SExp){
   return t(1, SExp.to(0));
 }
 
-export function run_program_for_search_paths(search_paths: str[]){
+export function run_program_for_search_paths(search_paths: string[]){
   const do_full_path_for_name = (args: SExp) => {
     const filename = args.first().atom as Bytes;
     for(const path of search_paths){
@@ -69,7 +68,7 @@ export function run_program_for_search_paths(search_paths: str[]){
   };
   
   Object.entries(BINDINGS).forEach(([key, value]) => {
-    (_operator_lookup as Record<str, unknown>)[key] = value;
+    (_operator_lookup as Record<string, unknown>)[key] = value;
   });
   
   return run_program;

@@ -7,7 +7,6 @@ import {
   SExp,
   CLVMObject,
   TOperatorDict,
-  int,
   TPreEvalF,
   Bytes,
 } from "clvm";
@@ -18,7 +17,7 @@ export const brun = run;
 
 export type RunProgramOption = Partial<{
   operator_lookup: TOperatorDict;
-  max_cost: int|None;
+  max_cost: number|None;
   pre_eval_f: TPreEvalF|None;
   strict: boolean;
 }>;

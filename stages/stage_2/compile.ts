@@ -1,4 +1,4 @@
-import {KEYWORD_TO_ATOM, b, SExp, int, Bytes, None, t, h} from "clvm";
+import {KEYWORD_TO_ATOM, b, SExp, Bytes, None, t, h} from "clvm";
 import {disassemble} from "../../clvm_tools/binutils";
 import {LEFT, TOP} from "../../clvm_tools/NodePath";
 import {default_macro_lookup} from "./defaults";
@@ -21,7 +21,7 @@ export function compile_qq(
   macro_lookup: SExp,
   symbol_table: SExp,
   run_program: TRunProgram,
-  level: int = 1,
+  level: number = 1,
 ): SExp {
   /*
   (qq ATOM) => (q . ATOM)

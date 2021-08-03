@@ -1,9 +1,9 @@
-import {Atom, Bytes, None, SExp, str, b} from "clvm";
+import {Atom, Bytes, None, SExp, b} from "clvm";
 
 export const ATOM_MATCH = b("$");
 export const SEXP_MATCH = b(":");
 
-export function unify_bindings(bindings: Record<str, SExp>, new_key: Bytes, new_value: SExp){
+export function unify_bindings(bindings: Record<string, SExp>, new_key: Bytes, new_value: SExp){
   /*
     Try to add a new binding to the list, rejecting it if it conflicts
     with an existing binding.
@@ -20,7 +20,7 @@ export function unify_bindings(bindings: Record<str, SExp>, new_key: Bytes, new_
   return new_bindings;
 }
 
-export function match(pattern: SExp, sexp: SExp, known_bindings: Record<str, SExp> = {}): Record<str, SExp>|None {
+export function match(pattern: SExp, sexp: SExp, known_bindings: Record<string, SExp> = {}): Record<string, SExp>|None {
   /*
     Determine if sexp matches the pattern, with the given known bindings already applied.
 
