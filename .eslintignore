@@ -8,3 +8,4 @@ nyc.config.ts
 playground/
 jest.config.js
 pre_build.js
+costs/

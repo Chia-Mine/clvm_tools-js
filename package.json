@@ -16,7 +16,8 @@
   },
   "scripts": {
     "build": "node pre_build.js && tsc --sourcemap false",
-    "test": "jest"
+    "test": "jest",
+    "gen-bench": "node ./costs/generate-benchmark.js"
   },
   "keywords": [
     "chia",
