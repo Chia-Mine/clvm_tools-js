@@ -2,6 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const {t} = require("clvm");
 
+let benchmarkRoot = path.resolve(__dirname, "..", "test-programs");
+
 function getrandbits(bits){
   return Math.round(Math.random() * (2**bits));
 }
@@ -196,7 +198,7 @@ function generate_if(n){
 }
 
 function gen_apply(n, name){
-  const folder = path.resolve(__dirname, "..", "test-programs", name);
+  const folder = path.resolve(benchmarkRoot, name);
   try{
     if(!fs.existsSync(folder)){
       fs.mkdirSync(folder);
@@ -243,7 +245,7 @@ function get_range(name){
 function print_files(fun){
   const name = fun(0, 1)[0];
   const [end, step, vsizes] = get_range(name);
-  const folder = path.resolve(__dirname, "..", "test-programs", name.split("-")[0].split("_")[0]);
+  const folder = path.resolve(benchmarkRoot, name.split("-")[0].split("_")[0]);
   try{
     if(!fs.existsSync(folder)){
       fs.mkdirSync(folder);
@@ -252,22 +254,20 @@ function print_files(fun){
   catch (e) { }
   
   for(const value_size of vsizes){
+    let lastName = name;
     for(let i=2;i<end;i+=step){
       const [name, prg, env] = fun(i, value_size);
       fs.writeFileSync(path.resolve(folder, `${name}.clvm`), prg);
       fs.writeFileSync(path.resolve(folder, `${name}.env`), env);
-      console.log(`${name} has been generated in ${folder}`);
+      lastName = name;
     }
+    console.log(`${lastName} has been generated in ${folder}`);
   }
 }
 
 const write_file_tasks = [];
 function add_print_files_task(fun){
   write_file_tasks.push(() => print_files(fun));
-}
-
-if(!fs.existsSync(path.resolve(__dirname, "..", "test-programs"))){
-  fs.mkdirSync(path.resolve(__dirname, "..", "test-programs"));
 }
 
 add_print_files_task((n, vs) => generate_op_list(n, 'concat', vs, 'concat'));
@@ -344,37 +344,83 @@ add_print_files_task((n, vs) => generate_if(n));
 write_file_tasks.push(() => gen_apply(1000, 'apply'));
 
 /*
- * Dispatch child processes for performance
+ * Dispatch a cluster of child process for performance
  */
 
 const cluster = require("cluster");
 const process = require("process");
+const {now} = require("./lib/performance");
 const numCPUs = require("os").cpus().length;
 
-if((typeof cluster.isMaster === "boolean" && cluster.isMaster) || (typeof cluster.isPrimary === "boolean" && cluster.isPrimary)){
-  const start = Date.now();
+if(typeof cluster.isMaster !== "boolean" && typeof cluster.isPrimary !== "boolean"){
+  console.warn("This system does not support cluster. It will take several minutes to complete");
+  if(!fs.existsSync(path.resolve(benchmarkRoot))){
+    fs.mkdirSync(path.resolve(benchmarkRoot));
+  }
+  
+  for(let i=0;i<write_file_tasks.length;i++){
+    const task = write_file_tasks[i];
+    task();
+  }
+}
+else if(cluster.isMaster || cluster.isPrimary){
   console.log(`Primary ${process.pid} has started`);
+  
+  const {now} = require("./lib/performance");
+  const start = now();
+  const {ArgumentParser} = require("./lib/argparse");
+  const parser = new ArgumentParser({
+    prog: "generate-benchmark",
+    description: "Generate files for benchmark.",
+  });
+  parser.add_argument(
+    ["-d", "--root-dir"], {type: path.resolve,
+      default: "",
+      help: "Root directory of the benchmark files"},
+  );
+  
+  const parsedArgs = parser.parse_args(process.argv.slice(2));
+  if(parsedArgs.root_dir){
+    benchmarkRoot = parsedArgs.root_dir;
+  }
+  
+  if(!fs.existsSync(path.dirname(benchmarkRoot))){
+    console.error(`${path.dirname(benchmarkRoot)} was not found`);
+    process.exit(1);
+  }
+  if(!fs.existsSync(benchmarkRoot)){
+    fs.mkdirSync(benchmarkRoot);
+  }
   
   const workers = {};
   const deadWorkers = [];
   for(let i=0;i<numCPUs && i<write_file_tasks.length;i++){
-    const w = cluster.fork({wid: i});
-    workers[w.process.pid] = {i, pid: w.process.pid, time: Date.now()};
+    const w = cluster.fork({wid: i, benchmarkRoot});
+    workers[w.process.pid] = {i, pid: w.process.pid, time: now()};
   }
   
   cluster.on("exit", (worker, code, signal) => {
     const w = workers[worker.process.pid];
-    console.log(`worker ${w.i}/${worker.process.pid} has completed in ${Date.now() - w.time}ms`);
+    console.log(`worker ${w.i}/${worker.process.pid} has completed in ${now() - w.time}ms`);
     deadWorkers.push(worker.process.pid);
     
     if(Object.keys(workers).length === deadWorkers.length){
-      console.log(`Primary ${process.pid} finished in ${Date.now() - start}ms`);
+      console.log(`Primary ${process.pid} finished in ${now() - start}ms`);
       process.exit(0);
     }
   });
 }
 else{
   console.log(`Worker ${process.env.wid}/${process.pid} has started`);
+  
+  if(process.env.benchmarkRoot){
+    if(!fs.existsSync(process.env.benchmarkRoot)){
+      console.error(`Benchmark root folder was not found: ${process.env.benchmarkRoot}`);
+      process.exit(1);
+      return;
+    }
+    benchmarkRoot = process.env.benchmarkRoot
+  }
   
   for(let i=0;i<write_file_tasks.length;i++){
     const task = write_file_tasks[i];
