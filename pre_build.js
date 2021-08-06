@@ -1,15 +1,20 @@
 const path = require("path");
 const fs = require("fs");
 
-// clean and create output dir
-const distDir = path.join(__dirname, ".dist", "npm");
-if(fs.existsSync(distDir)){
-  fs.rmdirSync(distDir, {recursive: true});
+const distDir = path.join(__dirname, ".dist");
+if(!fs.existsSync(distDir)){
+  fs.mkdirSync(distDir);
 }
-fs.mkdirSync(distDir);
+
+// clean and create output dir
+const npmDir = path.join(__dirname, ".dist", "npm");
+if(fs.existsSync(npmDir)){
+  fs.rmdirSync(npmDir, {recursive: true});
+}
+fs.mkdirSync(npmDir);
 
 // Copy wasm file
-const browserDir = path.join(distDir, "browser");
+const browserDir = path.join(npmDir, "browser");
 if(fs.existsSync(browserDir)){
   fs.rmdirSync(browserDir, {recursive: true});
 }
@@ -26,11 +31,11 @@ fs.copyFileSync(blsWasmSrcPath, blsWasmDestPath);
 
 
 const packageJson = require("./package.json");
-fs.writeFileSync(path.join(distDir, "package.json"), JSON.stringify(packageJson, null, 2));
+fs.writeFileSync(path.join(npmDir, "package.json"), JSON.stringify(packageJson, null, 2));
 
 function copyFileToPublish(fileName){
   const srcPath = path.join(__dirname, fileName);
-  const distPath = path.join(distDir, fileName);
+  const distPath = path.join(npmDir, fileName);
   if(fs.existsSync(srcPath)){
     fs.copyFileSync(srcPath, distPath);
   }
