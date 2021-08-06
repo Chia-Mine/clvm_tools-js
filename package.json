@@ -17,7 +17,8 @@
   "scripts": {
     "build": "node pre_build.js && tsc --sourcemap false",
     "test": "jest",
-    "gen-bench": "node ./costs/generate-benchmark.js"
+    "gen-bench": "node ./costs/generate-benchmark.js",
+    "run-bench": "node ./costs/run-benchmark.js"
   },
   "keywords": [
     "chia",
@@ -41,6 +42,7 @@
     "eslint": "^7.8.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsdoc": "^30.4.1",
+    "glob": "^7.1.7",
     "jest": "^27.0.6",
     "shlex": "^2.1.0",
     "tmp": "^0.2.1",
