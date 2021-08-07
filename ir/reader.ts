@@ -153,7 +153,7 @@ export function tokenize_atom(token: string, offset: number){
   return None;
 }
 
-// In order to reduce stack size used, I fully made it inlined from heavy nested structure which exhausted reserved stack size of js runtime.
+// In order to reduce stack memory consumed, I made `tokenize_sexp` fully flatten from the previous recursive function callstack.
 export function tokenize_sexp(token: string, offset: number, stream: Generator<Token>){
   if(token === "("){
     ([token, offset] = next_cons_token(stream));
