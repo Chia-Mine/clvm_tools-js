@@ -137,6 +137,22 @@ export function tokenize_symbol(token: string, offset: number){
   return t(t(Type.SYMBOL.i, offset), b(token));
 }
 
+export function tokenize_atom(token: string, offset: number){
+  for(const f of [
+    tokenize_int,
+    tokenize_hex,
+    tokenize_quotes,
+    tokenize_symbol,
+  ]){
+    const r = f(token, offset);
+    if(r !== None){
+      return r;
+    }
+  }
+  
+  return None;
+}
+
 export function tokenize_sexp(token: string, offset: number, stream: Generator<Token>){
   if(token === "("){
     ([token, offset] = next_cons_token(stream));
@@ -149,22 +165,50 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
     
     input_stack.push([token, offset]);
     while(input_stack.length || callee_address_stack.length){
+      let [local_token, local_offset] = [token, offset];
+      
       while(callee_address_stack.length && return_value_stack.length){
         const callee_address = callee_address_stack.pop() as number;
-        const env = env_stack.pop() as [SExp, number];
         const return_value = return_value_stack.pop() as SExp;
         if(callee_address === 1){
+          const env = env_stack.pop() as [SExp, number];
           const rest_sexp = return_value;
           const [first_sexp, initial_offset] = env;
           last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
           return_value_stack.push(last_return_value);
         }
+        else if(callee_address === 2){
+          const env = env_stack.pop() as [number];
+          const [initial_offset] = env;
+          local_offset = initial_offset;
+          const first_sexp = return_value;
+          ([local_token, local_offset] = next_cons_token(stream));
+  
+          let rest_sexp;
+          if(local_token === "."){
+            const dot_offset = local_offset;
+            // grab the last item
+            ([local_token, local_offset] = next_cons_token(stream));
+            rest_sexp = tokenize_sexp(local_token, local_offset, stream);
+            ([local_token, local_offset] = next_cons_token(stream));
+            if(local_token !== ")"){
+              throw new SyntaxError(`illegal dot expression at ${dot_offset}`);
+            }
+            last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
+            return_value_stack.push(last_return_value);
+          }
+          else{
+            callee_address_stack.push(1);
+            env_stack.push([first_sexp, initial_offset]);
+            input_stack.push([local_token, local_offset]);
+          }
+        }
       }
       if(!input_stack.length){
         continue;
       }
-      
-      let [local_token, local_offset] = input_stack.pop() as [string, number];
+  
+      ([local_token, local_offset] = input_stack.pop() as [string, number]);
       if(local_token === ")"){
         last_return_value = ir_new(Type.NULL.i, 0, local_offset);
         return_value_stack.push(last_return_value);
@@ -172,7 +216,14 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
       }
   
       const initial_offset = local_offset;
-      const first_sexp = tokenize_sexp(local_token, local_offset, stream) as SExp;
+      if(local_token === "("){
+        ([local_token, local_offset] = next_cons_token(stream));
+        callee_address_stack.push(2);
+        env_stack.push([initial_offset]);
+        input_stack.push([local_token, local_offset]);
+        continue;
+      }
+      const first_sexp = tokenize_atom(local_token, local_offset) as SExp;
   
       ([local_token, local_offset] = next_cons_token(stream));
   
@@ -199,19 +250,7 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
     return last_return_value as SExp;
   }
   
-  for(const f of [
-    tokenize_int,
-    tokenize_hex,
-    tokenize_quotes,
-    tokenize_symbol,
-  ]){
-    const r = f(token, offset);
-    if(r !== None){
-      return r;
-    }
-  }
-  
-  return None;
+  return tokenize_atom(token, offset);
 }
 
 export function* token_stream(s: string): Generator<Token> {
