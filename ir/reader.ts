@@ -1,7 +1,6 @@
 import {to_sexp_f, b, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
-import {for_of} from "../platform/for_of";
 
 export type Token = Tuple<string, number>;
 
@@ -52,6 +51,8 @@ export function next_cons_token(stream: Generator<Token>): Token {
   return t(token, offset);
 }
 
+// `tokenize_cons` was incorporated into `tokenize_cons` to reduce stack size by eliminating deep function nest.
+/*
 export function tokenize_cons(token: string, offset: number, stream: Generator<Token>): SExp {
   if(token === ")"){
     return ir_new(Type.NULL.i, 0, offset);
@@ -78,6 +79,7 @@ export function tokenize_cons(token: string, offset: number, stream: Generator<T
   }
   return ir_cons(first_sexp, rest_sexp, initial_offset);
 }
+ */
 
 export function tokenize_int(token: string, offset: number): Optional<SExp> {
   try{
@@ -137,8 +139,64 @@ export function tokenize_symbol(token: string, offset: number){
 
 export function tokenize_sexp(token: string, offset: number, stream: Generator<Token>){
   if(token === "("){
-    const [token, offset] = next_cons_token(stream);
-    return tokenize_cons(token, offset, stream);
+    ([token, offset] = next_cons_token(stream));
+    
+    const input_stack: Array<[string, number]> = [];
+    const return_value_stack: SExp[] = [];
+    const callee_address_stack: number[] = [];
+    const env_stack: any[][] = [];
+    let last_return_value: SExp|undefined;
+    
+    input_stack.push([token, offset]);
+    while(input_stack.length || callee_address_stack.length){
+      while(callee_address_stack.length && return_value_stack.length){
+        const callee_address = callee_address_stack.pop() as number;
+        const env = env_stack.pop() as [SExp, number];
+        const return_value = return_value_stack.pop() as SExp;
+        if(callee_address === 1){
+          const rest_sexp = return_value;
+          const [first_sexp, initial_offset] = env;
+          last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
+          return_value_stack.push(last_return_value);
+        }
+      }
+      if(!input_stack.length){
+        continue;
+      }
+      
+      let [local_token, local_offset] = input_stack.pop() as [string, number];
+      if(local_token === ")"){
+        last_return_value = ir_new(Type.NULL.i, 0, local_offset);
+        return_value_stack.push(last_return_value);
+        continue;
+      }
+  
+      const initial_offset = local_offset;
+      const first_sexp = tokenize_sexp(local_token, local_offset, stream) as SExp;
+  
+      ([local_token, local_offset] = next_cons_token(stream));
+  
+      let rest_sexp;
+      if(local_token === "."){
+        const dot_offset = local_offset;
+        // grab the last item
+        ([local_token, local_offset] = next_cons_token(stream));
+        rest_sexp = tokenize_sexp(local_token, local_offset, stream);
+        ([local_token, local_offset] = next_cons_token(stream));
+        if(local_token !== ")"){
+          throw new SyntaxError(`illegal dot expression at ${dot_offset}`);
+        }
+        last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
+        return_value_stack.push(last_return_value);
+      }
+      else{
+        callee_address_stack.push(1);
+        env_stack.push([first_sexp, initial_offset]);
+        input_stack.push([local_token, local_offset]);
+      }
+    }
+    
+    return last_return_value as SExp;
   }
   
   for(const f of [

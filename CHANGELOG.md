@@ -4,6 +4,8 @@
 ### Changed
 - Changed `OperatorDict` arguments format.
 - Huge performance improvement by upgrading `clvm` to v1.0.2.
+- Decreased max stack size used, by incorporated `tokenize_cons` into `tokenize_sexp`. (Converted nested callstack into a loop)
+  - Before this update, executing `ir_read` on deep nested S-exp(s.t. over 1500 depth) failed due to `Maximum call stack size exceeded` error.
 ### Added
 - Added benchmark scripts.
 
