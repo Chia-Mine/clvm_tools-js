@@ -43,13 +43,11 @@ export function next_cons_token(stream: Generator<Token>): Token {
     break;
   }
    */
-  const isExecutedOnce = for_of(stream, (value) => {
-    ([token, offset] = value);
-    return "stop";
-  });
-  if(!isExecutedOnce){
+  const next = stream.next();
+  if(next.done){
     throw new SyntaxError("missing )");
   }
+  ([token, offset] = next.value);
   
   return t(token, offset);
 }
@@ -193,7 +191,7 @@ export function* token_stream(s: string): Generator<Token> {
   }
 }
 
-export function read_ir(s: string, to_sexp: typeof to_sexp_f = to_sexp_f){
+export function read_ir(s: string, to_sexp: typeof to_sexp_f = to_sexp_f): SExp {
   const stream = token_stream(s);
   
   // Fix generator spec incompatibility between python and javascript.
@@ -203,14 +201,10 @@ export function read_ir(s: string, to_sexp: typeof to_sexp_f = to_sexp_f){
     return to_sexp(tokenize_sexp(token, offset, stream));
   }
    */
-  let retVal: SExp|undefined;
-  const isExecutedOnce = for_of(stream, (value) => {
-    const [token, offset] = value;
-    retVal = to_sexp(tokenize_sexp(token, offset, stream));
-    return "stop";
-  });
-  if(!isExecutedOnce){
+  const next = stream.next();
+  if(next.done){
     throw new SyntaxError("unexpected end of stream");
   }
-  return retVal as SExp;
+  const [token, offset] = next.value;
+  return to_sexp(tokenize_sexp(token, offset, stream));
 }
