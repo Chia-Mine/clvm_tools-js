@@ -8,6 +8,7 @@
   - by merged `tokenize_cons` into `tokenize_sexp`. (Converted recursive function calls into loop)
   - by fully flatten `assemble_from_ir` which dispatched recursive function call and consumed a lot of stack memory.
   - Before this update, executing `ir_read` on deeply nested S-exp(s.t. over 1500 depth) failed due to `Maximum call stack size exceeded` error.
+- Changed the time unit(ms->sec) of output with `--time` option, to be compatible with Python's `clvm_tools`.
 ### Added
 - Added benchmark scripts.
 
