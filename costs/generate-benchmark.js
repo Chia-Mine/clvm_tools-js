@@ -229,17 +229,17 @@ function gen_apply(n, name){
 }
 
 function get_range(name){
-  if(name.split("-")[0].endsWith("_empty")) return [3000, 300, [1]];
-  if(name.startsWith('mul_nest1')) return [3000,300,[1, 25, 50, 100, 200, 400, 600, 800, 1000]];
-  if(name.startsWith('mul')) return [3000,300,[1, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]];
-  if(name.startsWith('cons-')) return [3000,300,[1]];
-  if(name.startsWith('lookup')) return [3000,300,[2]];
-  if(name.startsWith('point_add')) return [300,30,[48]];
-  if(name.startsWith('listp')) return [3000,300,[1]];
-  if(name.startsWith('first')) return [3000,300,[1]];
-  if(name.startsWith('rest')) return [3000,300,[1]];
-  if(name.startsWith('if-')) return [3000,300,[1]];
-  else return [3000,300,[1, 128, 1024]];
+  if(name.split("-")[0].endsWith("_empty")) return [3000, 40, [1]];
+  if(name.startsWith('mul_nest1')) return [3000,50,[1, 25, 50, 100, 200, 400, 600, 800, 1000]];
+  if(name.startsWith('mul')) return [3000,50,[1, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]];
+  if(name.startsWith('cons-')) return [3000,40,[1]];
+  if(name.startsWith('lookup')) return [3000,40,[2]];
+  if(name.startsWith('point_add')) return [300,4,[48]];
+  if(name.startsWith('listp')) return [3000,40,[1]];
+  if(name.startsWith('first')) return [3000,40,[1]];
+  if(name.startsWith('rest')) return [3000,40,[1]];
+  if(name.startsWith('if-')) return [3000,40,[1]];
+  else return [3000,40,[1, 128, 1024]];
 }
 
 function print_files(fun){
