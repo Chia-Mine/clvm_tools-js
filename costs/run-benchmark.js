@@ -127,7 +127,7 @@ function run_benchmark_file(fn, existing_results){
         console.error(`ERROR parsing: ${o}`);
       }
     }
-    console.log(counters);
+    console.log(JSON.stringify(counters));
   }
   
   const name_components = filename.split("-");
