@@ -197,7 +197,44 @@ function generate_if(n){
   return [`if-1-${n}`, ret, "()"];
 }
 
+function get_range(name){
+  if(name.split("-")[0].endsWith("_empty")) return [3000, 40, [1]];
+  if(name.startsWith('mul_nest1')) return [3000,50,[1, 25, 50, 100, 200, 400, 600, 800, 1000]];
+  if(name.startsWith('mul')) return [3000,50,[1, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]];
+  if(name.startsWith('cons-')) return [3000,40,[1]];
+  if(name.startsWith('lookup')) return [3000,40,[2]];
+  if(name.startsWith('point_add')) return [300,4,[48]];
+  if(name.startsWith('listp')) return [3000,40,[1]];
+  if(name.startsWith('first')) return [3000,40,[1]];
+  if(name.startsWith('rest')) return [3000,40,[1]];
+  if(name.startsWith('if-')) return [3000,40,[1]];
+  else return [3000,40,[1, 128, 1024]];
+}
+
+function print_files(fun){
+  const {wid} = process.env;
+  const name = fun(0, 1)[0];
+  const [end, step, vsizes] = get_range(name);
+  const folder = path.resolve(benchmarkRoot, name.split("-")[0].split("_")[0]);
+  try{
+    if(!fs.existsSync(folder)){
+      fs.mkdirSync(folder);
+    }
+  }
+  catch (e) { }
+  
+  for(const value_size of vsizes){
+    for(let i=2;i<end;i+=step){
+      const [name, prg, env] = fun(i, value_size);
+      fs.writeFileSync(path.resolve(folder, `${name}.clvm`), prg);
+      fs.writeFileSync(path.resolve(folder, `${name}.env`), env);
+      console.log(`[process-${wid}] Generated ${name} into ${folder}`);
+    }
+  }
+}
+
 function gen_apply(n, name){
+  const {wid} = process.env;
   const folder = path.resolve(benchmarkRoot, name);
   try{
     if(!fs.existsSync(folder)){
@@ -225,147 +262,97 @@ function gen_apply(n, name){
   }
   
   fs.writeFileSync(path.resolve(folder, `${name}-${n}.env`), "()");
-  console.log(`${name}-${n} has been generated in ${folder}`);
+  console.log(`[process-${wid}] Generated ${name}-${n} into ${folder}`);
 }
-
-function get_range(name){
-  if(name.split("-")[0].endsWith("_empty")) return [3000, 40, [1]];
-  if(name.startsWith('mul_nest1')) return [3000,50,[1, 25, 50, 100, 200, 400, 600, 800, 1000]];
-  if(name.startsWith('mul')) return [3000,50,[1, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]];
-  if(name.startsWith('cons-')) return [3000,40,[1]];
-  if(name.startsWith('lookup')) return [3000,40,[2]];
-  if(name.startsWith('point_add')) return [300,4,[48]];
-  if(name.startsWith('listp')) return [3000,40,[1]];
-  if(name.startsWith('first')) return [3000,40,[1]];
-  if(name.startsWith('rest')) return [3000,40,[1]];
-  if(name.startsWith('if-')) return [3000,40,[1]];
-  else return [3000,40,[1, 128, 1024]];
-}
-
-function print_files(fun){
-  const name = fun(0, 1)[0];
-  const [end, step, vsizes] = get_range(name);
-  const folder = path.resolve(benchmarkRoot, name.split("-")[0].split("_")[0]);
-  try{
-    if(!fs.existsSync(folder)){
-      fs.mkdirSync(folder);
-    }
-  }
-  catch (e) { }
-  
-  for(const value_size of vsizes){
-    let lastName = name;
-    for(let i=2;i<end;i+=step){
-      const [name, prg, env] = fun(i, value_size);
-      fs.writeFileSync(path.resolve(folder, `${name}.clvm`), prg);
-      fs.writeFileSync(path.resolve(folder, `${name}.env`), env);
-      lastName = name;
-    }
-    console.log(`${lastName} has been generated in ${folder}`);
-  }
-}
-
-const write_file_tasks = [];
-function add_print_files_task(fun){
-  write_file_tasks.push(() => print_files(fun));
-}
-
-add_print_files_task((n, vs) => generate_op_list(n, 'concat', vs, 'concat'));
-add_print_files_task((n, vs) => generate_args(n, 'concat', vs, 'concat'));
-
-add_print_files_task((n, vs) => generate_op_list(n, 'divmod', vs, 'divmod'));
-add_print_files_task((n, vs) => generate_op_list(n, '/', vs, 'div'));
-
-add_print_files_task((n, vs) => generate_args(n, '+', vs, 'plus'));
-add_print_files_task((n, vs) => generate_op_list(n, '+', vs, 'plus'));
-add_print_files_task((n, vs) => generate_op_list(n, '+', vs, 'plus_empty', 0));
-
-add_print_files_task((n, vs) => generate_args(n, '-', vs, 'minus'));
-add_print_files_task((n, vs) => generate_op_list(n, '-', vs, 'minus'));
-add_print_files_task((n, vs) => generate_op_list(n, '-', vs, 'minus_empty', 0));
-
-add_print_files_task((n, vs) => generate_args(n, 'logand', vs, 'logand'));
-add_print_files_task((n, vs) => generate_op_list(n, 'logand', vs, 'logand'));
-add_print_files_task((n, vs) => generate_op_list(n, 'logand', vs, 'logand_empty', 0));
-
-add_print_files_task((n, vs) => generate_args(n, 'logior', vs, 'logior'));
-add_print_files_task((n, vs) => generate_op_list(n, 'logior', vs, 'logior'));
-add_print_files_task((n, vs) => generate_op_list(n, 'logior', vs, 'logior_empty', 0));
-
-add_print_files_task((n, vs) => generate_args(n, 'logxor', vs, 'logxor'));
-add_print_files_task((n, vs) => generate_op_list(n, 'logxor', vs, 'logxor'));
-add_print_files_task((n, vs) => generate_op_list(n, 'logxor', vs, 'logxor_empty', 0));
-
-add_print_files_task((n, vs) => generate_nested(n, 'lognot', vs, 'lognot', 1));
-add_print_files_task((n, vs) => generate_nested(n, 'not', vs, 'not', 1));
-
-add_print_files_task((n, vs) => generate_nested(n, 'any', vs, 'any'));
-add_print_files_task((n, vs) => generate_args(n, 'any', vs, 'any'));
-
-add_print_files_task((n, vs) => generate_nested(n, 'all', vs, 'all'));
-add_print_files_task((n, vs) => generate_args(n, 'all', vs, 'all'));
-
-add_print_files_task((n, vs) => generate_nested_2values(n, 'lsh', [vs, 1], 'lsh'));
-add_print_files_task((n, vs) => generate_nested_2values(n, 'ash', [vs, 1], 'ash'));
-
-add_print_files_task((n, vs) => generate_op_list(n, '=', vs, 'eq'));
-add_print_files_task((n, vs) => generate_op_list(n, '>', vs, 'gr'));
-add_print_files_task((n, vs) => generate_op_list(n, '>s', vs, 'grs'));
-
-add_print_files_task((n, vs) => generate_nested(n, 'c', vs, 'cons'));
 
 const point_val = '0xb3b8ac537f4fd6bde9b26221d49b54b17a506be147347dae5d081c0a6572b611d8484e338f3432971a9823976c6a232b'
-add_print_files_task((n, vs) => generate_nested_value(n, 'point_add', point_val, 'point_add'));
-add_print_files_task((n, vs) => generate_args_value(n, 'point_add', point_val, 'point_add'));
 
-add_print_files_task((n, vs) => generate_op_list(n, 'sha256', vs, 'sha', 1));
-add_print_files_task((n, vs) => generate_op_list(n, 'sha256', vs, 'sha_empty', 0));
-add_print_files_task((n, vs) => generate_args(n, 'sha256', vs, 'sha'));
+const benchmarkTasks = {
+  concat_op_list: () => print_files((n, vs) => generate_op_list(n, 'concat', vs, 'concat')),
+  concat_args: () => print_files((n, vs) => generate_args(n, 'concat', vs, 'concat')),
+  divmod_op_list: () => print_files((n, vs) => generate_op_list(n, 'divmod', vs, 'divmod')),
+  div_op_list: () => print_files((n, vs) => generate_op_list(n, '/', vs, 'div')),
+  plus_args: () => print_files((n, vs) => generate_args(n, '+', vs, 'plus')),
+  plus_op_list: () => print_files((n, vs) => generate_op_list(n, '+', vs, 'plus')),
+  plus_empty_op_list: () => print_files((n, vs) => generate_op_list(n, '+', vs, 'plus_empty', 0)),
+  minus_args: () => print_files((n, vs) => generate_args(n, '-', vs, 'minus')),
+  minus_op_list: () => print_files((n, vs) => generate_op_list(n, '-', vs, 'minus')),
+  minus_empty_op_list: () => print_files((n, vs) => generate_op_list(n, '-', vs, 'minus_empty', 0)),
+  logand_args: () => print_files((n, vs) => generate_args(n, 'logand', vs, 'logand')),
+  logand_op_list: () => print_files((n, vs) => generate_op_list(n, 'logand', vs, 'logand')),
+  logand_empty_op_list: () => print_files((n, vs) => generate_op_list(n, 'logand', vs, 'logand_empty', 0)),
+  logior_args: () => print_files((n, vs) => generate_args(n, 'logior', vs, 'logior')),
+  logior_op_list: () => print_files((n, vs) => generate_op_list(n, 'logior', vs, 'logior')),
+  logior_empty_op_list: () => print_files((n, vs) => generate_op_list(n, 'logior', vs, 'logior_empty', 0)),
+  logxor_args: () => print_files((n, vs) => generate_args(n, 'logxor', vs, 'logxor')),
+  logxor_op_list: () => print_files((n, vs) => generate_op_list(n, 'logxor', vs, 'logxor')),
+  logxor_empty_op_list: () => print_files((n, vs) => generate_op_list(n, 'logxor', vs, 'logxor_empty', 0)),
+  lognot_nested: () => print_files((n, vs) => generate_nested(n, 'lognot', vs, 'lognot', 1)),
+  not_nested: () => print_files((n, vs) => generate_nested(n, 'not', vs, 'not', 1)),
+  any_nested: () => print_files((n, vs) => generate_nested(n, 'any', vs, 'any')),
+  any_args: () => print_files((n, vs) => generate_args(n, 'any', vs, 'any')),
+  all_nested: () => print_files((n, vs) => generate_nested(n, 'all', vs, 'all')),
+  all_args: () => print_files((n, vs) => generate_args(n, 'all', vs, 'all')),
+  nested_2values_lsh: () => print_files((n, vs) => generate_nested_2values(n, 'lsh', [vs, 1], 'lsh')),
+  nested_2values_ash: () => print_files((n, vs) => generate_nested_2values(n, 'ash', [vs, 1], 'ash')),
+  op_list_eq: () => print_files((n, vs) => generate_op_list(n, '=', vs, 'eq')),
+  op_list_gr: () => print_files((n, vs) => generate_op_list(n, '>', vs, 'gr')),
+  op_list_grs: () => print_files((n, vs) => generate_op_list(n, '>s', vs, 'grs')),
+  nested_cons: () => print_files((n, vs) => generate_nested(n, 'c', vs, 'cons')),
+  nested_value_point_add: () => print_files((n, vs) => generate_nested_value(n, 'point_add', point_val, 'point_add')),
+  args_value_point_add: () => print_files((n, vs) => generate_args_value(n, 'point_add', point_val, 'point_add')),
+  sha_op_list: () => print_files((n, vs) => generate_op_list(n, 'sha256', vs, 'sha', 1)),
+  sha_empty_op_list: () => print_files((n, vs) => generate_op_list(n, 'sha256', vs, 'sha_empty', 0)),
+  args_sha: () => print_files((n, vs) => generate_args(n, 'sha256', vs, 'sha')),
+  pubkey_op_list: () => print_files((n, vs) => generate_op_list(n, 'pubkey_for_exp', vs, 'pubkey', 1)),
+  lookup: () => print_files((n, vs) => generate_lookup(n)),
+  lookup_op_list: () => print_files((n, vs) => generate_lookup_op_list(n)),
+  strlen_op_list: () => print_files((n, vs) => generate_op_list(n, 'strlen', vs, 'strlen', 1)),
+  mul_op_list: () => print_files((n, vs) => generate_op_list(n, '*', vs, 'mul')),
+  mul_nested: () => print_files((n, vs) => generate_nested_1(n, '*', vs, 'mul')),
+  mul_empty_op_list: () => print_files((n, vs) => generate_op_list(n, '*', vs, 'mul_empty', 0)),
+  listp_op_list: () => print_files((n, vs) => generate_op_list(n, 'l', vs, 'listp', 1)),
+  first_list: () => print_files((n, vs) => generate_list(n, 'f', 'first')),
+  list_empty: () => print_files((n, vs) => generate_list_empty(n)),
+  rest_list: () => print_files((n, vs) => generate_list(n, 'r', 'rest')),
+  if: () => print_files((n, vs) => generate_if(n)),
+  apply: () => gen_apply(1000, 'apply'),
+};
 
-add_print_files_task((n, vs) => generate_op_list(n, 'pubkey_for_exp', vs, 'pubkey', 1));
+function select_task_names(grep_str){
+  const task_names = [];
+  const regex = new RegExp(grep_str);
+  for(const name of Object.keys(benchmarkTasks)){
+    if(grep_str && !regex.test(name)){
+      continue;
+    }
+    task_names.push(name);
+  }
+  return task_names;
+}
 
-add_print_files_task((n, vs) => generate_lookup(n));
-add_print_files_task((n, vs) => generate_lookup_op_list(n));
 
-add_print_files_task((n, vs) => generate_op_list(n, 'strlen', vs, 'strlen', 1));
-
-add_print_files_task((n, vs) => generate_op_list(n, '*', vs, 'mul'));
-add_print_files_task((n, vs) => generate_nested_1(n, '*', vs, 'mul'));
-add_print_files_task((n, vs) => generate_op_list(n, '*', vs, 'mul_empty', 0));
-
-add_print_files_task((n, vs) => generate_op_list(n, 'l', vs, 'listp', 1));
-
-add_print_files_task((n, vs) => generate_list(n, 'f', 'first'));
-add_print_files_task((n, vs) => generate_list_empty(n));
-
-add_print_files_task((n, vs) => generate_list(n, 'r', 'rest'));
-
-add_print_files_task((n, vs) => generate_if(n));
-write_file_tasks.push(() => gen_apply(1000, 'apply'));
-
-/*
- * Dispatch a cluster of child process for performance
- */
 
 const cluster = require("cluster");
 const process = require("process");
 const {now} = require("./lib/performance");
+const {ArgumentParser} = require("./lib/argparse");
 const numCPUs = require("os").cpus().length;
 
-if(typeof cluster.isMaster !== "boolean" && typeof cluster.isPrimary !== "boolean"){
+function single_process_main(){
   console.warn("This system does not support cluster. It will take several minutes to complete");
+  
   if(!fs.existsSync(path.resolve(benchmarkRoot))){
     fs.mkdirSync(path.resolve(benchmarkRoot));
   }
   
-  for(let i=0;i<write_file_tasks.length;i++){
-    const task = write_file_tasks[i];
+  for(const name of Object.keys(benchmarkTasks)){
+    const task = benchmarkTasks[name];
     task();
   }
 }
-else if(cluster.isMaster || cluster.isPrimary){
-  console.log(`Primary ${process.pid} has started`);
-  
+
+function cluster_master_main(){
   const {now} = require("./lib/performance");
   const start = now();
   const {ArgumentParser} = require("./lib/argparse");
@@ -378,11 +365,46 @@ else if(cluster.isMaster || cluster.isPrimary){
       default: "",
       help: "Root directory of the benchmark files"},
   );
+  parser.add_argument(
+    ["-c", "--core"], {type: "int",
+      default: numCPUs,
+      help: "Number of cpu cores to use"},
+  );
+  parser.add_argument(
+    ["-g", "--grep"], {default: "",
+      help: "grep string to filter benchmark to generate"},
+  );
+  parser.add_argument(
+    ["-l", "--list"], {action: "store_true",
+      help: "grep string to filter benchmark to generate"},
+  );
   
   const parsedArgs = parser.parse_args(process.argv.slice(2));
   if(parsedArgs.root_dir){
     benchmarkRoot = parsedArgs.root_dir;
   }
+  
+  let nCoreToUse = numCPUs;
+  if(typeof parsedArgs.core === "number" && parsedArgs.core > 0 && parsedArgs.core <= numCPUs){
+    nCoreToUse = parsedArgs.core;
+  }
+  let targetTasksNames = Object.keys(benchmarkTasks);
+  if(parsedArgs.grep){
+    targetTasksNames = select_task_names(parsedArgs.grep);
+  }
+  if(parsedArgs.list){
+    console.log(targetTasksNames.join("\n"));
+    process.exit(0);
+    return;
+  }
+  
+  if(!targetTasksNames.length){
+    console.error("Specified benchmark tasks not found");
+    process.exit(0);
+    return;
+  }
+  
+  console.log(`[main] primary process ${process.pid} has started`);
   
   if(!fs.existsSync(path.dirname(benchmarkRoot))){
     console.error(`${path.dirname(benchmarkRoot)} was not found`);
@@ -394,40 +416,72 @@ else if(cluster.isMaster || cluster.isPrimary){
   
   const workers = {};
   const deadWorkers = [];
-  for(let i=0;i<numCPUs && i<write_file_tasks.length;i++){
-    const w = cluster.fork({wid: i, benchmarkRoot});
+  for(let i=0;i<nCoreToUse && i<targetTasksNames.length;i++){
+    const env = {
+      wid: i,
+      benchmarkRoot,
+      nCoreToUse,
+      targetTasksNames: JSON.stringify(targetTasksNames),
+    };
+    const w = cluster.fork(env);
     workers[w.process.pid] = {i, pid: w.process.pid, time: now()};
   }
   
   cluster.on("exit", (worker, code, signal) => {
     const w = workers[worker.process.pid];
-    console.log(`worker ${w.i}/${worker.process.pid} has completed in ${now() - w.time}ms`);
+    console.log(`[main] worker process ${w.i}/${worker.process.pid} has completed in ${now() - w.time}ms`);
     deadWorkers.push(worker.process.pid);
     
     if(Object.keys(workers).length === deadWorkers.length){
-      console.log(`Primary ${process.pid} finished in ${now() - start}ms`);
+      console.log(`[main] primary process ${process.pid} finished in ${now() - start}ms`);
       process.exit(0);
     }
   });
 }
-else{
-  console.log(`Worker ${process.env.wid}/${process.pid} has started`);
+
+function cluster_worker_main(){
+  const {
+    wid,
+    benchmarkRootEnv,
+    nCoreToUse,
+    targetTasksNames: targetTasksNames_json,
+  } = process.env;
+  console.log(`[main] worker process ${wid}/${process.pid} has started`);
   
-  if(process.env.benchmarkRoot){
-    if(!fs.existsSync(process.env.benchmarkRoot)){
-      console.error(`Benchmark root folder was not found: ${process.env.benchmarkRoot}`);
+  const targetTasksNames = JSON.parse(targetTasksNames_json);
+  
+  if(benchmarkRootEnv){
+    if(!fs.existsSync(benchmarkRootEnv)){
+      console.error(`[ERROR] Benchmark root folder was not found: ${benchmarkRootEnv}`);
       process.exit(1);
       return;
     }
-    benchmarkRoot = process.env.benchmarkRoot
+    benchmarkRoot = benchmarkRootEnv;
+  }
+  const nCore = +nCoreToUse;
+  if(isNaN(nCore) || !isFinite(nCore) || nCore < 0 || nCore > numCPUs){
+    console.error(`[ERROR] Invalid number of cores: ${nCore}`);
+    process.exit(1);
+    return;
   }
   
-  for(let i=0;i<write_file_tasks.length;i++){
-    const task = write_file_tasks[i];
-    if((i % numCPUs).toString() === process.env.wid){
+  for(let i=0;i<targetTasksNames.length;i++){
+    const taskName = targetTasksNames[i];
+    if((i % nCore).toString() === wid){
+      const task = benchmarkTasks[taskName];
       task();
     }
   }
   
   process.exit(0);
+}
+
+if(typeof cluster.isMaster !== "boolean" && typeof cluster.isPrimary !== "boolean"){
+  single_process_main();
+}
+else if(cluster.isMaster || cluster.isPrimary){
+  cluster_master_main();
+}
+else{
+  cluster_worker_main();
 }
