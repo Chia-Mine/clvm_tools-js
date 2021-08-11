@@ -45,40 +45,6 @@ function get_file(folder, name, dry_run){
   return fd;
 }
 
-function generate_gnuplot_file(directory){
-  const gnuplot_filename = path.resolve(directory, "render-timings.gnuplot");
-  const gnuplot_fd = fs.openSync(gnuplot_filename, "w+");
-  
-  const writeContent = `set output "./timings.png"
-set datafile separator ","
-set term png size 1400,900 small
-set termoption enhanced
-set ylabel "run-time (s)"
-set xlabel "number of ops"
-set xrange [0:*]
-set yrange [0:0.3]
-`;
-  fs.writeSync(gnuplot_fd, writeContent);
-  
-  let color = 0;
-  fs.writeSync(gnuplot_fd, "plot ");
-  let count = Object.keys(open_files).length;
-  for(const [n, v] of Object.entries(open_files)){
-    let cont = ", \\";
-    if(color + 1 === count){
-      cont = "";
-    }
-    const name = n.split("results-")[1].split(".csv")[0];
-    fs.writeSync(gnuplot_fd, `"./${n.replace(/^.+[/]/, "")}" using 5:4 with points lc ${color} title "${name}"${cont}\n`);
-    color += 1;
-    if(v !== false){
-      fs.closeSync(v);
-    }
-  }
-  
-  fs.closeSync(gnuplot_fd);
-}
-
 function run_benchmark_file(fn, existing_results){
   const folder = path.dirname(fn);
   const filename = path.basename(fn);
@@ -136,6 +102,7 @@ function run_benchmark_file(fn, existing_results){
     const line = counters["cost"] + ","
       + counters["assemble_from_ir"] + ","
       + counters["to_sexp_f"] + ","
+      + counters["run_program"] + ","
       + name_components[name_components.length-1].split(".")[0]
       + "\n";
     fs.writeSync(fd, line); // `fd` will be closed later
@@ -152,9 +119,7 @@ function run_benchmark_folder(directory){
     run_benchmark_file(fn, existing_results);
   }
   
-  generate_gnuplot_file(directory);
   open_files = {};
-  // os.system(`gnuplot ${gnuplot_filename}`) should be executed in `run-gnuplot.js`
 }
 
 function run_benchmark_all(rootFolder){
