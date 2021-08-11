@@ -11,6 +11,7 @@ let force_run = false;
 let grepString = "";
 let only_heaviest = false;
 let number_of_iterations = 1;
+let overwrite = false;
 
 function toPosixPath(p){
   return p.replace(/\\/g, "/");
@@ -35,7 +36,7 @@ function get_file(folder, name, dry_run){
     fd = false;
   }
   else {
-    fd = fs.openSync(full_path, "w");
+    fd = fs.openSync(full_path, overwrite ? "w" : "a");
   }
   open_files[posix_full_path] = fd;
   
@@ -204,6 +205,10 @@ function main(){
     ["-n", "--number-of-try"], {type: "int", default: 1,
       help: "Number of benchmark iterations for accurate benchmark result"},
   );
+  parser.add_argument(
+    ["-w", "--overwrite"], {action: "store_true",
+      help: "Overwrite previous benchmark result if it exists"},
+  );
   
   const parsedArgs = parser.parse_args(process.argv.slice(2));
   if(parsedArgs.root_dir){
@@ -219,6 +224,9 @@ function main(){
     only_heaviest = true;
   }
   number_of_iterations = parsedArgs.number_of_try;
+  if(parsedArgs.overwrite){
+    overwrite = true;
+  }
   
   run_benchmark_all(benchmarkRoot);
 }
