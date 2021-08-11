@@ -57,9 +57,6 @@ function find_heaviest_benchmark_files(directory){
   
   const regex = /(.+)-([0-9]+)-([0-9]+)\.clvm/;
   const obj = {};
-  let max_bytes = 0;
-  let max_n = 0;
-  let heaviest_i = -1;
   for(let i=0;i<clvm_files.length;i++){
     const fn = clvm_files[i];
     const filename = path.basename(fn);
@@ -103,6 +100,7 @@ function run_benchmark_file(fn, existing_results){
   // if we have a csv file for this run already, skip running it again
   const dry_run = !force_run && path.basename(fn).split('-')[0] in existing_results;
   if(dry_run){
+    console.log(`${counter.toString().padStart(4, '0')}: ${toOSPath(fn)} SKIPPED`);
     return;
   }
   
