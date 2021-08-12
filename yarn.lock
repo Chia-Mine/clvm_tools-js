@@ -1087,10 +1087,10 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
-clvm@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-1.0.2.tgz#23f9b3f55c11144c1f1d1e3c7ccf92dbdbc6410b"
-  integrity sha512-xAnJTJAsjRxx0S2uxr79MIQiV8kxiVuuvU0rxEpO7wGJSLeGJ66FcMv0xtO/j2hU9BqHBLS0B/ShIjb6rQAALg==
+clvm@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-1.0.3.tgz#4375fc16d150713694a9146dc3bb1095913f6514"
+  integrity sha512-rY4uNLgSAAMok/0jbR1amO5E+ADVvRS1VbUubGUzboKhHzYXpsaWIWb0/aYUHbu/YNljDEGvlkNfy8+nwXQ/XQ==
   dependencies:
     "@chiamine/bls-signatures" "^0.2.1-beta.1"
     jscrypto "^1.0.2"
