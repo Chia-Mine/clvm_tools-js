@@ -108,7 +108,7 @@ function run_benchmark_file(fn, existing_results){
   const counters = {};
   // the filename is expected to be in the form:
   // name "-" value_size "-" num_calls
-  const env = fs.readFileSync(fn.replace(/\.clvm$/, ".env"));
+  const envPath = fn.replace(/\.clvm$/, ".env");
   const commandPath = path.resolve(__dirname, "..", ".dist", "npm", "bin", "cli.js");
   if(!fs.existsSync(commandPath)){
     console.error(`You need to build clvm_tools first. Executable not found at: ${commandPath}`);
@@ -116,7 +116,7 @@ function run_benchmark_file(fn, existing_results){
     return;
   }
   
-  const command = `node "${commandPath}" brun -c --quiet --time "${toOSPath(fn)}" "${env}"`;
+  const command = `node "${commandPath}" brun -c --quiet --time "${toOSPath(fn)}" "${toOSPath(envPath)}"`;
   for(let i=0;i<number_of_iterations;i++){
     const outputBuffer = child_process.execSync(command);
     const outputLines = outputBuffer.toString("ascii").split(/\n/g, 5);

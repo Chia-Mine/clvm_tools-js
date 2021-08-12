@@ -5,7 +5,7 @@ const {t} = require("clvm");
 let benchmarkRoot = path.resolve(__dirname, "..", "test-programs");
 
 function getrandbits(bits){
-  return Math.round(Math.random() * (2**bits));
+  return Math.round(Math.random() * (2**bits-1));
 }
 
 function make_value(length){
