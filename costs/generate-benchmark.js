@@ -17,12 +17,12 @@ function make_value(length){
 }
 
 function make_lookup(depth){
-  let path = 1;
+  let path = BigInt(1);
   let tree = "42";
   while(depth > 0){
-    path <<= 1;
-    const leg = getrandbits(1);
-    if(leg === 0){
+    path <<= BigInt(1);
+    const leg = BigInt(getrandbits(1));
+    if(leg === BigInt(0)){
       tree = "(" + tree + " . 0x1337)";
     }
     else{
