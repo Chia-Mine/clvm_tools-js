@@ -117,7 +117,7 @@ export function type_for_atom(atom: Bytes): number {
     }
     return Type.HEX.i;
   }
-  if(int_to_bytes(int_from_bytes(atom)).equal_to(atom)){
+  if(int_to_bytes(int_from_bytes(atom, {signed: true}), {signed: true}).equal_to(atom)){
     return Type.INT.i;
   }
   return Type.HEX.i;

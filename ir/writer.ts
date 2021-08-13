@@ -55,10 +55,10 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<string> {
   const atom = ir_as_atom(ir_sexp);
   
   if(type === Type.INT.i){
-    yield `${int_from_bytes(atom)}`;
+    yield `${int_from_bytes(atom, {signed: true})}`;
   }
   else if(type === Type.NODE.i){
-    yield `NODE[${int_from_bytes(atom)}]`;
+    yield `NODE[${int_from_bytes(atom, {signed: true})}]`;
   }
   else if(type === Type.HEX.i){
     yield `0x${atom.hex()}`;

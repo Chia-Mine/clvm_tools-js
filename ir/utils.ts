@@ -40,11 +40,11 @@ export function ir_type(ir_sexp: SExp): number {
     the_type = the_type.first();
   }
   
-  return int_from_bytes(the_type.atom);
+  return int_from_bytes(the_type.atom, {signed: true});
 }
 
 export function ir_as_int(ir_sexp: SExp): number {
-  return int_from_bytes(ir_as_atom(ir_sexp));
+  return int_from_bytes(ir_as_atom(ir_sexp), {signed: true});
 }
 
 export function ir_offset(ir_sexp: SExp): number {
@@ -56,7 +56,7 @@ export function ir_offset(ir_sexp: SExp): number {
   else{
     the_offset = h("0xff");
   }
-  return int_from_bytes(the_offset);
+  return int_from_bytes(the_offset, {signed: true});
 }
 
 export function ir_val(ir_sexp: SExp): SExp {
@@ -131,7 +131,7 @@ export function is_ir(sexp: SExp): boolean {
     return false;
   }
   
-  const the_type = int_from_bytes(f);
+  const the_type = int_from_bytes(f, {signed: true});
   let t;
   try{
     t = new Type(the_type);

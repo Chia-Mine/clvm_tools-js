@@ -26,9 +26,9 @@ bit controls the first branch, then the next-least the second, and so on. That l
 ugly-numbered tree.
  */
 
-import {h} from "clvm";
+import {bigint_to_bytes, bigint_from_bytes} from "clvm";
 
-export function compose_paths(path_0: number, path_1: number){
+export function compose_paths(path_0: bigint, path_1: bigint){
   /*
     The binary representation of a path is a 1 (which means "stop"), followed by the
     path as binary digits, where 0 is "left" and 1 is "right".
@@ -45,15 +45,15 @@ export function compose_paths(path_0: number, path_1: number){
     Shift path_1 three places (so there is room for 0b001) to 0b1010000.
     Then OR in 0b001 to yield 0b1010001 = 81, which is right, left, left, left, right, left.
    */
-  let mask = 1;
+  let mask = BigInt(1);
   let temp_path = path_0;
   while(temp_path > 1){
-    path_1 <<= 1;
-    mask <<= 1;
-    temp_path >>= 1;
+    path_1 <<= BigInt(1);
+    mask <<= BigInt(1);
+    temp_path >>= BigInt(1);
   }
   
-  mask -= 1;
+  mask -= BigInt(1);
   return path_1 | (path_0 & mask);
 }
 
@@ -61,18 +61,16 @@ export class NodePath {
   /*
   Use 1-based paths
    */
-  private _index: number;
+  private _index: bigint;
   public as_path = this.as_short_path;
   public get index(){
     return this._index;
   }
   
-  public constructor(index: number = 1) {
+  public constructor(index: bigint = BigInt(1)) {
     if(index < 0){
-      const byte_count = ((-index).toString(2).length + 7) >>> 3;
-      let hex = (index >>> 0).toString(16);
-      hex = hex.substring(hex.length - byte_count*2);
-      index = parseInt(hex, 16);
+      const b = bigint_to_bytes(index, {signed: true});
+      index = bigint_from_bytes(b, {signed: false});
     }
     
     this._index = index;
@@ -80,11 +78,7 @@ export class NodePath {
   
   public as_short_path(){
     const index = this._index;
-    let hexStr = (index >>> 0).toString(16);
-    if(index >= 0){
-      hexStr = hexStr.length % 2 ? `0${hexStr}` : hexStr;
-    }
-    return h(hexStr);
+    return bigint_to_bytes(index);
   }
   
   public add(other_node: NodePath){
@@ -93,11 +87,11 @@ export class NodePath {
   }
   
   public first(){
-    return new NodePath(this.index*2);
+    return new NodePath(this.index*BigInt(2));
   }
   
   public rest(){
-    return new NodePath(this.index*2 + 1);
+    return new NodePath(this.index*BigInt(2) + BigInt(1));
   }
   
   public toString(){

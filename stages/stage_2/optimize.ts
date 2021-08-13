@@ -230,14 +230,14 @@ export function path_optimizer(r: SExp, eval_f: TRunProgram){
    */
   let t1 = match(FIRST_ATOM_PATTERN, r);
   if(t1 && non_nil(t1["atom"])){
-    let node = new NodePath(t1["atom"].as_int());
+    let node = new NodePath(t1["atom"].as_bigint());
     node = node.add(LEFT);
     return SExp.to(node.as_short_path());
   }
   
   t1 = match(REST_ATOM_PATTERN, r);
   if(t1 && non_nil(t1["atom"])){
-    let node = new NodePath(t1["atom"].as_int());
+    let node = new NodePath(t1["atom"].as_bigint());
     node = node.add(RIGHT);
     return SExp.to(node.as_short_path());
   }

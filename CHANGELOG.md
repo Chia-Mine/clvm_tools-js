@@ -3,7 +3,7 @@
 ## [0.1.7]
 ### Changed
 - Changed `OperatorDict` arguments format.
-- Huge performance improvement by upgrading `clvm` to v1.0.3.
+- Huge performance improvement by upgrading `clvm` to v1.0.4.
 - Greatly reduced max stack memory consumed
   - by merged `tokenize_cons` into `tokenize_sexp`. (Converted recursive function calls into loop)
   - by fully flatten `assemble_from_ir` which dispatched recursive function call and consumed a lot of stack memory.
@@ -11,6 +11,8 @@
 - Changed the time unit(ms->sec) of output with `--time` option, to be compatible with Python's `clvm_tools`.
 ### Added
 - Added benchmark scripts.
+### Fixed
+- Fixed an issue where it did not correctly handle signed/unsigned integer from and to `Bytes`.
 
 ## [0.1.6]
 ### Added

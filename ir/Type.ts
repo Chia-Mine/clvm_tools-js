@@ -46,7 +46,7 @@ export class Type {
   }
   
   public get atom(){
-    return int_to_bytes(this.i);
+    return int_to_bytes(this.i, {signed: false});
   }
   
   public constructor(i: number|Type) {

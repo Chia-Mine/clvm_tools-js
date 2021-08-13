@@ -1,4 +1,4 @@
-import {int_from_bytes} from "clvm";
+import {bigint_from_bytes} from "clvm";
 import {
   NodePath,
   TOP,
@@ -10,7 +10,7 @@ const LEFT_RIGHT_LEFT = LEFT.add(RIGHT).add(LEFT);
 
 const reset = (n: NodePath) => {
   const path_blob = n.as_short_path();
-  const index = int_from_bytes(path_blob);
+  const index = bigint_from_bytes(path_blob);
   return new NodePath(index);
 };
 
@@ -62,7 +62,7 @@ test("test_node_path", () => {
 
 test("test_revive_index", () => {
   for(let idx=0;idx<2048;idx++){
-    const n = new NodePath(idx);
+    const n = new NodePath(BigInt(idx));
     const n1 = reset(n);
     expect(n.as_short_path().equal_to(n1.as_short_path())).toBeTruthy();
   }
