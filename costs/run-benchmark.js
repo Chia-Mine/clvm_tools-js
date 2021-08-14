@@ -12,6 +12,7 @@ let grepString = "";
 let only_heaviest = false;
 let number_of_iterations = 1;
 let overwrite = false;
+const now = (new Date()).toLocaleString();
 
 function toPosixPath(p){
   return p.replace(/\\/g, "/");
@@ -31,6 +32,8 @@ function get_file(folder, name, dry_run){
     return open_files[posix_full_path];
   }
   
+  const file_already_exists = fs.existsSync(full_path);
+  
   let fd;
   if(dry_run){
     fd = false;
@@ -44,7 +47,9 @@ function get_file(folder, name, dry_run){
     return fd;
   }
   
-  fs.writeSync(fd, "#cost,assemble_from_ir,to_sexp_f,run_program,multiplier,n\n");
+  if(!file_already_exists || overwrite){
+    fs.writeSync(fd, "time,env,file,cost,assemble_from_ir,to_sexp_f,run_program,multiplier,n\n");
+  }
   return fd;
 }
 
@@ -141,7 +146,11 @@ function run_benchmark_file(fn, existing_results){
   
   const name_components = filename.split("-");
   const fd = get_file(folder, name_components.slice(0, name_components.length-1).join("-"), dry_run);
-  const line = counters["cost"] + ","
+  const line = ""
+    + now + ","
+    + `clvm_tools(js)-clvm(js)` + ","
+    + filename + ","
+    + counters["cost"] + ","
     + counters["assemble_from_ir"] + ","
     + counters["to_sexp_f"] + ","
     + counters["run_program"] + ","
