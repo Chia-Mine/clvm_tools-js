@@ -13,6 +13,7 @@
 - Added benchmark scripts.
 ### Fixed
 - Fixed an issue where it did not correctly handle signed/unsigned integer from and to `Bytes`.
+- Fixed an issue where large int was not recognized correctly.
 
 ## [0.1.6]
 ### Added
