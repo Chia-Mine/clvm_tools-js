@@ -103,7 +103,7 @@ function run_benchmark_file(fn, existing_results){
   counter += 1;
   
   // if we have a csv file for this run already, skip running it again
-  const dry_run = !force_run && path.basename(fn).split('-')[0] in existing_results;
+  const dry_run = !force_run && (!existing_results || existing_results.find(r => r === path.basename(fn).split('-')[0]));
   if(dry_run){
     console.log(`${counter.toString().padStart(4, '0')}: ${toOSPath(fn)} SKIPPED`);
     return;
