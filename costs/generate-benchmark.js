@@ -231,7 +231,7 @@ function get_default_config(name){
   if(name.startsWith('first')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
   if(name.startsWith('rest')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
   if(name.startsWith('if-')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
-  if(name.startsWith('apply')) return {first: 1000, last: 1000, step: 0, valueBytes: []};
+  if(name.startsWith('apply')) return {first: 1000, last: 1000, step: 0, valueBytes: [4]};
   else return {first: 2, last: 3000, step: 40, valueBytes: [1, 128, 1024]};
 }
 
