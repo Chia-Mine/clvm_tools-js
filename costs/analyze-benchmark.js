@@ -61,7 +61,8 @@ function linear_regression_no_outliners(ops, runtime){
 
 function try_to_run_gnuplot(gnuplot_filename){
   try{
-    child_process.execSync(`gnuplot ${gnuplot_filename}`);
+    const dirname = path.dirname(gnuplot_filename);
+    child_process.execSync(`gnuplot ${gnuplot_filename}`, {cwd: dirname});
   }
   catch(e){}
 }
@@ -189,6 +190,7 @@ plot `;
   }
   
   fs.closeSync(gnuplot_fd);
+  try_to_run_gnuplot(gnuplot_filename);
 }
 
 function main(){
