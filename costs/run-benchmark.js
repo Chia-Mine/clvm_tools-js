@@ -48,7 +48,7 @@ function get_file(folder, name, dry_run){
   }
   
   if(!file_already_exists || overwrite){
-    fs.writeSync(fd, "time,env,file,cost,assemble_from_ir,to_sexp_f,run_program,multiplier,n\n");
+    fs.writeSync(fd, "#time,env,file,cost,assemble_from_ir,to_sexp_f,run_program,multiplier,n\n");
   }
   return fd;
 }
