@@ -30,7 +30,7 @@ function least_squares(X, Y){
   return {m, c};
 }
 
-function linear_regression_no_outliners(ops, runtime){
+function linear_regression_no_outliers(ops, runtime){
   const num_points = ops.length;
   
   // we want to remove the 5% worst points
@@ -102,7 +102,7 @@ function generate_and_run_trends_analysis(directory){
       if(y > yMax) yMax = y;
     }
   
-    const {m, c} = linear_regression_no_outliners(ops, runtime);
+    const {m, c} = linear_regression_no_outliers(ops, runtime);
   
     const name = fn.split("results-")[1].split(".csv")[0];
     console.log(`${name.padStart(30, " ")}: ${m*1000000} (${c*1000000})`);
