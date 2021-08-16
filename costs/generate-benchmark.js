@@ -3,6 +3,7 @@ const fs = require("fs");
 const {t} = require("clvm");
 
 let benchmarkRoot = path.resolve(__dirname, "..", "test-programs");
+let parameterSet = "default";
 
 function getrandbits(bits){
   return Math.round(Math.random() * (2**bits-1));
@@ -159,34 +160,34 @@ function generate_op_list(n, name, value_size, filename, arity=2){
   return [`${filename}-${value_size}-${n}`, ret, "()"];
 }
 
-function generate_list(n, name, filename){
+function generate_list(n, name, value_size, filename){
   let ret = "";
   for(let i=0;i<n;i++){
-    ret += `(c (${name} (q . (1 2 3))) `;
+    ret += `(c (${name} (q . (${make_value(value_size)} ${make_value(value_size)} ${make_value(value_size)}))) `;
   }
   ret += "()";
   for(let i=0;i<n;i++){
     ret += ")";
   }
-  return [`${filename}-1-${n}`, ret, "()"];
+  return [`${filename}-${value_size}-${n}`, ret, "()"];
 }
 
-function generate_list_empty(n){
+function generate_list_empty(n, value_size){
   let ret = "";
   for(let i=0;i<n;i++){
-    ret += "(c (q . (1 2 3)) ";
+    ret += `(c (q . (${make_value(value_size)} ${make_value(value_size)} ${make_value(value_size)})) `;
   }
   ret += "()";
   for(let i=0;i<n;i++){
     ret += ")";
   }
-  return [`first_empty-1-${n}`, ret, "()"];
+  return [`first_empty-${value_size}-${n}`, ret, "()"];
 }
 
-function generate_if(n){
+function generate_if(n, value_size){
   let ret = "";
   // alternate between true and false
-  const conditions = ["()", "(q . 1)"];
+  const conditions = ["()", `(q . ${make_value(value_size)})`];
   for(let i=0;i<n;i++){
     ret += `(c (i ${conditions[i%2]} (q . 1) (q . 2)) `;
   }
@@ -194,27 +195,67 @@ function generate_if(n){
   for(let i=0;i<n;i++){
     ret += ")";
   }
-  return [`if-1-${n}`, ret, "()"];
+  return [`if-${value_size}-${n}`, ret, "()"];
 }
 
-function get_range(name){
-  if(name.split("-")[0].endsWith("_empty")) return [3000, 40, [1]];
-  if(name.startsWith('mul_nest1')) return [3000,50,[1, 25, 50, 100, 200, 400, 600, 800, 1000]];
-  if(name.startsWith('mul')) return [3000,50,[1, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]];
-  if(name.startsWith('cons-')) return [3000,40,[1]];
-  if(name.startsWith('lookup')) return [3000,40,[2]];
-  if(name.startsWith('point_add')) return [300,4,[48]];
-  if(name.startsWith('listp')) return [3000,40,[1]];
-  if(name.startsWith('first')) return [3000,40,[1]];
-  if(name.startsWith('rest')) return [3000,40,[1]];
-  if(name.startsWith('if-')) return [3000,40,[1]];
-  else return [3000,40,[1, 128, 1024]];
+function generate_apply(n, name){
+  let ret = "";
+  for(let i=0;i<n;i++){
+    ret += "(a (q . (lognot ";
+  }
+  ret += "(q . 1)";
+  for(let i=0;i<n;i++){
+    ret += ")) ())";
+  }
+  
+  return [`${name}-${n}`, ret, "()"];
 }
+
+
+
+function get_config(name){
+  if(parameterSet === "common"){
+    return get_config_for_common_case(name);
+  }
+  return get_default_config(name);
+}
+
+function get_default_config(name){
+  if(name.split("-")[0].endsWith("_empty")) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
+  if(name.startsWith('mul_nest1')) return {first: 2, last: 3000, step: 50, valueBytes: [1, 25, 50, 100, 200, 400, 600, 800, 1000]};
+  if(name.startsWith('mul')) return {first: 2, last: 3000, step: 50, valueBytes: [1, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]};
+  if(name.startsWith('cons-')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
+  if(name.startsWith('lookup')) return {first: 2, last: 3000, step: 40, valueBytes: [2]};
+  if(name.startsWith('point_add')) return {first: 2, last: 300, step: 4, valueBytes: [48]};
+  if(name.startsWith('listp')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
+  if(name.startsWith('first')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
+  if(name.startsWith('rest')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
+  if(name.startsWith('if-')) return {first: 2, last: 3000, step: 40, valueBytes: [1]};
+  if(name.startsWith('apply')) return {first: 1000, last: 1000, step: 0, valueBytes: []};
+  else return {first: 2, last: 3000, step: 40, valueBytes: [1, 128, 1024]};
+}
+
+function get_config_for_common_case(name){
+  if(name.split("-")[0].endsWith("_empty")) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('mul_nest1')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('mul')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('cons-')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('lookup')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('point_add')) return {first: 200, last: 200, step: 0, valueBytes: [48]};
+  if(name.startsWith('listp')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('first')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('rest')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('if-')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  if(name.startsWith('apply')) return {first: 200, last: 200, step: 0, valueBytes: [4]};
+  else return {first: 200, last: 200, step: 0, valueBytes: [4]};
+}
+
 
 function print_files(fun){
   const {wid} = process.env;
   const name = fun(0, 1)[0];
-  const [end, step, vsizes] = get_range(name);
+  // const [end, step, vsizes] = get_config(name);
+  const {first, last, step, valueBytes} = get_config(name);
   const folder = path.resolve(benchmarkRoot, name.split("-")[0].split("_")[0]);
   try{
     if(!fs.existsSync(folder)){
@@ -223,46 +264,26 @@ function print_files(fun){
   }
   catch (e) { }
   
-  for(const value_size of vsizes){
-    for(let i=2;i<end;i+=step){
+  const edge = step - (Math.floor(step / 10) * 10); // first digit of step. if step is 62, then 2. if 35, 5.
+  
+  for(const value_size of valueBytes){
+    let i = first;
+    for(i=first;i<=last+step;i+=step){
+      if(i === first + step && step > edge){
+        i -= edge;
+      }
+      if(i > last){
+        i = last;
+      }
       const [name, prg, env] = fun(i, value_size);
       fs.writeFileSync(path.resolve(folder, `${name}.clvm`), prg);
       fs.writeFileSync(path.resolve(folder, `${name}.env`), env);
       console.log(`[process-${wid}] Generated ${name} into ${folder}`);
+      if(i === last){
+        break;
+      }
     }
   }
-}
-
-function gen_apply(n, name){
-  const {wid} = process.env;
-  const folder = path.resolve(benchmarkRoot, name);
-  try{
-    if(!fs.existsSync(folder)){
-      fs.mkdirSync(folder);
-    }
-  }
-  catch (e) { }
-  const fd = fs.openSync(path.resolve(folder, `${name}-${n}.clvm`), "w+");
-  try{
-    for(let i=0;i<n;i++){
-      fs.writeSync(fd, "(a (q . (lognot ");
-    }
-    
-    fs.writeSync(fd, "(q . 1)");
-    
-    for(let i=0;i<n;i++){
-      fs.writeSync(fd, ")) ())");
-    }
-  }
-  catch(e){
-    console.error(e);
-  }
-  finally {
-    fs.closeSync(fd);
-  }
-  
-  fs.writeFileSync(path.resolve(folder, `${name}-${n}.env`), "()");
-  console.log(`[process-${wid}] Generated ${name}-${n} into ${folder}`);
 }
 
 const point_val = '0xb3b8ac537f4fd6bde9b26221d49b54b17a506be147347dae5d081c0a6572b611d8484e338f3432971a9823976c6a232b'
@@ -312,11 +333,11 @@ const benchmarkTasks = {
   mul_nested: () => print_files((n, vs) => generate_nested_1(n, '*', vs, 'mul')),
   mul_empty_op_list: () => print_files((n, vs) => generate_op_list(n, '*', vs, 'mul_empty', 0)),
   listp_op_list: () => print_files((n, vs) => generate_op_list(n, 'l', vs, 'listp', 1)),
-  first_list: () => print_files((n, vs) => generate_list(n, 'f', 'first')),
-  list_empty: () => print_files((n, vs) => generate_list_empty(n)),
-  rest_list: () => print_files((n, vs) => generate_list(n, 'r', 'rest')),
-  if: () => print_files((n, vs) => generate_if(n)),
-  apply: () => gen_apply(1000, 'apply'),
+  first_list: () => print_files((n, vs) => generate_list(n, 'f', vs, 'first')),
+  list_empty: () => print_files((n, vs) => generate_list_empty(n, vs)),
+  rest_list: () => print_files((n, vs) => generate_list(n, 'r', vs, 'rest')),
+  if: () => print_files((n, vs) => generate_if(n, vs)),
+  apply: () => print_files((n, vs) => generate_apply(n, 'apply')),
 };
 
 function select_task_names(grep_str){
@@ -378,6 +399,10 @@ function cluster_master_main(){
     ["-l", "--list"], {action: "store_true",
       help: "grep string to filter benchmark to generate"},
   );
+  parser.add_argument(
+    ["-p", "--parameter"], {default: "default",
+      help: "Parameter set of benchmark"},
+  );
   
   const parsedArgs = parser.parse_args(process.argv.slice(2));
   if(parsedArgs.root_dir){
@@ -396,6 +421,9 @@ function cluster_master_main(){
     console.log(targetTasksNames.join("\n"));
     process.exit(0);
     return;
+  }
+  if(parsedArgs.parameter){
+    parameterSet = parsedArgs.parameter;
   }
   
   if(!targetTasksNames.length){
@@ -422,6 +450,7 @@ function cluster_master_main(){
       benchmarkRoot,
       nCoreToUse,
       targetTasksNames: JSON.stringify(targetTasksNames),
+      parameterSet,
     };
     const w = cluster.fork(env);
     workers[w.process.pid] = {i, pid: w.process.pid, time: now()};
@@ -445,10 +474,12 @@ function cluster_worker_main(){
     benchmarkRootEnv,
     nCoreToUse,
     targetTasksNames: targetTasksNames_json,
+    parameterSet: envParameterSet,
   } = process.env;
   console.log(`[main] worker process ${wid}/${process.pid} has started`);
   
   const targetTasksNames = JSON.parse(targetTasksNames_json);
+  parameterSet = envParameterSet;
   
   if(benchmarkRootEnv){
     if(!fs.existsSync(benchmarkRootEnv)){
