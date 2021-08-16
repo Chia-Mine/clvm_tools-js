@@ -264,13 +264,16 @@ function print_files(fun){
   }
   catch (e) { }
   
-  const edge = step - (Math.floor(step / 10) * 10); // first digit of step. if step is 62, then 2. if 35, 5.
+  const first_digit_of_step = step - (Math.floor(step / 10) * 10); // first digit of step. if step is 62, then 2. if 35, 5.
   
   for(const value_size of valueBytes){
     let i = first;
     for(i=first;i<=last+step;i+=step){
-      if(i === first + step && step > edge){
-        i -= edge;
+      if(i === first + step && first_digit_of_step === 0){
+        const edge = i - (Math.floor(i / 10)*10);
+        if(edge > 0 && step > edge){
+          i -= edge;
+        }
       }
       if(i > last){
         i = last;
