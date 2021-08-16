@@ -93,8 +93,8 @@ function generate_and_run_trends_analysis(directory){
         continue;
       }
       const cols = line.split(",");
-      const x = +cols[4];
-      const y = +cols[3];
+      const x = +cols[7];
+      const y = +cols[6];
       runtime.push(y);
       ops.push(x);
       if(x > xMax) xMax = x;
@@ -159,14 +159,14 @@ function generate_and_run_timings_analysis(directory){
         continue;
       }
       const cols = line.split(",");
-      const x = +cols[4];
-      const y = +cols[3];
+      const x = +cols[7];
+      const y = +cols[6];
       if(x > xMax) xMax = x;
       if(y > yMax) yMax = y;
     }
     
     const name = fn.split("results-")[1].split(".csv")[0];
-    lines_to_write.push(`"./${fn.replace(/^.+[/]/, "")}" using 5:4 with points lc ${i} title "${name}"${cont}\n`);
+    lines_to_write.push(`"./${fn.replace(/^.+[/]/, "")}" using 8:7 with points lc ${i} title "${name}"${cont}\n`);
   }
   
   const xLog10 = Math.floor(Math.log10(xMax));
