@@ -89,7 +89,7 @@ function generate_and_run_trends_analysis(directory){
     const runtime = [];
     const lines = fs.readFileSync(fn, "utf-8").split("\n");
     for(const line of lines){
-      if(!line || line.startsWith("#")){
+      if(!line || line.startsWith("#") || /^[^0-9]/.test(line)){
         continue;
       }
       const cols = line.split(",");
@@ -155,7 +155,7 @@ function generate_and_run_timings_analysis(directory){
     }
     const lines = fs.readFileSync(fn, "utf-8").split("\n");
     for(const line of lines){
-      if(!line || line.startsWith("#")){
+      if(!line || line.startsWith("#") || /^[^0-9]/.test(line)){
         continue;
       }
       const cols = line.split(",");
