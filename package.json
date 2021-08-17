@@ -15,7 +15,7 @@
     "clvm_tools": "./bin/cli.js"
   },
   "scripts": {
-    "build": "node pre_build.js && tsc --sourcemap false",
+    "build": "node pre_build.js && tsc --sourcemap false && webpack",
     "test": "jest",
     "gen-bench": "node ./costs/generate-benchmark.js",
     "run-bench": "node ./costs/run-benchmark.js",
@@ -44,10 +44,15 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsdoc": "^30.4.1",
     "glob": "^7.1.7",
+    "fork-ts-checker-webpack-plugin": "^6.2.12",
     "jest": "^27.0.6",
     "shlex": "^2.1.0",
+    "terser-webpack-plugin": "^5.1.3",
     "tmp": "^0.2.1",
     "ts-jest": "^27.0.3",
-    "typescript": "^4.2.4"
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.2.4",
+    "webpack": "^5.39.1",
+    "webpack-cli": "^4.7.2"
   }
 }

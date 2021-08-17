@@ -19,7 +19,7 @@ if(fs.existsSync(browserDir)){
   fs.rmdirSync(browserDir, {recursive: true});
 }
 fs.mkdirSync(browserDir);
-const blsWasmSrcPath = path.join(__dirname, "node_modules", "@chiamine", "bls-signatures", "blsjs.wasm");
+const blsWasmSrcPath = path.join(__dirname, "node_modules", "clvm", "browser", "blsjs.wasm");
 const blsWasmDestPath = path.join(browserDir, "blsjs.wasm");
 if(!fs.existsSync(blsWasmSrcPath)){
   console.error("blsjs.wasm not found at:");

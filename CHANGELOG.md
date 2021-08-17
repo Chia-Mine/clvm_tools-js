@@ -11,6 +11,7 @@
 - Changed the time unit(ms->sec) of output with `--time` option, to be compatible with Python's `clvm_tools`.
 ### Added
 - Added benchmark scripts.
+- Added webpack config to build js file for browser.
 ### Fixed
 - Fixed an issue where it did not correctly handle signed/unsigned integer from and to `Bytes`.
 - Fixed an issue where large int was not recognized correctly.
