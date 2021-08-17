@@ -3,7 +3,7 @@
 ## [0.1.7]
 ### Changed
 - Changed `OperatorDict` arguments format.
-- Huge performance improvement by upgrading `clvm` to v1.0.5.
+- Huge performance improvement by upgrading `clvm` to v1.0.6.
 - Greatly reduced max stack memory consumed
   - by merged `tokenize_cons` into `tokenize_sexp`. (Converted recursive function calls into loop)
   - by fully flatten `assemble_from_ir` which dispatched recursive function call and consumed a lot of stack memory.
