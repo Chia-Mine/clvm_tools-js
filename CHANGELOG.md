@@ -12,6 +12,7 @@
 ### Added
 - Added benchmark scripts.
 - Added webpack config to build js file for browser.
+- Added `clvm_tools.go(...args)` function to dispatch cli commands from javascript.
 ### Fixed
 - Fixed an issue where it did not correctly handle signed/unsigned integer from and to `Bytes`.
 - Fixed an issue where large int was not recognized correctly.

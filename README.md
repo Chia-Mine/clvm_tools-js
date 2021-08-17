@@ -27,9 +27,9 @@ $ npx clvm_tools brun "(+ 1 (q . 3))" "2"
 ### NodeJS
 ```javascript
 const clvm_tools = require("clvm_tools");
-clvm_tools.run(["run", "(mod ARGUMENT (+ ARGUMENT 3))"]);
+clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
 // Output: (+ 1 (q . 3))
-clvm_tools.brun(["brun", "(+ 1 (q . 3))", "2"]);
+clvm_tools.go("brun", "(+ 1 (q . 3))", "2");
 // Output: 5
 ```
 
