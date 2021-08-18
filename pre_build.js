@@ -28,6 +28,8 @@ if(!fs.existsSync(blsWasmSrcPath)){
   return;
 }
 fs.copyFileSync(blsWasmSrcPath, blsWasmDestPath);
+const browserDtsPath = path.join(browserDir, "index.d.ts");
+fs.writeFileSync(browserDtsPath, 'export * from "..";\n');
 
 
 const packageJson = require("./package.json");
