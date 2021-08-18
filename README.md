@@ -27,6 +27,10 @@ $ npx clvm_tools brun "(+ 1 (q . 3))" "2"
 ### NodeJS
 ```javascript
 const clvm_tools = require("clvm_tools");
+
+// You can skip async-initialization below until `op_pubkey_for_exp` or `op_point_add` is called
+await clvm_tools.initialize(); 
+
 clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
 // Output: (+ 1 (q . 3))
 clvm_tools.go("brun", "(+ 1 (q . 3))", "2");
