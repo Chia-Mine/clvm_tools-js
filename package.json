@@ -15,7 +15,8 @@
     "clvm_tools": "./bin/cli.js"
   },
   "scripts": {
-    "build": "node pre_build.js && tsc --sourcemap false && webpack",
+    "build": "node pre_build.js && tsc --sourcemap false && npm run build:web",
+    "build:web": "webpack && tsc --sourcemap false --declaration --emitDeclarationOnly --out ./.dist/npm/browser/index.js",
     "test": "jest",
     "gen-bench": "node ./costs/generate-benchmark.js",
     "run-bench": "node ./costs/run-benchmark.js",
