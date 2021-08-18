@@ -1,14 +1,14 @@
 import {b, Bytes, Stream, isBytes} from "clvm";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const FS = require("fs");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const PATH = require("path");
 
 export function fs_write(path: string, data: string){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const FS = require("fs");
   FS.writeFileSync(path, data);
 }
 
 export function fs_read(path: string){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const FS = require("fs");
   return FS.readFileSync(path, {encoding: "utf8"});
 }
 
@@ -27,27 +27,19 @@ export function* fs_readlineSync(path: string): Generator<string, any, boolean>{
 }
 
 export function fs_readdir(path: string){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const FS = require("fs");
   return FS.readdirSync(path, {encoding: "utf8", withFileTypes: true});
 }
 
 export function fs_isFile(path: string){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const FS = require("fs");
   const stat = FS.statSync(path);
   return stat.isFile();
 }
 
 export function fs_exists(path: string){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const FS = require("fs");
   return FS.existsSync(path);
 }
 
 export function fs_stat(path: string){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const FS = require("fs");
   return FS.statSync(path);
 }
 
@@ -76,8 +68,6 @@ export function os_walk(dirpath: string, stack?: WalkTree){
 }
 
 export function path_join(...paths: string[]){
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const PATH = require("path");
   return PATH.resolve(...paths);
 }
 
