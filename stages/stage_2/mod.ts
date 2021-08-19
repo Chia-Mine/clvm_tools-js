@@ -180,7 +180,7 @@ export function parse_mod_sexp(
     constants[name_atom.hex()] = SExp.to(quote(declaration_sexp.rest().rest().first()));
   }
   else{
-    throw new SyntaxError("expected defun, defmacro, or defconstant");
+    throw new SyntaxError("expected defun, defun-inline, defmacro, or defconstant");
   }
 }
 
