@@ -10,6 +10,7 @@ export * from "./clvm_tools/sha256tree";
 
 import {setStdout, TPrinter} from "./platform/print";
 import {initialize as initClvm} from "clvm";
+import {initialize as initClvmRs} from "./platform/clvm_rs";
 
 const COMMANDS: Record<string, (args: string[]) => unknown> = {
   read_ir,
@@ -58,5 +59,5 @@ export function setPrintFunction(printer: TPrinter){
  * This is because 'clvm' relies on a wasm of 'bls-signatures', which requires asynchronous loading.
  */
 export async function initialize(){
-  return initClvm();
+  await Promise.all([initClvm(), initClvmRs()]);
 }

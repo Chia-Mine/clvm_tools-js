@@ -27,20 +27,15 @@ module.exports = {
       "fs": path.resolve(__dirname, "platform", "browser", "fs"),
       "perf_hooks": path.resolve(__dirname, "platform", "browser", "perf_hooks"),
       "crypto": false,
-    }
+    },
+    alias: {
+      "clvm_rs": false,
+    },
   },
   target: ["es5"],
   optimization: {
     minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          mangle: {
-            properties: {
-              regex: /^_.+/,
-            }
-          },
-        }
-      }),
+      new TerserPlugin(),
     ]
   },
   entry: "./index.ts",

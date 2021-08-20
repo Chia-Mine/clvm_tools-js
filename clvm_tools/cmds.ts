@@ -14,6 +14,7 @@ import {
   Optional,
   CLVMObject,
 } from "clvm";
+import {run_clvm as run_program_rust} from "../platform/clvm_rs";
 import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
 import {make_trace_pre_eval, trace_to_text, trace_to_table} from "./debug";
@@ -189,12 +190,10 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
     ["-n", "--no-keywords"], {action: "store_true",
                               help: "Output result as data, not as a program"},
   );
-  /*
   parser.add_argument(
-    ["--backend"], {type: "str",
-      help: "force use of 'rust' or 'python' backend"},
+    ["--experiment-backend"], {type: "str",
+                               help: "force use of 'rust' or 'python' backend"},
   );
-   */
   parser.add_argument(
     ["-i", "--include"],
     {
@@ -285,18 +284,36 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
   try{
     const arg_max_cost = parsedArgs["max_cost"] as number;
     const max_cost = Math.max(0, (arg_max_cost !== 0 ? arg_max_cost - cost_offset : 0));
-    // if use_rust: ...
-    // else
-    if(input_sexp === None){
-      input_sexp = sexp_from_stream(new Stream(input_serialized as Bytes), to_sexp_f);
-    }
-    time_parse_input = now();
-    const run_program_result = run_program(
-      run_script, input_sexp, {max_cost, pre_eval_f, strict: parsedArgs["strict"] as boolean}
+    const use_rust = (
+      tool_name !== "run"
+      && !pre_eval_f
+      && parsedArgs["experiment_backend"] === "rust"
     );
-    cost = run_program_result[0] as number;
-    result = run_program_result[1] as SExp;
-    time_done = now();
+    
+    if(use_rust){
+      if(input_serialized === None){
+        input_serialized = (input_sexp as SExp).as_bin();
+      }
+      
+      const run_script2 = run_script.as_bin();
+      time_parse_input = now();
+      
+      const run_program_result = run_program_rust(run_script2.raw(), input_serialized.raw());
+      time_done = now();
+      result = sexp_from_stream(new Stream(new Bytes(run_program_result)), to_sexp_f);
+    }
+    else{
+      if(input_sexp === None){
+        input_sexp = sexp_from_stream(new Stream(input_serialized as Bytes), to_sexp_f);
+      }
+      time_parse_input = now();
+      const run_program_result = run_program(
+        run_script, input_sexp, {max_cost, pre_eval_f, strict: parsedArgs["strict"] as boolean}
+      );
+      cost = run_program_result[0] as number;
+      result = run_program_result[1] as SExp;
+      time_done = now();
+    }
     
     if(parsedArgs["cost"]){
       cost += cost > 0 ? cost_offset : 0;
