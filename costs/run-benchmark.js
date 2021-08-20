@@ -12,6 +12,7 @@ let grepString = "";
 let only_heaviest = false;
 let number_of_iterations = 1;
 let overwrite = false;
+let useRust = false;
 const now = (new Date()).toLocaleString();
 
 function toPosixPath(p){
@@ -121,7 +122,11 @@ function run_benchmark_file(fn, existing_results){
     return;
   }
   
-  const command = `node "${commandPath}" brun -c --quiet --time "${toOSPath(fn)}" "${toOSPath(envPath)}"`;
+  const command = [
+    "node",
+    `"${commandPath}"`, "brun", "-c", "--quiet", "--time", `--experiment-backend ${useRust ? "rust" : "js"}`,
+    `"${toOSPath(fn)}"`, `"${toOSPath(envPath)}"`
+  ].join(" ");
   for(let i=0;i<number_of_iterations;i++){
     const outputBuffer = child_process.execSync(command);
     const outputLines = outputBuffer.toString("ascii").split(/\n/g, 5);
@@ -148,7 +153,7 @@ function run_benchmark_file(fn, existing_results){
   const fd = get_file(folder, name_components.slice(0, name_components.length-1).join("-"), dry_run);
   const line = ""
     + now + ","
-    + `clvm_tools(js)-clvm(js)` + ","
+    + `clvm_tools(js)-clvm(${useRust ? "rust" : "js"})` + ","
     + filename + ","
     + counters["cost"] + ","
     + counters["assemble_from_ir"] + ","
@@ -216,6 +221,10 @@ function main(){
     ["-w", "--overwrite"], {action: "store_true",
       help: "Overwrite previous benchmark result if it exists"},
   );
+  parser.add_argument(
+    ["-b", "--backend"], { default: "js",
+    help: 'rust/js'}
+  );
   
   const parsedArgs = parser.parse_args(process.argv.slice(2));
   if(parsedArgs.root_dir){
@@ -234,6 +243,7 @@ function main(){
   if(parsedArgs.overwrite){
     overwrite = true;
   }
+  useRust = parsedArgs.backend === "rust";
   
   run_benchmark_all(benchmarkRoot);
 }
