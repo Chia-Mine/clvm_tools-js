@@ -29,10 +29,11 @@
     "typescript"
   ],
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=12.22.0"
   },
   "dependencies": {
-    "clvm": "^1.0.6"
+    "clvm": "^1.0.6",
+    "clvm_rs": "0.1.10"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
@@ -43,8 +44,8 @@
     "eslint": "^7.8.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsdoc": "^30.4.1",
-    "glob": "^7.1.7",
     "fork-ts-checker-webpack-plugin": "^6.2.12",
+    "glob": "^7.1.7",
     "jest": "^27.0.6",
     "shlex": "^2.1.0",
     "terser-webpack-plugin": "^5.1.3",
