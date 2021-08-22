@@ -65,7 +65,7 @@ var fileObj = {
 };
 // 2. Stringify the object
 var fileObjStr = JSON.stringify(fileObj);
-// 3. Finally save it to the locaoStorage
+// 3. Finally save it to the localStorage
 localStorage.setItem("/path/to/clvm/file", fileObjStr);
 // Then clvm_tools recognizes it as a file.
 clvm_tools.go("brun", "/path/to/clvm/file", "2");
