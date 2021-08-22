@@ -67,10 +67,10 @@ var fileObj = {
 var fileObjStr = JSON.stringify(fileObj);
 // 3. Finally save it to the localStorage
 localStorage.setItem("/path/to/clvm/file", fileObjStr);
+
 // Then clvm_tools recognizes it as a file.
 clvm_tools.go("brun", "/path/to/clvm/file", "2");
 // output: 5
-
 ```
 
 ### WebAssembly files
@@ -89,7 +89,7 @@ In order for those wasm files to be loaded correctly, you need to make sure that
 └── blsjs.wasm       # copy it from node_modules/clvm_tools/browser/blsjs.wasm
 </pre>
 
-If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `public` folder under the React project root.  
+If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `public/static/js` from the React project root.  
 React automatically copies wasm files next to the main js file on building.  
 (if you use react-scripts, or you started project by `create-react-app`)
 
@@ -100,9 +100,9 @@ The .wasm files are not loaded automatically. It requires programmer to fetch an
 import * as clvm_tools from "clvm_tools/browser";
 // ...
 
-// This 'clvm_tools.initialize()' fetches and loads wasm files from the same path of the current page.
+// This 'clvm_tools.initialize()' fetches and loads wasm files from the same path of the current js file location.
 // 
-// For example, if url of current web page is 'https://example.com/aaa/bbb',
+// For example, if url of the js file currently running is 'https://example.com/aaa/bbb/main.js',
 // it tries to fetch wasm files from 'https://example.com/aaa/bbb/blsjs.wasm'
 // and 'https://example.com/aaa/bbb/clvm_rs_bg.wasm'
 await clvm_tools.initialize();

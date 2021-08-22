@@ -52,11 +52,20 @@ export function run_clvm(program: Uint8Array, args: Uint8Array) {
   }
 }
 
+const defaultClvmRsWasmPath = (() => {
+  if(typeof document !== "undefined" && document.currentScript){
+    const scriptDir = (document.currentScript as HTMLScriptElement).src.replace(/\/[^/]+$/, "");
+    return scriptDir + "/clvm_rs_bg.wasm";
+  }
+  else{
+    return "./clvm_rs_bg.wasm";
+  }
+})();
+
 export type TInitOption = {
   pathToWasm: string;
   fetchOption: RequestInit;
 };
-const defaultPathToClvmRsWasm = "./clvm_rs_bg.wasm";
 export async function initialize(option?: TInitOption){
   let wasmModule;
   if (typeof window === "undefined") {
@@ -68,7 +77,13 @@ export async function initialize(option?: TInitOption){
     wasmModule = new WebAssembly.Module(bytes);
   }
   else {
-    const url = (option && option.pathToWasm) || defaultPathToClvmRsWasm;
+    let url;
+    if(option && option.pathToWasm){
+      url = option.pathToWasm;
+    }
+    else{
+      url = defaultClvmRsWasmPath;
+    }
     const mod = await fetch(url, option && option.fetchOption);
     wasmModule = new WebAssembly.Module(await mod.arrayBuffer());
   }
