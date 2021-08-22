@@ -1,15 +1,104 @@
-export function readFileSync(path: string, option?: {encoding: "utf8"}): string {
-  const data = window.localStorage.getItem(path);
-  return data ? JSON.parse(data) : "";
+import {Bytes} from "clvm/__type_compatibility__";
+
+export type TEncodingOption = "utf8"|string;
+export type TFileObj = {
+  encode: "string"|"binary";
+  data: string;
+};
+export type TFileReadWriteOption = {
+  encode: TEncodingOption;
+};
+
+export function createFileContent(data: string|Uint8Array, option?: TFileReadWriteOption): string {
+  let fileObj: TFileObj;
+  if(typeof data === "string"){
+    fileObj = {
+      encode: "string",
+      data,
+    }
+  }
+  else if(option && /^utf[-]?8$/i.test(option.encode)){
+    const decoder = new TextDecoder(option.encode);
+    data = decoder.decode(data);
+    fileObj = {
+      encode: "string",
+      data,
+    };
+  }
+  else{
+    data = (new Bytes(data)).hex();
+    fileObj = {
+      encode: "binary",
+      data,
+    };
+  }
+  return JSON.stringify(fileObj);
 }
 
-export function writeFileSync(path: string, data: string): void {
-  window.localStorage.setItem(path, JSON.stringify(data));
-  return;
+export function getFileObj(data: unknown): TFileObj|false {
+  try{
+    let fileObj: Record<string, unknown>;
+    if(typeof data === "string"){
+      fileObj = JSON.parse(data as string);
+    }
+    else if(data && typeof data === "object"){
+      fileObj = data as Record<string, unknown>;
+    }
+    else{
+      return false;
+    }
+    const isFileObj = Object.hasOwnProperty.call(fileObj, "encode")
+      && Object.hasOwnProperty.call(fileObj, "data")
+      && typeof fileObj.encode === "string"
+      && typeof fileObj.data === "string"
+    ;
+    if(isFileObj){
+      return fileObj as TFileObj;
+    }
+    return false;
+  }
+  catch (e){
+    return false;
+  }
+}
+
+export function parseFileContent<T extends TFileReadWriteOption|undefined>(data: string, option?: T): T extends undefined ? Uint8Array : string {
+  const fileObj = getFileObj(data);
+  if(!fileObj){
+    throw new Error("Not a valid file object");
+  }
+  if(option){
+    if(fileObj.encode === "binary"){
+      const uint8 = Bytes.from(fileObj.data, "hex").raw();
+      const decoder = new TextDecoder(option.encode);
+      return decoder.decode(uint8) as T extends undefined ? Uint8Array : string;
+    }
+    return fileObj.data as T extends undefined ? Uint8Array : string;
+  }
+  else if(fileObj.encode === "binary"){
+    return Bytes.from(fileObj.data, "hex").raw() as T extends undefined ? Uint8Array : string;
+  }
+  const encoder = new TextEncoder();
+  return encoder.encode(fileObj.data) as T extends undefined ? Uint8Array : string;
+}
+
+export function readFileSync<T extends undefined|TFileReadWriteOption>(path: string, option?: T): T extends undefined ? Uint8Array : string {
+  const data = window.localStorage.getItem(path);
+  if(data === null){
+    throw new Error(`File not found at: ${path}`);
+  }
+  return parseFileContent(data, option);
+}
+
+export function writeFileSync(path: string, data: string|Uint8Array, option?: TFileReadWriteOption){
+  if(typeof data !== "string"){
+    throw new Error(`Only 'string' data is supported for now. Type of data passed in: ${typeof data}`);
+  }
+  window.localStorage.setItem(path, createFileContent(data, option));
 }
 
 export function existsSync(path: string){
-  return Boolean(window.localStorage.getItem(path));
+  return window.localStorage.getItem(path) !== null;
 }
 
 export function statSync(path: string){
