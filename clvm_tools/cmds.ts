@@ -12,7 +12,7 @@ import {
   h,
   TPreEvalF,
   Optional,
-  CLVMObject,
+  CLVMType,
 } from "clvm";
 import {run_clvm as run_program_rust} from "../platform/clvm_rs";
 import * as reader from "../ir/reader";
@@ -344,7 +344,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
   }
   catch (ex) {
     if(ex instanceof EvalError){
-      result = to_sexp_f(ex._sexp as CLVMObject);
+      result = to_sexp_f(ex._sexp as CLVMType);
       output = `FAIL: ${ex.message} ${binutils.disassemble(result, keywords)}`;
       return -1;
     }

@@ -1,16 +1,16 @@
-import {b, Bytes, CLVMObject, OPERATOR_LOOKUP, OperatorDict, SExp, t, Tuple} from "clvm";
+import {b, Bytes, CLVMType, OPERATOR_LOOKUP, OperatorDict, SExp, t, Tuple} from "clvm";
 import {run_program as run_program_0, RunProgramOption} from "./stage_0";
 import * as binutils from "../clvm_tools/binutils";
 
 
 export function make_invocation(code: SExp){
-  return function invoke(args: CLVMObject){
+  return function invoke(args: CLVMType){
     return run_program(code, args);
   };
 }
 
 export function make_bindings(bindings_sexp: SExp){
-  const binding_table: Record<string, (args: CLVMObject)=>unknown> = {};
+  const binding_table: Record<string, (args: CLVMType)=>unknown> = {};
   for(const pair of bindings_sexp.as_iter()){
     const name = pair.first().atom as Bytes;
     binding_table[name.hex()] = make_invocation(pair.rest().first());
@@ -59,7 +59,7 @@ export function RunProgram(){
   
   const f = function(
     program: SExp,
-    args: CLVMObject,
+    args: CLVMType,
     option?: Omit<RunProgramOption, "operator_lookup">,
   ){
     const option2 = option ? {...option, operator_lookup: f.operator_lookup} : {operator_lookup: f.operator_lookup};

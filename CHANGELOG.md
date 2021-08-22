@@ -9,6 +9,8 @@
   - by fully flatten `assemble_from_ir` which dispatched recursive function call and consumed a lot of stack memory.
   - Before this update, executing `ir_read` on deeply nested S-exp(s.t. over 1500 depth) failed due to `Maximum call stack size exceeded` error.
 - Changed the time unit(ms->sec) of output with `--time` option, to be compatible with Python's `clvm_tools`.
+- Use `CLVMType` instead of `CLVMObject` as a valid type representation of `CLVMObject`.  
+  (CLVMObject should not be used as a type because there might be number of type incompatibility due to new private field)
 ### Added
 - Added benchmark scripts.
 - Added webpack config to build js file for browser.

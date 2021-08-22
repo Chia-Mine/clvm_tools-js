@@ -1,6 +1,6 @@
 import {
   Bytes,
-  CLVMObject,
+  CLVMType,
   EvalError,
   OPERATOR_LOOKUP as ORIGINAL_OPERATOR_LOOKUP,
   OperatorDict,
@@ -51,7 +51,7 @@ export function run_program_for_search_paths(search_paths: string[]){
   
   const run_program = (
     program: SExp,
-    args: CLVMObject,
+    args: CLVMType,
     option?: RunProgramOption,
   ) => {
     const operator_lookup = (option && option.operator_lookup) || _operator_lookup;

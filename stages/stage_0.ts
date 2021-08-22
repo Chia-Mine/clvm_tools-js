@@ -5,7 +5,7 @@ import {
   EvalError,
   None,
   SExp,
-  CLVMObject,
+  CLVMType,
   TOperatorDict,
   TPreEvalF,
   Bytes,
@@ -24,7 +24,7 @@ export type RunProgramOption = Partial<{
 
 export function run_program(
   program: SExp,
-  args: CLVMObject,
+  args: CLVMType,
   option?: RunProgramOption,
 ){
   let operator_lookup = (option && option.operator_lookup) || OPERATOR_LOOKUP;
