@@ -89,7 +89,7 @@ In order for those wasm files to be loaded correctly, you need to make sure that
 └── blsjs.wasm       # copy it from node_modules/clvm_tools/browser/blsjs.wasm
 </pre>
 
-If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `public/static/js` from the React project root.  
+If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js`.  
 React automatically copies wasm files next to the main js file on building.  
 (if you use react-scripts, or you started project by `create-react-app`)
 
