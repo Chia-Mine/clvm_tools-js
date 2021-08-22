@@ -10,7 +10,7 @@ export * from "./clvm_tools/sha256tree";
 
 import {setStdout, TPrinter} from "./platform/print";
 import {initialize as initClvm} from "clvm";
-import {initialize as initClvmRs} from "./platform/clvm_rs";
+import {initialize as initClvmRs, TInitOption as TInitClvmRsOption} from "./platform/clvm_rs";
 
 const COMMANDS: Record<string, (args: string[]) => unknown> = {
   read_ir,
@@ -49,15 +49,12 @@ export function setPrintFunction(printer: TPrinter){
   setStdout(printer);
 }
 
+export type TInitOption = {
+  initClvmRsOption: TInitClvmRsOption;
+};
 /**
- * Wait BLS module to be initialized before you call any of `clvm_tools` functions.
- * 
- * 'initialize()' here is not required if you're so sure it never calls 'pubkey_for_exp' or 'point_add' operation.
- * When one of those operations is called without prior 'await initialize()', it will raise an Error.
- * If it is unknown whether 'pubkey_for_exp' or 'point_add' will be called, then put 'await initialize()' for safety.
- * I know this 'await initialize()' makes code asynchronous and really impacts on code architecture.
- * This is because 'clvm' relies on a wasm of 'bls-signatures', which requires asynchronous loading.
+ * Wait wasm files to be loaded before you call any of `clvm_tools` functions.
  */
-export async function initialize(){
-  await Promise.all([initClvm(), initClvmRs()]);
+export async function initialize(option?: Partial<TInitOption>){
+  await Promise.all([initClvm(), initClvmRs(option?.initClvmRsOption)]);
 }

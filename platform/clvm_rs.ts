@@ -52,7 +52,12 @@ export function run_clvm(program: Uint8Array, args: Uint8Array) {
   }
 }
 
-export async function initialize(){
+export type TInitOption = {
+  pathToWasm: string;
+  fetchOption: RequestInit;
+};
+const defaultPathToClvmRsWasm = "./clvm_rs_bg.wasm";
+export async function initialize(option?: TInitOption){
   let wasmModule;
   if (typeof window === "undefined") {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -63,8 +68,8 @@ export async function initialize(){
     wasmModule = new WebAssembly.Module(bytes);
   }
   else {
-    const wasmPath = "./clvm_rs_bg.wasm";
-    const mod = await fetch(wasmPath);
+    const url = (option && option.pathToWasm) || defaultPathToClvmRsWasm;
+    const mod = await fetch(url, option && option.fetchOption);
     wasmModule = new WebAssembly.Module(await mod.arrayBuffer());
   }
   const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
