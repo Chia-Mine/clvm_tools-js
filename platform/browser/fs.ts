@@ -2,7 +2,7 @@ import {Bytes} from "clvm/__type_compatibility__";
 
 export type TEncodingOption = "utf8"|string;
 export type TFileObj = {
-  encode: "string"|"binary";
+  encode: "string"|"hex";
   data: string;
 };
 export type TFileReadWriteOption = {
@@ -28,7 +28,7 @@ export function createFileContent(data: string|Uint8Array, option?: TFileReadWri
   else{
     data = (new Bytes(data)).hex();
     fileObj = {
-      encode: "binary",
+      encode: "hex",
       data,
     };
   }
@@ -49,7 +49,7 @@ export function getFileObj(data: unknown): TFileObj|false {
     }
     const isFileObj = Object.hasOwnProperty.call(fileObj, "encode")
       && Object.hasOwnProperty.call(fileObj, "data")
-      && typeof fileObj.encode === "string"
+      && (fileObj.encode === "string" || fileObj.encode === "hex")
       && typeof fileObj.data === "string"
     ;
     if(isFileObj){
@@ -68,14 +68,14 @@ export function parseFileContent<T extends TFileReadWriteOption|undefined>(data:
     throw new Error("Not a valid file object");
   }
   if(option){
-    if(fileObj.encode === "binary"){
+    if(fileObj.encode === "hex"){
       const uint8 = Bytes.from(fileObj.data, "hex").raw();
       const decoder = new TextDecoder(option.encode);
       return decoder.decode(uint8) as T extends undefined ? Uint8Array : string;
     }
     return fileObj.data as T extends undefined ? Uint8Array : string;
   }
-  else if(fileObj.encode === "binary"){
+  else if(fileObj.encode === "hex"){
     return Bytes.from(fileObj.data, "hex").raw() as T extends undefined ? Uint8Array : string;
   }
   const encoder = new TextEncoder();
