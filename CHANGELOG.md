@@ -3,7 +3,7 @@
 ## [1.0.0]
 ### Changed
 - Changed `OperatorDict` arguments format.
-- Huge performance improvement by upgrading `clvm` to v1.0.6.
+- Huge performance improvement by upgrading `clvm` to v1.0.7.
 - Greatly reduced max stack memory consumed
   - by merged `tokenize_cons` into `tokenize_sexp`. (Converted recursive function calls into loop)
   - by fully flatten `assemble_from_ir` which dispatched recursive function call and consumed a lot of stack memory.
@@ -16,6 +16,7 @@
 - Added webpack config to build js file for browser.
 - Added `clvm_tools.go(...args)` function to dispatch cli commands from javascript.
 - Added `--experiment-backend rust` option to use `clvm_rs`.
+- Added [sample code](./.example)
 ### Fixed
 - Fixed an issue where it did not correctly handle signed/unsigned integer from and to `Bytes`.
 - Fixed an issue where large int was not recognized correctly.
