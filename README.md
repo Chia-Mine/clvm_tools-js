@@ -112,31 +112,10 @@ await clvm_tools.initialize();
 Note that if you are really sure that you never use `op_point_add` and `op_pubkey_for_exp` and `clvm_rs` as a backend,  
 then you can skip the above async initialization. It never raises an exception until those wasm files are actually required.
 
-### Example: Typescript + Webpack
-```typescript
-// index.ts
-import * as clvm_tools from "clvm_tools/browser";
-// You can call the same modules exported from 'clvm_tools/index.js'
+### Example
+#### Typescript + Webpack
+See code sample [here](./.example/typescript_webpack)
 
-clvm_tools.setPrintFunction((...msg: string[]) => {
-  window.alert(msg.join(" "));
-  // or
-  // console.log(...msg);
-  // or
-  // someArray.push(msg);
-  // or anything you like to do with command output
-});
-
-function onClickSomething(e){
-  clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
-  // Alert popup will be appeared with a message "(+ 1 (q . 3))"
-}
-
-async function main(){
-  await clvm_tools.initialize();
-  // @todo add lines
-}
-```
 
 
 ## clvm_tools license

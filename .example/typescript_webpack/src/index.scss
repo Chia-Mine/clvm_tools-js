@@ -1,0 +1,55 @@
+#root {
+  width: 800px;
+  margin: auto;
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  .input {
+    label {
+      display: block;
+    }
+    textarea {
+      width: 100%;
+    }
+    
+    & + .input {
+      margin-top: 16px;
+    }
+  }
+  
+  .options {
+    margin-top: 16px;
+    & > div:first-child {
+      margin-bottom: 8px;
+    }
+    label + label {
+      margin-left: 16px;
+    }
+  }
+  
+  .buttons {
+    margin-top: 16px;
+    position: relative;
+    button {
+      padding: 4px 8px;
+    }
+    button + button {
+      margin-left: 16px;
+    }
+    button:last-child {
+      position: absolute;
+      right: 0;
+    }
+  }
+  
+  .output-container {
+    margin-top: 16px;
+    
+    #output {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+  }
+}
