@@ -9,6 +9,17 @@ npm install clvm_tools
 yarn add clvm_tools
 ```
 
+## Test
+`clvm_tools-js` passes all the test equivalent to Python's original `clvm_tools`.  
+You can compare test files for [Javascript](./tests) and [Python](https://github.com/Chia-Network/clvm_tools/tree/main/tests)  
+To run the test, execute the following command.
+```shell
+npm run test
+# or
+yarn test
+```
+If you find something not compatible with Python's clvm_tools, please report it to GitHub issues.
+
 ## Compatibility
 This code is compatible with:
 - [`a349e6288779842eaf44c728e34308f18b82d9be`](https://github.com/Chia-Network/clvm_tools/tree/a349e6288779842eaf44c728e34308f18b82d9be) of [clvm_tools@0.4.3](https://github.com/Chia-Network/clvm_tools)
