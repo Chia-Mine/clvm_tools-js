@@ -67,14 +67,15 @@ export type TInitOption = {
   fetchOption: RequestInit;
 };
 export async function initialize(option?: TInitOption){
-  let wasmModule;
   if (typeof window === "undefined") {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const path = require.resolve("clvm_rs/clvm_rs_bg.wasm");
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const bytes = require("fs").readFileSync(path);
   
-    wasmModule = new WebAssembly.Module(bytes);
+    const wasmModule = new WebAssembly.Module(bytes);
+    const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+    wasm = wasmInstance.exports;
   }
   else {
     let url;
@@ -84,9 +85,8 @@ export async function initialize(option?: TInitOption){
     else{
       url = defaultClvmRsWasmPath;
     }
-    const mod = await fetch(url, option && option.fetchOption);
-    wasmModule = new WebAssembly.Module(await mod.arrayBuffer());
+    const fetcher = fetch(url, option && option.fetchOption);
+    const wasmInstance = await WebAssembly.instantiateStreaming(fetcher, imports);
+    wasm = wasmInstance.instance.exports;
   }
-  const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-  wasm = wasmInstance.exports;
 }
