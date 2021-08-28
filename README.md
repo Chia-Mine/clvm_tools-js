@@ -44,6 +44,7 @@ $ npx clvm_tools brun "(+ 1 (q . 3))" "2"
 const clvm_tools = require("clvm_tools");
 
 // You can skip async-initialization below until `op_pubkey_for_exp` or `op_point_add` is called
+// or dispatch run/brun command with "--experiment-backend rust" option
 await clvm_tools.initialize(); 
 
 clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
@@ -88,19 +89,19 @@ clvm_tools.go("brun", "/path/to/clvm/file", "2");
 Some parts of `clvm_tools`/`clvm` depend on WebAssembly.  
 For example:
 - `op_point_add` and `op_pubkey_for_exp` relies on wasm build of [bls-signatures](https://github.com/Chia-Mine/bls-signatures/tree/npm).
-- `brun` option `--experiment-backend clvm_rs` relies on wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
+- option `--experiment-backend clvm_rs` for `run` and `brun` commands relies on wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
 
 #### .wasm file installation
 In order for those wasm files to be loaded correctly, you need to make sure that the wasm files are stored in the same folder as the main js file, which `clvm_tools` is bundled into.
 
 <pre>
 ├── ...
-├── main.js          # js file which clvm_tools is bundled/merged into.
+├── main.js          # js file which clvm_tools is compiled into.
 ├── clvm_rs_bg.wasm  # copy it from node_modules/clvm_tools/browser/clvm_rs_bg.wasm
 └── blsjs.wasm       # copy it from node_modules/clvm_tools/browser/blsjs.wasm
 </pre>
 
-If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js`.  
+If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js/`.  
 React automatically copies wasm files next to the main js file on building.  
 (if you use react-scripts, or you started project by `create-react-app`)
 
@@ -124,7 +125,7 @@ Note that if you are really sure that you never use `op_point_add` and `op_pubke
 then you can skip the above async initialization. It never raises an exception until those wasm files are actually required.
 
 ### Browser compatibility
-`clvm-tools-js` uses `BigInt`. So if runtime environment does not support `BigInt`, `clvm_tools-js` doesn't work.  
+`clvm-tools-js` uses `BigInt`. So if runtime environment does not support `BigInt`, `clvm_tools-js` doesn't work as well.  
 If you transpile code using babel or something which uses babel (like create-react-app),
 you need to tell the transpiler to optimize code only for the target browsers.  
 Just copy and paste below to your `package.json` and you can avoid a lot of runtime incompatibility issues.
@@ -156,6 +157,10 @@ Just copy and paste below to your `package.json` and you can avoid a lot of runt
 `clvm_tools-js` is based on [clvm_tools](https://github.com/Chia-Network/clvm_tools) with the
 [Apache license 2.0](https://github.com/Chia-Network/clvm_tools/blob/main/LICENSE)
 
+## clvm_rs license
+Wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs) is redistributed under the
+[Apache license 2.0](https://github.com/Chia-Network/clvm_rs/blob/main/LICENSE)
+
 ## bls-signatures license
-[bls-signatures](https://github.com/Chia-Network/bls-signatures) is used under the
+Wasm build of [bls-signatures](https://github.com/Chia-Network/bls-signatures) is redistributed under the
 [Apache license 2.0](https://github.com/Chia-Network/bls-signatures/blob/main/LICENSE)
