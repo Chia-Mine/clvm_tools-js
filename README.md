@@ -123,9 +123,32 @@ await clvm_tools.initialize();
 Note that if you are really sure that you never use `op_point_add` and `op_pubkey_for_exp` and `clvm_rs` as a backend,  
 then you can skip the above async initialization. It never raises an exception until those wasm files are actually required.
 
+### Browser compatibility
+`clvm-tools-js` uses `BigInt`. So if runtime environment does not support `BigInt`, `clvm_tools-js` doesn't work.  
+If you transpile code using babel or something which uses babel (like create-react-app),
+you need to tell the transpiler to optimize code only for the target browsers.  
+Just copy and paste below to your `package.json` and you can avoid a lot of runtime incompatibility issues.
+```
+"browserslist": [
+  "edge >= 79",
+  "firefox >= 68",
+  "chrome >= 67",
+  "safari > 14",
+  "opera >= 54",
+  "ios_saf >= 14.4",
+  "android >= 67",
+  "op_mob >= 48",
+  "and_chr >= 67",
+  "and_ff >= 68",
+  "samsung >= 9.2",
+  "node >= 10.4.0",
+  "electron >= 4.0.0"
+]
+```
+
 ### Example
-#### Typescript + Webpack
-See code sample [here](./.example/typescript_webpack)
+- [Typescript + Webpack](./.example/typescript_webpack)
+- [Typescript + React](./.example/typescript_react)
 
 
 
