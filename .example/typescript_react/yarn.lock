@@ -3395,10 +3395,10 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
-clvm@1.0.7-beta.1:
-  version "1.0.7-beta.1"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-1.0.7-beta.1.tgz#213cde2f738e87f79d89aa800715ced730956c81"
-  integrity sha512-Vl8WylGnCpDqOBP8Q9pUFAWRaMcPIbHtlDsRTx9VyY+cneGs6twcvj8ni8OPC50Zh4/In2N2I44oC5l8mC/wzA==
+clvm@1.0.7-beta.2:
+  version "1.0.7-beta.2"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-1.0.7-beta.2.tgz#64369d04eb52c98c076fde33239567a6d451fb59"
+  integrity sha512-t6k5d+6DuNliGeq3MPmsJtvYHvsXEQhgBX6obgEMo4ULbv1LAOXbNbuj+CFYf3f2g2zBUkgYhx7HeuLVWOAP3A==
   dependencies:
     "@chiamine/bls-signatures" "^0.2.1-beta.2"
     jscrypto "^1.0.2"
@@ -3408,12 +3408,12 @@ clvm_rs@0.1.10:
   resolved "https://registry.yarnpkg.com/clvm_rs/-/clvm_rs-0.1.10.tgz#55180a9e9f416d4e7ee7716b70450fbf84a36c24"
   integrity sha512-4Wle6M8s2f8xEvtj92sTjfbYfC3TnoWRvqsZPMMdPHXVhigunKyEMEQ7dqGT0yjLvKpxplt/STCeVo6j2Pizcw==
 
-clvm_tools@1.0.0-beta.0:
-  version "1.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/clvm_tools/-/clvm_tools-1.0.0-beta.0.tgz#f862bf90103c7af9eae8d8bf2882f122084c593b"
-  integrity sha512-Ryl7UjbFB9zLa/8RChRK4dRH7sqEi5iXKDFM8RR+vm9wo1/gLXoaLa3ndD8jLB5i8VEu3JwsurtKTn6X1a5scw==
+clvm_tools@1.0.0-beta.1:
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/clvm_tools/-/clvm_tools-1.0.0-beta.1.tgz#9bbdda54749cb92fc26de5a9cb44c75ff1131ebf"
+  integrity sha512-fdBTWX1OFMle970SjRDV+iF+R5Iar9aGdbiJD2C/4PxMGu43VyKVOERA1yggp4vBQGw4li7CH9Zr6mkiVPwaeA==
   dependencies:
-    clvm "1.0.7-beta.1"
+    clvm "1.0.7-beta.2"
     clvm_rs "0.1.10"
 
 co@^4.6.0:
