@@ -112,7 +112,12 @@ export function writeFileSync(path: string, data: string|Uint8Array, option?: TF
 }
 
 export function existsSync(path: string){
-  return window.localStorage.getItem(path) !== null;
+  const data = window.localStorage.getItem(path);
+  if(data === null){
+    return false;
+  }
+  const fileObj = getFileObj(data);
+  return Boolean(fileObj);
 }
 
 export function statSync(path: string){
