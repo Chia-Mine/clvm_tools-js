@@ -25,5 +25,24 @@ yarn add clvm_tools
 Then copy wasm files from npm package.
 ```shell
 mkdir -p ./public/static/js
-cp ./node_modules/clvm_tools/browser/*.wasm ./public/static/js
+cp ./node_modules/clvm_tools/browser/*.wasm ./public/static/js/
+```
+Additionally, copy and paste below to package.json.  
+This prevents `babel` in `react-scripts` from applying [the problematic transform](https://github.com/facebook/create-react-app/issues/10785).
+```
+  "browserslist": [
+    "edge >= 79",
+    "firefox >= 68",
+    "chrome >= 67",
+    "safari > 14",
+    "opera >= 54",
+    "ios_saf >= 14.4",
+    "android >= 67",
+    "op_mob >= 48",
+    "and_chr >= 67",
+    "and_ff >= 68",
+    "samsung >= 9.2",
+    "node >= 10.4.0",
+    "electron >= 4.0.0"
+  ]
 ```
