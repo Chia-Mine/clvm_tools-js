@@ -5,6 +5,7 @@ import {LEFT, NodePath, RIGHT, TOP} from "../../clvm_tools/NodePath";
 import {evaluate, quote} from "./helpers";
 import {optimize_sexp} from "./optimize";
 import {TRunProgram} from "../stage_0";
+import {printError} from "../../platform/print";
 
 export const QUOTE_ATOM = KEYWORD_TO_ATOM["q"];
 export const CONS_ATOM = KEYWORD_TO_ATOM["c"];
@@ -163,7 +164,9 @@ export function parse_mod_sexp(
   
   const name_atom = name.atom as Bytes;
   if(namespace.has(name_atom.hex())){
-    throw new SyntaxError(`symbol "${name_atom.decode()}" redefined`);
+    const errMsg = `symbol "${name_atom.decode()}" redefined`;
+    printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
   namespace.add(name_atom.hex());
   
@@ -180,7 +183,9 @@ export function parse_mod_sexp(
     constants[name_atom.hex()] = SExp.to(quote(declaration_sexp.rest().rest().first()));
   }
   else{
-    throw new SyntaxError("expected defun, defun-inline, defmacro, or defconstant");
+    const errMsg = "expected defun, defun-inline, defmacro, or defconstant";
+    printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
 }
 

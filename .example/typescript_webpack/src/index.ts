@@ -34,9 +34,10 @@ window.onload = async function(){
     throw new Error("output box was not found");
   }
   // By default command output is printed via console.log. So change output direction to html element.
-  clvm_tools.setPrintFunction((...messages) => {
+  const printFn = (...messages: any[]) => {
     outputEl.textContent = (outputEl.textContent || "") + messages.join(" ") + "\n";
-  });
+  };
+  clvm_tools.setPrintFunction(printFn, printFn);
 }
 
 

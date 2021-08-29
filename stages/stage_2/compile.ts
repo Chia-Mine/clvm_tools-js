@@ -5,6 +5,7 @@ import {default_macro_lookup} from "./defaults";
 import {brun, evaluate, quote} from "./helpers";
 import {compile_mod} from "./mod";
 import {TRunProgram} from "../stage_0";
+import {printError} from "../../platform/print";
 
 export const QUOTE_ATOM = KEYWORD_TO_ATOM["q"];
 export const APPLY_ATOM = KEYWORD_TO_ATOM["a"];
@@ -93,7 +94,9 @@ export function lower_quote(
       // Note: quote should have exactly one arg, so the length of
       // quoted list should be 2: "(quote arg)"
       if(!prog.rest().rest().nullp()){
-        throw new SyntaxError(`Compilation error while compiling [${disassemble(prog)}]. quote takes exactly one argument.`);
+        const errMsg = `Compilation error while compiling [${disassemble(prog)}]. quote takes exactly one argument.`;
+        printError(`SyntaxError: ${errMsg}`);
+        throw new SyntaxError(errMsg);
       }
       return SExp.to(quote(lower_quote(prog.rest().first())));
     }
@@ -205,7 +208,9 @@ export function do_com_prog(
     }
   }
   
-  throw new SyntaxError(`can't compile ${disassemble(prog)}, unknown operator`);
+  const errMsg = `can't compile ${disassemble(prog)}, unknown operator`;
+  printError(`SyntaxError: ${errMsg}`);
+  throw new SyntaxError(errMsg);
 }
 
 export function make_do_com(run_program: TRunProgram){

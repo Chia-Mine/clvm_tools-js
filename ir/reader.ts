@@ -1,6 +1,7 @@
 import {to_sexp_f, b, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
+import {printError} from "../platform/print";
 
 export type Token = Tuple<string, number>;
 
@@ -44,7 +45,9 @@ export function next_cons_token(stream: Generator<Token>): Token {
    */
   const next = stream.next();
   if(next.done){
-    throw new SyntaxError("missing )");
+    const errMsg = "missing )";
+    printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
   ([token, offset] = next.value);
   
@@ -71,7 +74,9 @@ export function tokenize_cons(token: string, offset: number, stream: Generator<T
     rest_sexp = tokenize_sexp(token, offset, stream);
     ([token, offset] = next_cons_token(stream));
     if(token !== ")"){
-      throw new SyntaxError(`illegal dot expression at ${dot_offset}`);
+      const errMsg = `illegal dot expression at ${dot_offset}`;
+      printError(`SyntaxError: ${errMsg}`);
+      throw new SyntaxError(errMsg);
     }
   }
   else{
@@ -105,7 +110,9 @@ export function tokenize_hex(token: string, offset: number): Optional<SExp> {
       return ir_new(Type.HEX.i, Bytes.from(token, "hex"), offset);
     }
     catch(e){
-      throw new SyntaxError(`invalid hex at ${offset}: 0x${token}`);
+      const errMsg = `invalid hex at ${offset}: 0x${token}`;
+      printError(`SyntaxError: ${errMsg}`);
+      throw new SyntaxError(errMsg);
     }
   }
   return None;
@@ -121,7 +128,9 @@ export function tokenize_quotes(token: string, offset: number){
   }
   
   if(token[token.length-1] !== c){
-    throw new SyntaxError(`unterminated string starting at ${offset}: ${token}`);
+    const errMsg = `unterminated string starting at ${offset}: ${token}`;
+    printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
   
   const q_type = c === "'" ? Type.SINGLE_QUOTE : Type.DOUBLE_QUOTE;
@@ -188,7 +197,9 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
             rest_sexp = tokenize_sexp(local_token, local_offset, stream);
             ([local_token, local_offset] = next_cons_token(stream));
             if(local_token !== ")"){
-              throw new SyntaxError(`illegal dot expression at ${dot_offset}`);
+              const errMsg = `illegal dot expression at ${dot_offset}`;
+              printError(`SyntaxError: ${errMsg}`);
+              throw new SyntaxError(errMsg);
             }
             last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
             return_value_stack.push(last_return_value);
@@ -231,7 +242,9 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
         rest_sexp = tokenize_sexp(local_token, local_offset, stream);
         ([local_token, local_offset] = next_cons_token(stream));
         if(local_token !== ")"){
-          throw new SyntaxError(`illegal dot expression at ${dot_offset}`);
+          const errMsg = `illegal dot expression at ${dot_offset}`;
+          printError(`SyntaxError: ${errMsg}`);
+          throw new SyntaxError(errMsg);
         }
         last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
         return_value_stack.push(last_return_value);
@@ -275,7 +288,9 @@ export function* token_stream(s: string): Generator<Token> {
         continue;
       }
       else{
-        throw new SyntaxError(`unterminated string starting at ${start}: ${s.substring(start)}`);
+        const errMsg = `unterminated string starting at ${start}: ${s.substring(start)}`;
+        printError(`SyntaxError: ${errMsg}`);
+        throw new SyntaxError(errMsg);
       }
     }
     const [token, end_offset] = consume_until_whitespace(s, offset);
@@ -296,7 +311,9 @@ export function read_ir(s: string, to_sexp: typeof to_sexp_f = to_sexp_f): SExp 
    */
   const next = stream.next();
   if(next.done){
-    throw new SyntaxError("unexpected end of stream");
+    const errMsg = "unexpected end of stream";
+    printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
   const [token, offset] = next.value;
   return to_sexp(tokenize_sexp(token, offset, stream));

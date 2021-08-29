@@ -17,6 +17,7 @@ import {
 import {make_do_com} from "./compile";
 import {make_do_opt} from "./optimize";
 import {FileStream, fs_read, Path} from "../../platform/io";
+import {printError} from "../../platform/print";
 
 export function do_read(args: SExp){
   const filename = args.first().atom as Bytes;
@@ -44,7 +45,9 @@ export function run_program_for_search_paths(search_paths: string[]){
         return t(1, SExp.to(b(f_path.toString())));
       }
     }
-    throw new EvalError(`can't open ${filename}`, args);
+    const errMsg = `can't open ${filename}`;
+    printError(`EvalError: ${errMsg} ${args}`);
+    throw new EvalError(errMsg, args);
   };
   
   const _operator_lookup = OperatorDict(ORIGINAL_OPERATOR_LOOKUP);

@@ -1,3 +1,5 @@
+import {printError} from "./print";
+
 export type TArgOption = {
   action: "store"|"store_true"|"append";
   type: "str"|"int"|((v: string) => unknown);
@@ -51,7 +53,9 @@ export class ArgumentParser {
         const n = +v;
         if(isNaN(n) || !isFinite(n)){
           const usage = this.compileHelpMessages();
-          throw `${usage}\n\nError: Invalid parameter: ${v}`;
+          const errMsg = `${usage}\n\nError: Invalid parameter: ${v}`;
+          printError(errMsg);
+          throw errMsg;
         }
         return n;
       };
@@ -61,7 +65,9 @@ export class ArgumentParser {
     }
     else{
       const usage = this.compileHelpMessages();
-      throw `${usage}\n\nError: Unknown type: ${type}`;
+      const errMsg = `${usage}\n\nError: Unknown type: ${type}`;
+      printError(errMsg);
+      throw errMsg;
     }
   }
   
@@ -77,12 +83,16 @@ export class ArgumentParser {
       const name = names[singleHyphenArgIndex];
       return name.replace(/^[-]/, "").replace(/[-]/g, "_");
     }
-    throw new Error("Invalid argument name");
+    const errMsg = "Invalid argument name";
+    printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
   }
   
   public add_argument(argName: string[], options?: Partial<TArgOption>){
     if(!argName || argName.length < 1){
-      throw new Error("Argument name is missing");
+      const errMsg = "Argument name is missing";
+      printError(`Error: ${errMsg}`);
+      throw new Error(errMsg);
     }
     else if(argName.length === 1 && !isOptional(argName[0])){
       this._positional_args.push({
@@ -127,7 +137,9 @@ export class ArgumentParser {
       const optional_arg = this._optional_args.find(a => a.names.includes(arg));
       if(!optional_arg){
         const usage = this.compileHelpMessages();
-        throw `${usage}\n\nError: Unknown option: ${arg}`;
+        const errMsg = `${usage}\n\nError: Unknown option: ${arg}`;
+        printError(errMsg);
+        throw errMsg;
       }
   
       const name = this._getOptionalArgName(optional_arg);
@@ -142,7 +154,9 @@ export class ArgumentParser {
       const value = normalizedArgs[i];
       if(!value && !optional_arg.options.default){
         const usage = this.compileHelpMessages();
-        throw `${usage}\n\nError: ${name} requires a value`;
+        const errMsg = `${usage}\n\nError: ${name} requires a value`;
+        printError(errMsg);
+        throw errMsg;
       }
       if(!optional_arg.options.action || optional_arg.options.action === "store"){
         params[name] = converter(value) || optional_arg.options.default;
@@ -153,7 +167,9 @@ export class ArgumentParser {
       }
       else{
         const usage = this.compileHelpMessages();
-        throw `${usage}\n\nError: Unknown action: ${optional_arg.options.action}`;
+        const errMsg = `${usage}\n\nError: Unknown action: ${optional_arg.options.action}`;
+        printError(errMsg);
+        throw errMsg;
       }
     }
     
@@ -174,7 +190,9 @@ export class ArgumentParser {
         for(let j=0;j<nargs;j++){
           if(i >= input_positional_args.length){
             const usage = this.compileHelpMessages();
-            throw `${usage}\n\nError: Requires ${nargs} positional arguments but got ${i}`;
+            const errMsg = `${usage}\n\nError: Requires ${nargs} positional arguments but got ${i}`;
+            printError(errMsg);
+            throw errMsg;
           }
           input_arg = input_positional_args[i];
           const param_value = (params[name] || []) as unknown[];
@@ -201,7 +219,9 @@ export class ArgumentParser {
         if(i >= input_positional_args.length){
           if(nargs === "+"){
             const usage = this.compileHelpMessages();
-            throw `${usage}\n\nError: The following arguments are required: ${name}`;
+            const errMsg = `${usage}\n\nError: The following arguments are required: ${name}`;
+            printError(errMsg);
+            throw errMsg;
           }
           params[name] = [];
           i++;
@@ -215,13 +235,17 @@ export class ArgumentParser {
         }
       }
       else{
-        throw `Unknown nargs: ${nargs}. It is a program bug. Contact a developer and report this error.`;
+        const errMsg = `Unknown nargs: ${nargs}. It is a program bug. Contact a developer and report this error.`;
+        printError(errMsg);
+        throw errMsg;
       }
     }
     
     if(params["help"]){
       const usage = this.compileHelpMessages();
-      throw `${usage}`;
+      const errMsg = `${usage}`;
+      printError(errMsg);
+      throw errMsg;
     }
     
     return params;

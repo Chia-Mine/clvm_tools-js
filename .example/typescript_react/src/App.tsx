@@ -17,9 +17,10 @@ function App() {
   });
   
   useEffect(() => {
-    clvm_tools.setPrintFunction((...messages) => {
+    const printFn = (...messages: any[]) => {
       setOutput((prevState => prevState + messages.join(" ") + "\n"));
-    });
+    };
+    clvm_tools.setPrintFunction(printFn, printFn);
     clvm_tools.initialize().catch(e => {
       setOutput(e instanceof Error ? e.message : JSON.stringify(e));
     });

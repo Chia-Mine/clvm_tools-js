@@ -1,4 +1,5 @@
 import {Bytes} from "clvm/__type_compatibility__";
+import {printError} from "../print";
 
 export type TEncodingOption = "utf8"|string;
 export type TFileObj = {
@@ -65,7 +66,9 @@ export function getFileObj(data: unknown): TFileObj|false {
 export function parseFileContent<T extends TFileReadWriteOption|undefined>(data: string, option?: T): T extends undefined ? Uint8Array : string {
   const fileObj = getFileObj(data);
   if(!fileObj){
-    throw new Error("Not a valid file object");
+    const errMsg = "Not a valid file object";
+    printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
   }
   if(option){
     if(fileObj.encode === "hex"){
@@ -85,14 +88,18 @@ export function parseFileContent<T extends TFileReadWriteOption|undefined>(data:
 export function readFileSync<T extends undefined|TFileReadWriteOption>(path: string, option?: T): T extends undefined ? Uint8Array : string {
   const data = window.localStorage.getItem(path);
   if(data === null){
-    throw new Error(`File not found at: ${path}`);
+    const errMsg = `File not found at: ${path}`;
+    printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
   }
   return parseFileContent(data, option);
 }
 
 export function writeFileSync(path: string, data: string|Uint8Array, option?: TFileReadWriteOption){
   if(typeof data !== "string"){
-    throw new Error(`Only 'string' data is supported for now. Type of data passed in: ${typeof data}`);
+    const errMsg = `Only 'string' data is supported for now. Type of data passed in: ${typeof data}`;
+    printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
   }
   window.localStorage.setItem(path, createFileContent(data, option));
 }
@@ -106,6 +113,7 @@ export function statSync(path: string){
     isFile: () => {
       return existsSync(path);
     },
+    // @todo
     mtimeMs: Date.now(),
   };
 }
@@ -126,7 +134,9 @@ export function readdirSync(path: string){
     
     // Check forbidden chars
     if(/[<>:"\\|?*]/.test(path)){
-      throw new Error("path contains invalid character");
+      const errMsg = "path contains invalid character";
+      printError(`Error: ${errMsg}`);
+      throw new Error(errMsg);
     }
     
     // Remove trailing '/'

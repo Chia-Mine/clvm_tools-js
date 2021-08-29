@@ -1,4 +1,5 @@
 import {b, Bytes, int_from_bytes, int_to_bytes, limbs_for_int} from "clvm";
+import {printError} from "../platform/print";
 
 
 function i(b: Bytes){
@@ -52,7 +53,9 @@ export class Type {
   public constructor(i: number|Type) {
     if(typeof i === "number"){
       if(!isValidType(i)){
-        throw new Error(`${i} is not a valid Type`);
+        const errMsg = `${i} is not a valid Type`;
+        printError(`Error: ${errMsg}`);
+        throw new Error(errMsg);
       }
       this._i = i;
     }

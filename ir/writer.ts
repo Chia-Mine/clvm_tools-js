@@ -9,6 +9,7 @@ import {
   ir_as_atom,
   ir_val,
 } from "./utils";
+import {printError} from "../platform/print";
 
 export function* iter_sexp_format(ir_sexp: SExp): Generator<string>{
   yield "(";
@@ -81,7 +82,9 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<string> {
     }
   }
   else{
-    throw new SyntaxError(`bad ir format: ${ir_sexp}`);
+    const errMsg = `bad ir format: ${ir_sexp}`;
+    printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
 }
 

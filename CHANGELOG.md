@@ -20,6 +20,7 @@
 ### Fixed
 - Fixed an issue where it did not correctly handle signed/unsigned integer from and to `Bytes`.
 - Fixed an issue where large int was not recognized correctly.
+- Fixed an issue where there were no way to capture error message by `setPrintFunction`.
 
 ## [0.1.6]
 ### Added
