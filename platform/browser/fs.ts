@@ -3,6 +3,7 @@ import {printError} from "../print";
 
 export type TEncodingOption = "utf8"|string;
 export type TFileObj = {
+  mTimeMs: number;
   encode: "string"|"hex";
   data: string;
 };
@@ -12,8 +13,10 @@ export type TFileReadWriteOption = {
 
 export function createFileContent(data: string|Uint8Array, option?: TFileReadWriteOption): string {
   let fileObj: TFileObj;
+  const now = Date.now();
   if(typeof data === "string"){
     fileObj = {
+      mTimeMs: now,
       encode: "string",
       data,
     }
@@ -22,6 +25,7 @@ export function createFileContent(data: string|Uint8Array, option?: TFileReadWri
     const decoder = new TextDecoder(option.encode);
     data = decoder.decode(data);
     fileObj = {
+      mTimeMs: now,
       encode: "string",
       data,
     };
@@ -29,6 +33,7 @@ export function createFileContent(data: string|Uint8Array, option?: TFileReadWri
   else{
     data = (new Bytes(data)).hex();
     fileObj = {
+      mTimeMs: now,
       encode: "hex",
       data,
     };
@@ -48,7 +53,9 @@ export function getFileObj(data: unknown): TFileObj|false {
     else{
       return false;
     }
-    const isFileObj = Object.hasOwnProperty.call(fileObj, "encode")
+    const isFileObj =
+      Object.hasOwnProperty.call(fileObj, "mTimeMs")
+      && Object.hasOwnProperty.call(fileObj, "encode")
       && Object.hasOwnProperty.call(fileObj, "data")
       && (fileObj.encode === "string" || fileObj.encode === "hex")
       && typeof fileObj.data === "string"
@@ -85,6 +92,11 @@ export function parseFileContent<T extends TFileReadWriteOption|undefined>(data:
   return encoder.encode(fileObj.data) as T extends undefined ? Uint8Array : string;
 }
 
+/**
+ * When `option.encode` is set, it returns `string`. Otherwise it returns `Uint8Array`.
+ * @param {string} path
+ * @param {TFileReadWriteOption} option?
+ */
 export function readFileSync<T extends undefined|TFileReadWriteOption>(path: string, option?: T): T extends undefined ? Uint8Array : string {
   const data = window.localStorage.getItem(path);
   if(data === null){
@@ -96,11 +108,6 @@ export function readFileSync<T extends undefined|TFileReadWriteOption>(path: str
 }
 
 export function writeFileSync(path: string, data: string|Uint8Array, option?: TFileReadWriteOption){
-  if(typeof data !== "string"){
-    const errMsg = `Only 'string' data is supported for now. Type of data passed in: ${typeof data}`;
-    printError(`Error: ${errMsg}`);
-    throw new Error(errMsg);
-  }
   window.localStorage.setItem(path, createFileContent(data, option));
 }
 
@@ -109,12 +116,24 @@ export function existsSync(path: string){
 }
 
 export function statSync(path: string){
+  const data = window.localStorage.getItem(path);
+  if(data === null){
+    const errMsg = `File not found at: ${path}`;
+    printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
+  }
+  const fileObj = getFileObj(data);
+  if(!fileObj){
+    const errMsg = "Not a valid file object";
+    printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
+  }
+  
   return {
     isFile: () => {
-      return existsSync(path);
+      return true;
     },
-    // @todo
-    mtimeMs: Date.now(),
+    mtimeMs: fileObj.mTimeMs,
   };
 }
 
