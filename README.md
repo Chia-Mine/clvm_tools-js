@@ -85,6 +85,7 @@ you need to follow the steps described below.
 ```javascript
 // 1. Create a file object
 var fileObj = {
+  mTimeMs: Date.now(), // Modified time.
   encode: "string", // "string" or "hex". For now, there are no situations to use 'hex'.
   data: "(+ 1 (q . 3))", // If 'encode' is 'hex' this should be hex string and it will be decoded as binary data.
 };
