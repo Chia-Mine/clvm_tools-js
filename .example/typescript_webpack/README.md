@@ -11,7 +11,7 @@ npm run build # ./dist folder will be created
 npm run start
 ```
 
-## Note
+## Note1
 Unlike typescript+react project, the browserslist in this project does not contain `node`
 because it causes error on building by incompatible output chunk format.
 ```
@@ -31,3 +31,7 @@ because it causes error on building by incompatible output chunk format.
     "electron >= 4.0.0"
   ]
 ```
+
+## Note2
+When building with `webpack.config.js` in this project, it automatically copies `blsjs.wasm` and `clvm_rs_bg.wasm` from `node_modules/clvm_tools/browsers` to `dist/` folder.  
+If you publish or redistribute your project with bundled `blsjs.wasm` and/or `clvm_rs_bg.wasm`, you must be compliant with Apache2.0 License provided by [Chia-Network](https://github.com/Chia-Network/).
