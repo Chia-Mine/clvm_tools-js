@@ -98,6 +98,25 @@ clvm_tools.go("brun", "/path/to/clvm/file", "2");
 // output: 5
 ```
 
+### Redirect output/error from `console.log`
+By default, command outputs are printed to browser's dev console.  
+So if you want to capture those output, you need to redirect console output to somewhere you want.
+```typescript
+import * as clvm_tools from "clvm_tools/browser";
+
+const stdoutEl = document.getElementById("...") as HTMLElement;
+const printFn = (...messages: any[]) => {
+  stdoutEl.textContent = (stdoutEl.textContent || "") + (messages.join(" ") + "\n");
+};
+
+const stderrEl = document.getElementById("...") as HTMLElement;
+const printErrFn = (...messages: any[]) => {
+  stderrEl.textContent = (stderrEl.textContent || "") + (messages.join(" ") + "\n");
+};
+
+clvm_tools.setPrintFunction(printFn, printErrFn);
+```
+
 ### WebAssembly files
 Some parts of `clvm_tools`/`clvm` depend on WebAssembly.  
 For example:
