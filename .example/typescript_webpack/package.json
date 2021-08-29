@@ -11,7 +11,7 @@
   "author": "ChiaMineJP <admin@chiamine.jp>",
   "license": "MIT",
   "dependencies": {
-    "clvm_tools": "^1.0.0-beta.1"
+    "clvm_tools": "^1.0.0-beta.2"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^9.0.1",

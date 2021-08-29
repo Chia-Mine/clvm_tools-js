@@ -3408,10 +3408,10 @@ clvm_rs@0.1.10:
   resolved "https://registry.yarnpkg.com/clvm_rs/-/clvm_rs-0.1.10.tgz#55180a9e9f416d4e7ee7716b70450fbf84a36c24"
   integrity sha512-4Wle6M8s2f8xEvtj92sTjfbYfC3TnoWRvqsZPMMdPHXVhigunKyEMEQ7dqGT0yjLvKpxplt/STCeVo6j2Pizcw==
 
-clvm_tools@1.0.0-beta.1:
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/clvm_tools/-/clvm_tools-1.0.0-beta.1.tgz#9bbdda54749cb92fc26de5a9cb44c75ff1131ebf"
-  integrity sha512-fdBTWX1OFMle970SjRDV+iF+R5Iar9aGdbiJD2C/4PxMGu43VyKVOERA1yggp4vBQGw4li7CH9Zr6mkiVPwaeA==
+clvm_tools@1.0.0-beta.2:
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/clvm_tools/-/clvm_tools-1.0.0-beta.2.tgz#c213221c1ad842c112efae773b93224114dd947c"
+  integrity sha512-PYFOswyEMKsiuTEuBtQSRxD9cASWQ9rfGwYraEQzN2c5GcjT0XiOpaOxba/eMYy3W5kYP67gm6llNnEp50b2KA==
   dependencies:
     clvm "1.0.7-beta.2"
     clvm_rs "0.1.10"
