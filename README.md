@@ -14,11 +14,19 @@ yarn add clvm_tools
 You can compare test files for [Javascript](./tests) and [Python](https://github.com/Chia-Network/clvm_tools/tree/main/tests)  
 To run the test, execute the following command.
 ```shell
+git clone https://github.com/Chia-Mine/clvm_tools-js
+cd clvm_tools-js
+
+npm install
 npm run test
 # or
+yarn
 yarn test
 ```
 If you find something not compatible with Python's clvm_tools, please report it to GitHub issues.
+
+**Note**: Currently wasm build of `clvm_rs` is not fully compatible with Python's build of `clvm_rs`.
+See details [here](https://github.com/Chia-Network/clvm_rs/issues/108).
 
 ## Compatibility
 This code is compatible with:
@@ -51,7 +59,9 @@ clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
 // (+ 1 (q . 3))
 clvm_tools.go("brun", "(+ 1 (q . 3))", "2");
 // 5
-clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--experiment-backend", "rust"); // use clvm_rs for backend
+
+// use clvm_rs for backend
+clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--experiment-backend", "rust");
 // assemble_from_ir: 0.00034061598777768154
 // to_sexp_f: 0.0005161969661706678
 // run_program: 0.0003017840385446391
@@ -101,9 +111,9 @@ In order for those wasm files to be loaded correctly, you need to make sure that
 └── blsjs.wasm       # copy it from node_modules/clvm_tools/browser/blsjs.wasm
 </pre>
 
-If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js/`.  
-React automatically copies wasm files next to the main js file on building.  
-(if you use react-scripts, or you started project by `create-react-app`)
+**Note1**: If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js/`.  
+React automatically copies wasm files next to the main js file on building. (if you use react-scripts, or you started project by `create-react-app`)  
+**Note2**: Redistributing your project with bundled `blsjs.wasm` and/or `clvm_rs_bg.wasm` must be compliant with Apache2.0 License provided by [Chia-Network](https://github.com/Chia-Network/)
 
 #### .wasm file manual loading
 The .wasm files are not loaded automatically. It requires programmer to fetch and load wasm files in the following way.
