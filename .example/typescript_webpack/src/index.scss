@@ -18,6 +18,7 @@ body {
   .input {
     label {
       display: block;
+      margin-bottom: 4px;
     }
     textarea {
       width: 100%;
@@ -30,7 +31,7 @@ body {
   
   .options {
     margin-top: 16px;
-    font-size: 14px;
+    font-size: 16px;
     
     & > div:first-child {
       margin-bottom: 8px;

@@ -67,13 +67,14 @@ function App() {
   
   return (
     <div className="app-root">
+      <h1>Chia-Mine/clvm_tools-js</h1>
       <div className="input">
         <label htmlFor="prg">program</label>
-        <textarea id="prg" onChange={onTextAreaChanged} />
+        <textarea id="prg" rows={3} onChange={onTextAreaChanged} />
       </div>
       <div className="input">
         <label htmlFor="env">env</label>
-        <textarea id="env" onChange={onTextAreaChanged} />
+        <textarea id="env" rows={3} onChange={onTextAreaChanged} />
       </div>
       <form className="options">
         <div>

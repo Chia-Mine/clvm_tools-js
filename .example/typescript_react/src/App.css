@@ -9,6 +9,7 @@
 
 .input label {
   display: block;
+  margin-bottom: 4px;
 }
 
 .input textarea {
@@ -21,6 +22,7 @@
 
 .options {
   margin-top: 16px;
+  font-size: 16px;
 }
 
 .options > div:first-child {
