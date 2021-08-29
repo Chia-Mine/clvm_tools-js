@@ -69,7 +69,10 @@ clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--experiment-backend", "r
 ```
 
 ## Integrate `clvm_tools` into web application
-If you develop web application with `clvm_tools` which runs on browser, you need to import module from `clvm_tools/browser`.  
+If you develop web application with `clvm_tools` which runs on browser, you need to import module from `clvm_tools/browser`.
+```typescript
+import * as clvm_tools from "clvm_tools/browser";
+```
 `clvm_tools/browser` replaces read/write io target from local file system to browser's `localStorage`.  
 So if you do `clvm_tools.go("brun", "/path/to/clvm/file", "2")`, it searches localStorage with the key `"/path/to/clvm/file"`.  
 In such a case, you need to pre-allocate clvm content into localStorage just like saving contents into a file.
