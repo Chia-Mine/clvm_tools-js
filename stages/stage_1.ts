@@ -1,7 +1,6 @@
 import {b, Bytes, CLVMType, OPERATOR_LOOKUP, OperatorDict, SExp, t, Tuple} from "clvm";
 import {run_program as run_program_0, RunProgramOption} from "./stage_0";
 import * as binutils from "../clvm_tools/binutils";
-import {printError} from "../platform/print";
 
 
 export function make_invocation(code: SExp){
@@ -22,7 +21,7 @@ export function make_bindings(bindings_sexp: SExp){
 export function do_binding(args: SExp){
   if(args.as_javascript().length !== 3){
     const errMsg = "bind requires 3 arguments";
-    printError(`SyntaxError: ${errMsg}`);
+    // printError(`SyntaxError: ${errMsg}`);
     throw new SyntaxError(errMsg);
   }
   const bindings = args.first();

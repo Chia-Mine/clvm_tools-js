@@ -27,7 +27,7 @@ import * as stage_1 from "../stages/stage_1";
 import * as stage_2 from "../stages/stage_2/index";
 import {TRunProgram} from "../stages/stage_0";
 import {now} from "../platform/performance";
-import {print, printError} from "../platform/print";
+import {print} from "../platform/print";
 
 export function path_or_code(arg: string){
   try{
@@ -63,7 +63,7 @@ export function call_tool(tool_name: string, desc: string, conversion: TConversi
   for(const program of (args["path_or_code"] as string[])){
     if(program === "-"){
       const errMsg = "Read stdin is not supported at this time";
-      printError(`Error: ${errMsg}`);
+      // printError(`Error: ${errMsg}`);
       throw new Error(errMsg);
     }
     const [sexp, text] = conversion(program);
@@ -110,7 +110,7 @@ export function stage_import(stage: string){
     return stage_2;
   }
   const errMsg = `Unknown stage: ${stage}`;
-  printError(`Error: ${errMsg}`);
+  // printError(`Error: ${errMsg}`);
   throw new Error(errMsg);
 }
 

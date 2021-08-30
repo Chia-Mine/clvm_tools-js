@@ -37,7 +37,7 @@ window.onload = async function(){
   const printFn = (...messages: any[]) => {
     outputEl.textContent = (outputEl.textContent || "") + messages.join(" ") + "\n";
   };
-  clvm_tools.setPrintFunction(printFn, printFn);
+  clvm_tools.setPrintFunction(printFn);
 }
 
 
@@ -73,5 +73,15 @@ async function onButtonClicked (e: MouseEvent) {
   const prgEl = document.getElementById("prg") as HTMLTextAreaElement;
   const envEl = document.getElementById("env") as HTMLTextAreaElement;
   const options = getOptionsFromForm();
-  clvm_tools.go(command, prgEl.value, envEl.value, ...options);
+  try{
+    clvm_tools.go(command, prgEl.value, envEl.value, ...options);
+  }
+  catch (e) {
+    if(Object.prototype.hasOwnProperty.call(e, "name") && Object.prototype.hasOwnProperty("message")){
+      outputEl.textContent = `${e.name}: ${e.message}`;
+    }
+    else{
+      outputEl.textContent = typeof e === "string" ? e : JSON.stringify(e);
+    }
+  }
 }

@@ -1,5 +1,4 @@
 import {Bytes} from "clvm/__type_compatibility__";
-import {printError} from "../print";
 
 export type TEncodingOption = "utf8"|string;
 export type TFileObj = {
@@ -74,7 +73,7 @@ export function parseFileContent<T extends TFileReadWriteOption|undefined>(data:
   const fileObj = getFileObj(data);
   if(!fileObj){
     const errMsg = "Not a valid file object";
-    printError(`Error: ${errMsg}`);
+    // printError(`Error: ${errMsg}`);
     throw new Error(errMsg);
   }
   if(option){
@@ -101,7 +100,7 @@ export function readFileSync<T extends undefined|TFileReadWriteOption>(path: str
   const data = window.localStorage.getItem(path);
   if(data === null){
     const errMsg = `File not found at: ${path}`;
-    printError(`Error: ${errMsg}`);
+    // printError(`Error: ${errMsg}`);
     throw new Error(errMsg);
   }
   return parseFileContent(data, option);
@@ -124,13 +123,13 @@ export function statSync(path: string){
   const data = window.localStorage.getItem(path);
   if(data === null){
     const errMsg = `File not found at: ${path}`;
-    printError(`Error: ${errMsg}`);
+    // printError(`Error: ${errMsg}`);
     throw new Error(errMsg);
   }
   const fileObj = getFileObj(data);
   if(!fileObj){
     const errMsg = "Not a valid file object";
-    printError(`Error: ${errMsg}`);
+    // printError(`Error: ${errMsg}`);
     throw new Error(errMsg);
   }
   
@@ -159,7 +158,7 @@ export function readdirSync(path: string){
     // Check forbidden chars
     if(/[<>:"\\|?*]/.test(path)){
       const errMsg = "path contains invalid character";
-      printError(`Error: ${errMsg}`);
+      // printError(`Error: ${errMsg}`);
       throw new Error(errMsg);
     }
     

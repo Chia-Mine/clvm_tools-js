@@ -8,7 +8,7 @@ export * from "./clvm_tools/NodePath";
 export * from "./clvm_tools/pattern_match";
 export * from "./clvm_tools/sha256tree";
 
-import {setStderr, setStdout, TPrinter, printError} from "./platform/print";
+import {setStdout, TPrinter} from "./platform/print";
 import {initialize as initClvm} from "clvm";
 import {initialize as initClvmRs, TInitOption as TInitClvmRsOption} from "./platform/clvm_rs";
 
@@ -30,14 +30,14 @@ const COMMANDS: Record<string, (args: string[]) => unknown> = {
 export function go(...args: string[]){
   if(!args || args.length < 1){
     const errMsg = "You need specify command";
-    printError(`Error: ${errMsg}`);
+    // printError(`Error: ${errMsg}`);
     throw new Error(errMsg);
   }
   const commandName = args[0];
   const command = COMMANDS[commandName];
   if(!command){
     const errMsg = `Unknown command: ${commandName}`;
-    printError(`Error: ${errMsg}`);
+    // printError(`Error: ${errMsg}`);
     throw new Error(errMsg);
   }
   
@@ -48,13 +48,9 @@ export function go(...args: string[]){
  * Change print function. Default is `console.log`.
  * If you want to print messages to file, variable or something, you need to change printer function by this function.
  * @param {(...msg: string[]) => void} printer
- * @param {(...msg: string[]) => void} errPrinter
  */
-export function setPrintFunction(printer: TPrinter, errPrinter?: TPrinter){
+export function setPrintFunction(printer: TPrinter){
   setStdout(printer);
-  if(errPrinter){
-    setStderr(errPrinter);
-  }
 }
 
 export type TInitOption = {

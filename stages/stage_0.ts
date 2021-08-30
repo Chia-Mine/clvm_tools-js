@@ -11,7 +11,6 @@ import {
   Bytes,
 } from "clvm";
 import * as binutils from "../clvm_tools/binutils";
-import {printError} from "../platform/print";
 
 export const run = binutils.assemble("(a 2 3)");
 export const brun = run;
@@ -36,7 +35,7 @@ export function run_program(
   if(strict){
     const fatal_error = (op: Bytes, args: SExp) => {
       const errMsg = "unimplemented operator";
-      printError(`EvalError: ${errMsg} ${op}`);
+      // printError(`EvalError: ${errMsg} ${op}`);
       throw new EvalError(errMsg, SExp.to(op));
     }
     operator_lookup = OperatorDict(operator_lookup, {unknown_op_handler: fatal_error});

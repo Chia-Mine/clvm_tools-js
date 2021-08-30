@@ -1,7 +1,6 @@
 import {to_sexp_f, b, Tuple, t, Optional, None, Bytes, SExp} from "clvm";
 import {Type} from "./Type";
 import {ir_new, ir_cons} from "./utils";
-import {printError} from "../platform/print";
 
 export type Token = Tuple<string, number>;
 
@@ -46,7 +45,7 @@ export function next_cons_token(stream: Generator<Token>): Token {
   const next = stream.next();
   if(next.done){
     const errMsg = "missing )";
-    printError(`SyntaxError: ${errMsg}`);
+    // printError(`SyntaxError: ${errMsg}`);
     throw new SyntaxError(errMsg);
   }
   ([token, offset] = next.value);
@@ -75,7 +74,7 @@ export function tokenize_cons(token: string, offset: number, stream: Generator<T
     ([token, offset] = next_cons_token(stream));
     if(token !== ")"){
       const errMsg = `illegal dot expression at ${dot_offset}`;
-      printError(`SyntaxError: ${errMsg}`);
+      // printError(`SyntaxError: ${errMsg}`);
       throw new SyntaxError(errMsg);
     }
   }
@@ -111,7 +110,7 @@ export function tokenize_hex(token: string, offset: number): Optional<SExp> {
     }
     catch(e){
       const errMsg = `invalid hex at ${offset}: 0x${token}`;
-      printError(`SyntaxError: ${errMsg}`);
+      // printError(`SyntaxError: ${errMsg}`);
       throw new SyntaxError(errMsg);
     }
   }
@@ -129,7 +128,7 @@ export function tokenize_quotes(token: string, offset: number){
   
   if(token[token.length-1] !== c){
     const errMsg = `unterminated string starting at ${offset}: ${token}`;
-    printError(`SyntaxError: ${errMsg}`);
+    // printError(`SyntaxError: ${errMsg}`);
     throw new SyntaxError(errMsg);
   }
   
@@ -198,7 +197,7 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
             ([local_token, local_offset] = next_cons_token(stream));
             if(local_token !== ")"){
               const errMsg = `illegal dot expression at ${dot_offset}`;
-              printError(`SyntaxError: ${errMsg}`);
+              // printError(`SyntaxError: ${errMsg}`);
               throw new SyntaxError(errMsg);
             }
             last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
@@ -243,7 +242,7 @@ export function tokenize_sexp(token: string, offset: number, stream: Generator<T
         ([local_token, local_offset] = next_cons_token(stream));
         if(local_token !== ")"){
           const errMsg = `illegal dot expression at ${dot_offset}`;
-          printError(`SyntaxError: ${errMsg}`);
+          // printError(`SyntaxError: ${errMsg}`);
           throw new SyntaxError(errMsg);
         }
         last_return_value = ir_cons(first_sexp, rest_sexp, initial_offset);
@@ -289,7 +288,7 @@ export function* token_stream(s: string): Generator<Token> {
       }
       else{
         const errMsg = `unterminated string starting at ${start}: ${s.substring(start)}`;
-        printError(`SyntaxError: ${errMsg}`);
+        // printError(`SyntaxError: ${errMsg}`);
         throw new SyntaxError(errMsg);
       }
     }
@@ -312,7 +311,7 @@ export function read_ir(s: string, to_sexp: typeof to_sexp_f = to_sexp_f): SExp 
   const next = stream.next();
   if(next.done){
     const errMsg = "unexpected end of stream";
-    printError(`SyntaxError: ${errMsg}`);
+    // printError(`SyntaxError: ${errMsg}`);
     throw new SyntaxError(errMsg);
   }
   const [token, offset] = next.value;

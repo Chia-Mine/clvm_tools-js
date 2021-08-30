@@ -20,7 +20,7 @@ function App() {
     const printFn = (...messages: any[]) => {
       setOutput((prevState => prevState + messages.join(" ") + "\n"));
     };
-    clvm_tools.setPrintFunction(printFn, printFn);
+    clvm_tools.setPrintFunction(printFn);
     clvm_tools.initialize().catch(e => {
       setOutput(e instanceof Error ? e.message : JSON.stringify(e));
     });
@@ -48,7 +48,18 @@ function App() {
         cli_options.push(`--${k.replace(/_/g, "-")}`);
       }
     });
-    clvm_tools.go(command, prg, env, ...cli_options);
+    
+    try{
+      clvm_tools.go(command, prg, env, ...cli_options);
+    }
+    catch (e) {
+      if(Object.prototype.hasOwnProperty.call(e, "name") && Object.prototype.hasOwnProperty("message")){
+        setOutput(`${e.name}: ${e.message}`);
+      }
+      else{
+        setOutput(typeof e === "string" ? e : JSON.stringify(e));
+      }
+    }
   };
   
   const onClearButtonClicked = () => {

@@ -110,12 +110,7 @@ const printFn = (...messages: any[]) => {
   stdoutEl.textContent = (stdoutEl.textContent || "") + (messages.join(" ") + "\n");
 };
 
-const stderrEl = document.getElementById("...") as HTMLElement;
-const printErrFn = (...messages: any[]) => {
-  stderrEl.textContent = (stderrEl.textContent || "") + (messages.join(" ") + "\n");
-};
-
-clvm_tools.setPrintFunction(printFn, printErrFn);
+clvm_tools.setPrintFunction(printFn);
 ```
 
 ### WebAssembly files
