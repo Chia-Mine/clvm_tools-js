@@ -1,11 +1,11 @@
-import {b, h, int, None, Optional, SExp, str} from "clvm";
+import {b, h, None, Optional, SExp} from "clvm";
 import {sha256tree} from "./sha256tree";
 import {disassemble} from "./binutils";
 import {TRunProgram} from "../stages/stage_0";
 import {fs_write} from "../platform/io";
 import {print} from "../platform/print";
 
-export type OpCallable = (v1: any, v2: ValStackType) => int;
+export type OpCallable = (v1: any, v2: ValStackType) => number;
 export type ValStackType = SExp[];
 export type OpStackType = OpCallable[];
 
@@ -74,8 +74,8 @@ export function trace_to_html(){
 }
 */
 
-export function build_symbol_dump(constants_lookup: Record<str, SExp>, run_program: TRunProgram, path: str){
-  const compiled_lookup: Record<str, str> = {};
+export function build_symbol_dump(constants_lookup: Record<string, SExp>, run_program: TRunProgram, path: string){
+  const compiled_lookup: Record<string, string> = {};
   const entries = Object.entries(constants_lookup);
   for(const [k, v] of entries){
     const [, v1] = run_program(v, SExp.null());
@@ -85,7 +85,7 @@ export function build_symbol_dump(constants_lookup: Record<str, SExp>, run_progr
   fs_write(path, output);
 }
 
-export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<str>, env: SExp, result: str){
+export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<string>, env: SExp, result: string){
   if(symbol){
     env = env.rest();
     symbol = disassemble_f(SExp.to(b(symbol)).cons(env));
@@ -97,7 +97,7 @@ export function text_trace(disassemble_f: typeof disassemble, form: SExp, symbol
   print("");
 }
 
-export function table_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<str>, env: SExp, result: str){
+export function table_trace(disassemble_f: typeof disassemble, form: SExp, symbol: Optional<string>, env: SExp, result: string){
   let sexp;
   let args;
   if(form.listp()){
@@ -122,7 +122,7 @@ export function table_trace(disassemble_f: typeof disassemble, form: SExp, symbo
 export function display_trace(
   trace: Array<[SExp, SExp, Optional<SExp>]>,
   disassemble_f: typeof disassemble,
-  symbol_table: Optional<Record<str, str>>,
+  symbol_table: Optional<Record<string, string>>,
   display_fun: typeof text_trace,
 ){
   for(const item of trace){
@@ -144,7 +144,7 @@ export function display_trace(
 export function trace_to_text(
   trace: Array<[SExp, SExp, Optional<SExp>]>,
   disassemble_f: typeof disassemble,
-  symbol_table: Record<str, str>,
+  symbol_table: Record<string, string>,
 ){
   display_trace(trace, disassemble_f, symbol_table, text_trace);
 }
@@ -152,14 +152,14 @@ export function trace_to_text(
 export function trace_to_table(
   trace: Array<[SExp, SExp, Optional<SExp>]>,
   disassemble_f: typeof disassemble,
-  symbol_table: Optional<Record<str, str>>,
+  symbol_table: Optional<Record<string, string>>,
 ){
   display_trace(trace, disassemble_f, symbol_table, table_trace);
 }
 
 export function make_trace_pre_eval(
   log_entries: Array<[SExp, SExp, Optional<SExp>]>,
-  symbol_table: Optional<Record<str, str>> = None,
+  symbol_table: Optional<Record<string, string>> = None,
 ){
   return function pre_eval_f(sexp: SExp, args: SExp){
     const [_sexp, _args] = [sexp, args].map(_ => SExp.to(_));

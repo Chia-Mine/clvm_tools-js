@@ -5,23 +5,22 @@ import {
   EvalError,
   sexp_from_stream,
   sexp_to_stream,
-  str,
   Tuple,
   None,
   t,
   Bytes,
-  int,
   h,
   TPreEvalF,
   Optional,
-  CLVMObject,
+  CLVMType,
 } from "clvm";
+import {run_clvm as run_program_rust} from "../platform/clvm_rs";
 import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
 import {make_trace_pre_eval, trace_to_text, trace_to_table} from "./debug";
 import {sha256tree} from "./sha256tree";
 import {fs_exists, fs_isFile, fs_read, path_join} from "../platform/io";
-import {Stream} from "clvm/dist/__type_compatibility__";
+import {Stream} from "clvm/__type_compatibility__";
 import * as argparse from "../platform/argparse";
 import * as stage_0 from "../stages/stage_0";
 import * as stage_1 from "../stages/stage_1";
@@ -48,8 +47,8 @@ export function stream_to_bin(write_f: (f: Stream) => void){
   return f.getValue();
 }
 
-export type TConversion = (text: str) => Tuple<SExp, str>;
-export function call_tool(tool_name: str, desc: str, conversion: TConversion, input_args: str[]){
+export type TConversion = (text: string) => Tuple<SExp, string>;
+export function call_tool(tool_name: string, desc: string, conversion: TConversion, input_args: string[]){
   const parser = new argparse.ArgumentParser({description: desc});
   parser.add_argument(
     ["-H", "--script-hash"], {action: "store_true", help: "Show only sha256 tree hash of program"},
@@ -61,9 +60,11 @@ export function call_tool(tool_name: str, desc: str, conversion: TConversion, in
   
   const args = parser.parse_args(input_args.slice(1));
   
-  for(const program of (args["path_or_code"] as str[])){
+  for(const program of (args["path_or_code"] as string[])){
     if(program === "-"){
-      throw new Error("Read stdin is not supported at this time");
+      const errMsg = "Read stdin is not supported at this time";
+      // printError(`Error: ${errMsg}`);
+      throw new Error(errMsg);
     }
     const [sexp, text] = conversion(program);
     if(args["script_hash"]){
@@ -76,7 +77,7 @@ export function call_tool(tool_name: str, desc: str, conversion: TConversion, in
 }
 
 export function opc(args: string[]){
-  function conversion(text: str){
+  function conversion(text: string){
     try{
       const ir_sexp = reader.read_ir(text);
       const sexp = binutils.assemble_from_ir(ir_sexp);
@@ -91,14 +92,14 @@ export function opc(args: string[]){
 }
 
 export function opd(args: string[]){
-  function conversion(hexText: str){
+  function conversion(hexText: string){
     const sexp = sexp_from_stream(new Stream(Bytes.from(hexText, "hex")), to_sexp_f);
     return t(sexp, binutils.disassemble(sexp));
   }
   call_tool("opd", "Disassemble a compiled clvm script from hex.", conversion, args);
 }
 
-export function stage_import(stage: str){
+export function stage_import(stage: string){
   if(stage === "0"){
     return stage_0;
   }
@@ -108,7 +109,9 @@ export function stage_import(stage: str){
   else if(stage === "2"){
     return stage_2;
   }
-  throw new Error(`Unknown stage: ${stage}`);
+  const errMsg = `Unknown stage: ${stage}`;
+  // printError(`Error: ${errMsg}`);
+  throw new Error(errMsg);
 }
 
 export function as_bin(streamer_f: (s: Stream) => unknown){
@@ -117,11 +120,11 @@ export function as_bin(streamer_f: (s: Stream) => unknown){
   return f.getValue();
 }
 
-export function run(args: str[]){
+export function run(args: string[]){
   return launch_tool(args, "run", 2);
 }
 
-export function brun(args: str[]){
+export function brun(args: string[]){
   return launch_tool(args, "brun");
 }
 
@@ -138,11 +141,11 @@ export function calculate_cost_offset(run_program: TRunProgram, run_script: SExp
    */
   const _null = binutils.assemble("0");
   const result = run_program(run_script, _null.cons(_null));
-  const cost = result[0] as int;
+  const cost = result[0] as number;
   return 53 - cost;
 }
 
-export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage: int = 0){
+export function launch_tool(args: string[], tool_name: "run"|"brun", default_stage: number = 0){
   const parser = new argparse.ArgumentParser({
     prog: ["clvm_tools", tool_name].join(" "),
     description: "Execute a clvm script.",
@@ -191,12 +194,10 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
     ["-n", "--no-keywords"], {action: "store_true",
                               help: "Output result as data, not as a program"},
   );
-  /*
   parser.add_argument(
-    ["--backend"], {type: "str",
-      help: "force use of 'rust' or 'python' backend"},
+    ["--experiment-backend"], {type: "str",
+                               help: "force use of 'rust' or 'python' backend"},
   );
-   */
   parser.add_argument(
     ["-i", "--include"],
     {
@@ -220,7 +221,7 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
   const keywords = parsedArgs["no_keywords"] ? {} : KEYWORD_FROM_ATOM;
   let run_program: TRunProgram;
   if(typeof (parsedArgs["stage"] as typeof stage_2).run_program_for_search_paths === "function"){
-    run_program = (parsedArgs["stage"] as typeof stage_2).run_program_for_search_paths(parsedArgs["include"] as str[]);
+    run_program = (parsedArgs["stage"] as typeof stage_2).run_program_for_search_paths(parsedArgs["include"] as string[]);
   }
   else{
     run_program = (parsedArgs["stage"] as typeof stage_0).run_program;
@@ -235,17 +236,17 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
   let time_parse_input = -1;
   let time_done = -1;
   if(parsedArgs["hex"]){
-    const assembled_serialized = Bytes.from(parsedArgs["path_or_code"] as str, "hex");
+    const assembled_serialized = Bytes.from(parsedArgs["path_or_code"] as string, "hex");
     if(!parsedArgs["env"]){
       parsedArgs["env"] = "80";
     }
-    const env_serialized = Bytes.from(parsedArgs["env"] as str, "hex");
+    const env_serialized = Bytes.from(parsedArgs["env"] as string, "hex");
     time_read_hex = now();
     
     input_serialized = h("0xff").concat(assembled_serialized).concat(env_serialized);
   }
   else{
-    const src_text = parsedArgs["path_or_code"] as str;
+    const src_text = parsedArgs["path_or_code"] as string;
     let src_sexp;
     try{
       src_sexp = reader.read_ir(src_text);
@@ -258,7 +259,7 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
     if(!parsedArgs["env"]){
       parsedArgs["env"] = "()";
     }
-    const env_ir = reader.read_ir(parsedArgs["env"] as str);
+    const env_ir = reader.read_ir(parsedArgs["env"] as string);
     const env = binutils.assemble_from_ir(env_ir);
     time_assemble = now();
     
@@ -266,18 +267,18 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
   }
   
   let pre_eval_f: TPreEvalF|None = None;
-  let symbol_table: Record<str, str>|None = None;
+  let symbol_table: Record<string, string>|None = None;
   const log_entries: Array<[SExp, SExp, Optional<SExp>]> = [];
   
   if(parsedArgs["symbol_table"]){
-    symbol_table = JSON.parse(fs_read(parsedArgs["symbol_table"] as str));
+    symbol_table = JSON.parse(fs_read(parsedArgs["symbol_table"] as string));
     pre_eval_f = make_trace_pre_eval(log_entries, symbol_table);
   }
   else if(parsedArgs["verbose"] || parsedArgs["table"]){
     pre_eval_f = make_trace_pre_eval(log_entries);
   }
   
-  const run_script = (parsedArgs["stage"] as Record<str, SExp>)[tool_name];
+  const run_script = (parsedArgs["stage"] as Record<string, SExp>)[tool_name];
   
   let cost = 0;
   let result: SExp;
@@ -285,20 +286,38 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
   const cost_offset = calculate_cost_offset(run_program, run_script);
   
   try{
-    const arg_max_cost = parsedArgs["max_cost"] as int;
+    const arg_max_cost = parsedArgs["max_cost"] as number;
     const max_cost = Math.max(0, (arg_max_cost !== 0 ? arg_max_cost - cost_offset : 0));
-    // if use_rust: ...
-    // else
-    if(input_sexp === None){
-      input_sexp = sexp_from_stream(new Stream(input_serialized as Bytes), to_sexp_f);
-    }
-    time_parse_input = now();
-    const run_program_result = run_program(
-      run_script, input_sexp, {max_cost, pre_eval_f, strict: parsedArgs["strict"] as boolean}
+    const use_rust = (
+      tool_name !== "run"
+      && !pre_eval_f
+      && parsedArgs["experiment_backend"] === "rust"
     );
-    cost = run_program_result[0] as int;
-    result = run_program_result[1] as SExp;
-    time_done = now();
+    
+    if(use_rust){
+      if(input_serialized === None){
+        input_serialized = (input_sexp as SExp).as_bin();
+      }
+      
+      const run_script2 = run_script.as_bin();
+      time_parse_input = now();
+      
+      const run_program_result = run_program_rust(run_script2.raw(), input_serialized.raw());
+      time_done = now();
+      result = sexp_from_stream(new Stream(new Bytes(run_program_result)), to_sexp_f);
+    }
+    else{
+      if(input_sexp === None){
+        input_sexp = sexp_from_stream(new Stream(input_serialized as Bytes), to_sexp_f);
+      }
+      time_parse_input = now();
+      const run_program_result = run_program(
+        run_script, input_sexp, {max_cost, pre_eval_f, strict: parsedArgs["strict"] as boolean}
+      );
+      cost = run_program_result[0] as number;
+      result = run_program_result[1] as SExp;
+      time_done = now();
+    }
     
     if(parsedArgs["cost"]){
       cost += cost > 0 ? cost_offset : 0;
@@ -329,7 +348,7 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
   }
   catch (ex) {
     if(ex instanceof EvalError){
-      result = to_sexp_f(ex._sexp as CLVMObject);
+      result = to_sexp_f(ex._sexp as CLVMType);
       output = `FAIL: ${ex.message} ${binutils.disassemble(result, keywords)}`;
       return -1;
     }
@@ -348,7 +367,7 @@ export function launch_tool(args: str[], tool_name: "run"|"brun", default_stage:
   }
 }
 
-export function read_ir(args: str[]){
+export function read_ir(args: string[]){
   const parser = new argparse.ArgumentParser({description: "Read script and tokenize to IR."});
   parser.add_argument(
     ["script"], {help: "script in hex or uncompiled text"});

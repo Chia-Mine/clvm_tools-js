@@ -1,3 +1,4 @@
+import {read_ir, opc, opd, run, brun} from "./clvm_tools/cmds";
 export * from "./clvm_tools/binutils";
 export * from "./clvm_tools/clvmc";
 export * from "./clvm_tools/cmds";
@@ -9,6 +10,39 @@ export * from "./clvm_tools/sha256tree";
 
 import {setStdout, TPrinter} from "./platform/print";
 import {initialize as initClvm} from "clvm";
+import {initialize as initClvmRs, TInitOption as TInitClvmRsOption} from "./platform/clvm_rs";
+
+const COMMANDS: Record<string, (args: string[]) => unknown> = {
+  read_ir,
+  opc,
+  opd,
+  run,
+  brun,
+};
+
+/**
+ * Dispatch cli command.
+ * - `go("run", "(mod ARGUMENT (+ ARGUMENT 3))")`
+ * - `go("brun", "(+ 1 (q . 3))", "--time")`
+ * 
+ * @param {...string[]} args 
+ */
+export function go(...args: string[]){
+  if(!args || args.length < 1){
+    const errMsg = "You need specify command";
+    // printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
+  }
+  const commandName = args[0];
+  const command = COMMANDS[commandName];
+  if(!command){
+    const errMsg = `Unknown command: ${commandName}`;
+    // printError(`Error: ${errMsg}`);
+    throw new Error(errMsg);
+  }
+  
+  return command(args);
+}
 
 /**
  * Change print function. Default is `console.log`.
@@ -19,15 +53,12 @@ export function setPrintFunction(printer: TPrinter){
   setStdout(printer);
 }
 
+export type TInitOption = {
+  initClvmRsOption: TInitClvmRsOption;
+};
 /**
- * Wait BLS module to be initialized before you call any of `clvm_tools` functions.
- * 
- * 'initialize()' here is not required if you're so sure it never calls 'pubkey_for_exp' or 'point_add' operation.
- * When one of those operations is called without prior 'await initialize()', it will raise an Error.
- * If it is unknown whether 'pubkey_for_exp' or 'point_add' will be called, then put 'await initialize()' for safety.
- * I know this 'await initialize()' makes code asynchronous and really impacts on code architecture.
- * This is because 'clvm' relies on a wasm of 'bls-signatures', which requires asynchronous loading.
+ * Wait wasm files to be loaded before you call any of `clvm_tools` functions.
  */
-export async function initialize(){
-  return initClvm();
+export async function initialize(option?: Partial<TInitOption>){
+  await Promise.all([initClvm(), initClvmRs(option?.initClvmRsOption)]);
 }

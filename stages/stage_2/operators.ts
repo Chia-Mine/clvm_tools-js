@@ -1,11 +1,10 @@
 import {
   Bytes,
-  CLVMObject,
+  CLVMType,
   EvalError,
   OPERATOR_LOOKUP as ORIGINAL_OPERATOR_LOOKUP,
   OperatorDict,
   SExp,
-  str,
   t,
   b,
 } from "clvm";
@@ -36,7 +35,7 @@ export function do_write(args: SExp){
   return t(1, SExp.to(0));
 }
 
-export function run_program_for_search_paths(search_paths: str[]){
+export function run_program_for_search_paths(search_paths: string[]){
   const do_full_path_for_name = (args: SExp) => {
     const filename = args.first().atom as Bytes;
     for(const path of search_paths){
@@ -45,14 +44,16 @@ export function run_program_for_search_paths(search_paths: str[]){
         return t(1, SExp.to(b(f_path.toString())));
       }
     }
-    throw new EvalError(`can't open ${filename}`, args);
+    const errMsg = `can't open ${filename}`;
+    // printError(`EvalError: ${errMsg} ${args}`);
+    throw new EvalError(errMsg, args);
   };
   
-  const _operator_lookup = OperatorDict(ORIGINAL_OPERATOR_LOOKUP as any);
+  const _operator_lookup = OperatorDict(ORIGINAL_OPERATOR_LOOKUP);
   
   const run_program = (
     program: SExp,
-    args: CLVMObject,
+    args: CLVMType,
     option?: RunProgramOption,
   ) => {
     const operator_lookup = (option && option.operator_lookup) || _operator_lookup;
@@ -69,7 +70,7 @@ export function run_program_for_search_paths(search_paths: str[]){
   };
   
   Object.entries(BINDINGS).forEach(([key, value]) => {
-    (_operator_lookup as Record<str, unknown>)[key] = value;
+    (_operator_lookup as Record<string, unknown>)[key] = value;
   });
   
   return run_program;

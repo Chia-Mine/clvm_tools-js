@@ -1,4 +1,4 @@
-import {KEYWORD_TO_ATOM, b, SExp, int, Bytes, None, t, h} from "clvm";
+import {KEYWORD_TO_ATOM, b, SExp, Bytes, None, t, h} from "clvm";
 import {disassemble} from "../../clvm_tools/binutils";
 import {LEFT, TOP} from "../../clvm_tools/NodePath";
 import {default_macro_lookup} from "./defaults";
@@ -21,7 +21,7 @@ export function compile_qq(
   macro_lookup: SExp,
   symbol_table: SExp,
   run_program: TRunProgram,
-  level: int = 1,
+  level: number = 1,
 ): SExp {
   /*
   (qq ATOM) => (q . ATOM)
@@ -93,7 +93,9 @@ export function lower_quote(
       // Note: quote should have exactly one arg, so the length of
       // quoted list should be 2: "(quote arg)"
       if(!prog.rest().rest().nullp()){
-        throw new SyntaxError(`Compilation error while compiling [${disassemble(prog)}]. quote takes exactly one argument.`);
+        const errMsg = `Compilation error while compiling [${disassemble(prog)}]. quote takes exactly one argument.`;
+        // printError(`SyntaxError: ${errMsg}`);
+        throw new SyntaxError(errMsg);
       }
       return SExp.to(quote(lower_quote(prog.rest().first())));
     }
@@ -205,7 +207,9 @@ export function do_com_prog(
     }
   }
   
-  throw new SyntaxError(`can't compile ${disassemble(prog)}, unknown operator`);
+  const errMsg = `can't compile ${disassemble(prog)}, unknown operator`;
+  // printError(`SyntaxError: ${errMsg}`);
+  throw new SyntaxError(errMsg);
 }
 
 export function make_do_com(run_program: TRunProgram){

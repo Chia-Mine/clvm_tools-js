@@ -5,9 +5,8 @@ import {
   EvalError,
   None,
   SExp,
-  CLVMObject,
+  CLVMType,
   TOperatorDict,
-  int,
   TPreEvalF,
   Bytes,
 } from "clvm";
@@ -18,14 +17,14 @@ export const brun = run;
 
 export type RunProgramOption = Partial<{
   operator_lookup: TOperatorDict;
-  max_cost: int|None;
+  max_cost: number|None;
   pre_eval_f: TPreEvalF|None;
   strict: boolean;
 }>;
 
 export function run_program(
   program: SExp,
-  args: CLVMObject,
+  args: CLVMType,
   option?: RunProgramOption,
 ){
   let operator_lookup = (option && option.operator_lookup) || OPERATOR_LOOKUP;
@@ -35,9 +34,11 @@ export function run_program(
   
   if(strict){
     const fatal_error = (op: Bytes, args: SExp) => {
-      throw new EvalError("unimplemented operator", SExp.to(op));
+      const errMsg = "unimplemented operator";
+      // printError(`EvalError: ${errMsg} ${op}`);
+      throw new EvalError(errMsg, SExp.to(op));
     }
-    operator_lookup = OperatorDict(operator_lookup as any, undefined, undefined, fatal_error);
+    operator_lookup = OperatorDict(operator_lookup, {unknown_op_handler: fatal_error});
   }
   
   return default_run_program(program, args, operator_lookup, max_cost, pre_eval_f);

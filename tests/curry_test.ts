@@ -14,7 +14,7 @@ function check_idempotency(f: SExp, args: SExp){
 }
 
 test("test_curry_uncurry", () => {
-  const PLUS = h(KEYWORD_TO_ATOM["+"]).get_byte_at(0);
+  const PLUS = h(KEYWORD_TO_ATOM["+"]).at(0);
   let f = assemble("(+ 2 5)");
   let args = assemble("(200 30)");
   let actual_disassembly = check_idempotency(f, args);

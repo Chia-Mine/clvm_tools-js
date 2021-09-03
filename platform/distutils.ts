@@ -10,7 +10,9 @@ export class dep_util {
   public static newer(input_path: string, output_path: string){
     const exists_input_file = fs_exists(input_path);
     if(!exists_input_file){
-      throw new Error("source does not exist");
+      const errMsg = "source does not exist";
+      // printError(`Error: ${errMsg}`);
+      throw new Error(errMsg);
     }
     
     const exists_output_file = fs_exists(output_path);

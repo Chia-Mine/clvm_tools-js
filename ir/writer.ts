@@ -1,4 +1,4 @@
-import {SExp, int_from_bytes, sexp_to_stream, str, Stream, b} from "clvm";
+import {SExp, int_from_bytes, sexp_to_stream, Stream, b} from "clvm";
 import {Type} from "./Type";
 import {
   ir_nullp,
@@ -10,7 +10,7 @@ import {
   ir_val,
 } from "./utils";
 
-export function* iter_sexp_format(ir_sexp: SExp): Generator<str>{
+export function* iter_sexp_format(ir_sexp: SExp): Generator<string>{
   yield "(";
   let is_first = true;
   while(!ir_nullp(ir_sexp)){
@@ -31,7 +31,7 @@ export function* iter_sexp_format(ir_sexp: SExp): Generator<str>{
   yield ")";
 }
 
-export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
+export function* iter_ir_format(ir_sexp: SExp): Generator<string> {
   if(ir_listp(ir_sexp)){
     yield* iter_sexp_format(ir_sexp);
     return;
@@ -55,10 +55,10 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
   const atom = ir_as_atom(ir_sexp);
   
   if(type === Type.INT.i){
-    yield `${int_from_bytes(atom)}`;
+    yield `${int_from_bytes(atom, {signed: true})}`;
   }
   else if(type === Type.NODE.i){
-    yield `NODE[${int_from_bytes(atom)}]`;
+    yield `NODE[${int_from_bytes(atom, {signed: true})}]`;
   }
   else if(type === Type.HEX.i){
     yield `0x${atom.hex()}`;
@@ -81,7 +81,9 @@ export function* iter_ir_format(ir_sexp: SExp): Generator<str> {
     }
   }
   else{
-    throw new SyntaxError(`bad ir format: ${ir_sexp}`);
+    const errMsg = `bad ir format: ${ir_sexp}`;
+    // printError(`SyntaxError: ${errMsg}`);
+    throw new SyntaxError(errMsg);
   }
 }
 
@@ -91,7 +93,7 @@ export function write_ir_to_stream(ir_sexp: SExp, f: Stream){
   }
 }
 
-export function write_ir(ir_sexp: SExp): str {
+export function write_ir(ir_sexp: SExp): string {
   const s = new Stream();
   write_ir_to_stream(ir_sexp, s);
   return s.getValue().decode();

@@ -1,5 +1,4 @@
-import {b, Bytes, int, int_from_bytes, int_to_bytes, limbs_for_int} from "clvm";
-
+import {b, Bytes, int_from_bytes, int_to_bytes, limbs_for_int} from "clvm";
 
 function i(b: Bytes){
   return int_from_bytes(b);
@@ -19,7 +18,7 @@ const types = {
   NODE: i(b("NODE")),
 };
 
-function isValidType(i: int){
+function isValidType(i: number){
   return Object.values(types).includes(i);
 }
 
@@ -46,13 +45,15 @@ export class Type {
   }
   
   public get atom(){
-    return int_to_bytes(this.i);
+    return int_to_bytes(this.i, {signed: false});
   }
   
-  public constructor(i: int|Type) {
+  public constructor(i: number|Type) {
     if(typeof i === "number"){
       if(!isValidType(i)){
-        throw new Error(`${i} is not a valid Type`);
+        const errMsg = `${i} is not a valid Type`;
+        // printError(`Error: ${errMsg}`);
+        throw new Error(errMsg);
       }
       this._i = i;
     }
