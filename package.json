@@ -32,7 +32,7 @@
     "node": ">=12.22.0"
   },
   "dependencies": {
-    "clvm": "1.0.7-beta.2",
+    "clvm": "^1.0.7",
     "clvm_rs": "0.1.10"
   },
   "devDependencies": {
