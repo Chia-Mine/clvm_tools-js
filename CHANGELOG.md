@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0]
+## [0.9.0]
 ### Changed
 - Changed `OperatorDict` arguments format.
 - Huge performance improvement by upgrading `clvm` to v1.0.7.
@@ -45,7 +45,7 @@
 ## [0.1.0] - 2021-06-29
 Initial release.
 
-[1.0.0]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.6...v1.0.0
+[0.9.0]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.6...v0.9.0
 [0.1.6]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.2...v0.1.4
