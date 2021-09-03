@@ -2,6 +2,20 @@
 
 Javascript implementation of clvm_tools (clvm = Chia Lisp VM)  
 
+## Warning - future of version 0.x.x
+In version 0.x.x, I may introduce several breaking changes in the future.  
+So please consider `clvm_tools-js < v1.0.0` as a trial version and Proof of Concept.
+
+I'm currently planning a breaking change, which is **filesystem abstraction on browser**.  
+So if you intend to use `clvm_tools-js` in NodeJS (not browser), it is possible that version 0.x.x and 1.0.0 will have no difference. (I cannot assure you though)
+
+At current version, you can create virtual files into browser's localStorage as described in [Using localStorage as a pseudo file system](#using-localstorage-as-a-pseudo-file-system)  
+But this is a poor implementation compared to actual filesystem on OS as it lacks concept of 'directory'. (You can still mimic a directory by setting sharing part of path as a key of localStorage)
+
+Maybe You want to set `--include/-i` option to load chialisp libraries to run the same program as that of `chia-blockchain`.  
+But it is so painful to create and manage library files with such a poor pseudo filesystem with localStorage.
+That's why I decided take time to bring more well-designed filesystem implementation.
+
 ## Install
 ```shell
 npm install clvm_tools
@@ -73,11 +87,13 @@ If you develop web application with `clvm_tools` which runs on browser, you need
 ```typescript
 import * as clvm_tools from "clvm_tools/browser";
 ```
-`clvm_tools/browser` replaces read/write io target from local file system to browser's `localStorage`.  
+`clvm_tools/browser` switches read/write IO operation to browser's `localStorage` from OS's file system.  
 So if you do `clvm_tools.go("brun", "/path/to/clvm/file", "2")`, it searches localStorage with the key `"/path/to/clvm/file"`.  
 In such a case, you need to pre-allocate clvm content into localStorage just like saving contents into a file.
 
 ### Using localStorage as a pseudo file system
+**NOTE: As I described [at the very beginning of this README](#warning---future-of-version-0xx), I will introduce breaking change to this pseudo file system at v1.0.0**
+
 `window.localStorage` is a simple key-value store.  
 It stores string key and string data, and it returns string data by associated key.  
 If you want to manually store data `"(+ 1 (q . 3))"` to the file path `"/path/to/clvm/file"` with `localStorage`,  
