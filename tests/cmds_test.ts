@@ -1,6 +1,7 @@
 import * as os_path from "path";
 import * as fs from "fs";
 import * as shlex from "shlex";
+import {initialize} from "../";
 import * as console_scripts from "../clvm_tools/cmds";
 import {fs_readlineSync, os_walk} from "../platform/io";
 import {setStdout, setStderr} from "../platform/print";
@@ -127,18 +128,19 @@ function inject(...paths: string[]){
 
 use_rust = false;
 
-if(use_rust){
-  beforeAll(async () => {
-    return initClvmRs();
-  });
-}
+beforeAll(async () => {
+  return initialize()
+});
 
-inject("opc");
-inject("opd");
-inject("stage_1");
-inject("stage_2");
-inject("clvm_runtime");
-inject("cmd");
+// inject("opc");
+// inject("opd");
+// inject("stage_1");
+// inject("stage_2");
+// inject("clvm_runtime");
+// inject("cmd");
+inject("brun");
+// inject("edge-cases");
+// inject("unknown-op");
 
 afterAll(() => {
   const mainSymPath = os_path.resolve(__dirname, "..", "main.sym");
