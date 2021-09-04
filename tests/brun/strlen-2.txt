@@ -1,0 +1,2 @@
+brun -c '(strlen 1)' '(foo-bar)'
+FAIL: strlen on list ("foo-bar")

@@ -1,0 +1,2 @@
+brun --strict -c '(0x7ffffffffff )'
+FAIL: unimplemented operator 0x07ffffffffff

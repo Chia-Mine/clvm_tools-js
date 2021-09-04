@@ -1,0 +1,2 @@
+brun '(ash)'
+FAIL: ash takes exactly 2 arguments ()

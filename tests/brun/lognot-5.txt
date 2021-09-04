@@ -1,0 +1,2 @@
+brun -c '(lognot)'
+FAIL: lognot takes exactly 1 argument ()

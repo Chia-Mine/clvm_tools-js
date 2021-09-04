@@ -1,0 +1,2 @@
+brun --strict -c '(0x17f )'
+FAIL: unimplemented operator 383

@@ -1,0 +1,2 @@
+brun '(not)'
+FAIL: not takes exactly 1 argument ()

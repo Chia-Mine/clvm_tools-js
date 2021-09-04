@@ -1,0 +1,2 @@
+brun --strict -c '(0x040 )'
+FAIL: unimplemented operator 0x0040

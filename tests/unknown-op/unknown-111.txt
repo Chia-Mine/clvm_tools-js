@@ -1,0 +1,2 @@
+brun -c '(0x7ffffffffbf (q . 1) (q . 2) (q . 3))'
+FAIL: invalid operator 0x07ffffffffbf

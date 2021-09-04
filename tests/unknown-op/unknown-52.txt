@@ -1,0 +1,2 @@
+brun --strict -c '(0x1c0 )'
+FAIL: unimplemented operator 448

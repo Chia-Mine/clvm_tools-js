@@ -1,0 +1,2 @@
+brun --strict -c '(0x1bf )'
+FAIL: unimplemented operator 447

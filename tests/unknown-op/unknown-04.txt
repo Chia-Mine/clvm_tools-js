@@ -1,0 +1,2 @@
+brun --strict -c '(0x100 )'
+FAIL: unimplemented operator 256

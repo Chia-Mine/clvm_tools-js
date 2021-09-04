@@ -132,15 +132,15 @@ beforeAll(async () => {
   return initialize()
 });
 
-// inject("opc");
-// inject("opd");
-// inject("stage_1");
-// inject("stage_2");
-// inject("clvm_runtime");
-// inject("cmd");
+inject("opc");
+inject("opd");
+inject("stage_1");
+inject("stage_2");
+inject("clvm_runtime");
+inject("cmd");
 inject("brun");
-// inject("edge-cases");
-// inject("unknown-op");
+inject("edge-cases");
+inject("unknown-op");
 
 afterAll(() => {
   const mainSymPath = os_path.resolve(__dirname, "..", "main.sym");

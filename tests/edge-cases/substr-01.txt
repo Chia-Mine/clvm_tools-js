@@ -1,0 +1,2 @@
+brun '(substr)'
+FAIL: substr takes exactly 2 or 3 arguments ()
