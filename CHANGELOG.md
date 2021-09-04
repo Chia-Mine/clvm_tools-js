@@ -1,11 +1,14 @@
 # Changelog
 
-## [0.9.1]
+## [0.9.2]
 ### Changed
 - Updated `clvm` to v1.0.8
 - Added tests for clvm operations
 ### Fixed
 - Fixed an issue where `blsjs.wasm` was not loaded during tests
+
+## [0.9.1]
+This version was deleted because I published uncompiled module.
 
 ## [0.9.0]
 ### Changed
@@ -52,7 +55,7 @@
 ## [0.1.0] - 2021-06-29
 Initial release.
 
-[0.9.1]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.9.0...v0.9.1
+[0.9.2]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.9.0...v0.9.2
 [0.9.0]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.6...v0.9.0
 [0.1.6]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.1.4...v0.1.5
