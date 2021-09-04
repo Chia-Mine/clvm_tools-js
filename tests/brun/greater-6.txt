@@ -1,0 +1,2 @@
+brun -c "(> 3 3)"
+FAIL: path into atom ()

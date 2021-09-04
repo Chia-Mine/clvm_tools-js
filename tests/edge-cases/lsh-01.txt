@@ -1,0 +1,2 @@
+brun '(lsh)'
+FAIL: lsh takes exactly 2 arguments ()

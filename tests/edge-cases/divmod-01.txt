@@ -1,0 +1,2 @@
+brun '(divmod)'
+FAIL: divmod takes exactly 2 arguments ()

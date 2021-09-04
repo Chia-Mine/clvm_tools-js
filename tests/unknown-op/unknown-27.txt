@@ -1,0 +1,2 @@
+brun -c '(0xfffeffff7f )'
+FAIL: invalid operator 0xfffeffff7f

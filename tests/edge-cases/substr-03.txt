@@ -1,0 +1,2 @@
+brun -n '(substr (q . 1) (q . 1))'
+()

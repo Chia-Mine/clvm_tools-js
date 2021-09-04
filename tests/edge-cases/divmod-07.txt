@@ -1,0 +1,2 @@
+brun -n '(divmod (q . 0xffff) (q . 0xffff))'
+(1)

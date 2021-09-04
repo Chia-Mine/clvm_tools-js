@@ -1,0 +1,2 @@
+brun '(>s)'
+FAIL: >s takes exactly 2 arguments ()
