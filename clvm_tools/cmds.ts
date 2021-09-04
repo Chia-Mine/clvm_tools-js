@@ -252,7 +252,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
       src_sexp = reader.read_ir(src_text);
     }
     catch(ex){
-      print(`FAIL: ${ex}`);
+      print(`FAIL: ${ex instanceof Error ? ex.message : typeof ex === "string" ? ex : JSON.stringify(ex)}`);
       return -1;
     }
     const assembled_sexp = binutils.assemble_from_ir(src_sexp);
