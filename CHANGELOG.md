@@ -8,7 +8,7 @@
 - Fixed an issue where `blsjs.wasm` was not loaded during tests
 
 ## [0.9.1]
-This version was deleted because I published uncompiled module to npm registry.
+This version was deleted/unpublished because I published useless uncompiled module to npm registry.
 
 ## [0.9.0]
 ### Changed
