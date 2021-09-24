@@ -46,8 +46,8 @@ See details [here](https://github.com/Chia-Network/clvm_rs/issues/108).
 This code is compatible with:
 - [`a349e6288779842eaf44c728e34308f18b82d9be`](https://github.com/Chia-Network/clvm_tools/tree/a349e6288779842eaf44c728e34308f18b82d9be) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
   - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/a349e6288779842eaf44c728e34308f18b82d9be...main)
-- [`ffaee39a62b3418cdbbef2ae29a0b9e6664ef33d`](https://github.com/Chia-Network/clvm_rs/tree/ffaee39a62b3418cdbbef2ae29a0b9e6664ef33d) of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
-  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/ffaee39a62b3418cdbbef2ae29a0b9e6664ef33d...main)
+- [`05fda8b454ff871b91f400f00f3a3b7fa6d02d08`](https://github.com/Chia-Network/clvm_rs/tree/05fda8b454ff871b91f400f00f3a3b7fa6d02d08) of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
+  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/05fda8b454ff871b91f400f00f3a3b7fa6d02d08...main)
 
 ## Examples
 ### Command line

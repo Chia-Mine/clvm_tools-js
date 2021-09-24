@@ -1359,10 +1359,10 @@ clvm@^1.0.8:
     "@chiamine/bls-signatures" "^0.2.1-beta.2"
     jscrypto "^1.0.2"
 
-clvm_rs@0.1.10:
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/clvm_rs/-/clvm_rs-0.1.10.tgz#55180a9e9f416d4e7ee7716b70450fbf84a36c24"
-  integrity sha512-4Wle6M8s2f8xEvtj92sTjfbYfC3TnoWRvqsZPMMdPHXVhigunKyEMEQ7dqGT0yjLvKpxplt/STCeVo6j2Pizcw==
+clvm_rs@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/clvm_rs/-/clvm_rs-0.1.13.tgz#3569f5ef05ff8c93c82c472c26147266d3ee2959"
+  integrity sha512-qEXAwR2ZVO/sgYL20M6+BPb6ITuw7vbql4r4AUHp6hZDkIN1K5Gflx4k6V3tl0hKmyyEyg2RgdgUWutTz/pbLg==
 
 co@^4.6.0:
   version "4.6.0"
