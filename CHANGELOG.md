@@ -2,7 +2,7 @@
 
 ## [0.9.3]
 ### Changed
-- Updated `clvm_rs` to v0.0.13
+- Updated `clvm_rs` to v0.1.13
 
 ## [0.9.2]
 ### Changed
