@@ -1,6 +1,7 @@
 # Changelog
 
 ## [0.9.4]
+### Changed
 - Use divmod instead of div
 - Updated `clvm_rs` to v0.1.15
 
