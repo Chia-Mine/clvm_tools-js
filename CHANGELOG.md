@@ -2,6 +2,7 @@
 
 ## [0.9.4]
 - Use divmod instead of div
+- Updated `clvm_rs` to v0.1.15
 
 ## [0.9.3]
 ### Changed
