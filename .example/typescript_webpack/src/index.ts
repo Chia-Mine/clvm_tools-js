@@ -77,8 +77,9 @@ async function onButtonClicked (e: MouseEvent) {
     clvm_tools.go(command, prgEl.value, envEl.value, ...options);
   }
   catch (e) {
-    if(Object.prototype.hasOwnProperty.call(e, "name") && Object.prototype.hasOwnProperty("message")){
-      outputEl.textContent = `${e.name}: ${e.message}`;
+    if(Object.prototype.hasOwnProperty.call(e, "name") && Object.prototype.hasOwnProperty.call(e, "message")){
+      const err = e as Error;
+      outputEl.textContent = `${err.name}: ${err.message}`;
     }
     else{
       outputEl.textContent = typeof e === "string" ? e : JSON.stringify(e);
