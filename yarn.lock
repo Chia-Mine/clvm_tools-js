@@ -1351,10 +1351,10 @@ clone-deep@^4.0.1:
     kind-of "^6.0.2"
     shallow-clone "^3.0.0"
 
-clvm@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/clvm/-/clvm-1.0.8.tgz#97828dd4776ef040133db7958336e8b374461034"
-  integrity sha512-9SCaBKEB72n9nuU1UJ4yN1c16PhGPWsJ3KFn6X6Run/Kh3kUbrLqkFR261ZxuBk2+Dn1tTudBgIKQR5/trd6Ww==
+clvm@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/clvm/-/clvm-1.0.9.tgz#397b25f4eaf185debee65603651ae29a5e73024d"
+  integrity sha512-HA7ap/pdZdK4ywZptFBwOqtax6jMHBb4QfVVPFii9cXbDYIEErVbiYa584rtB5/FxtRb+OOeNdeIEnmyxFnQrQ==
   dependencies:
     "@chiamine/bls-signatures" "^0.2.1-beta.2"
     jscrypto "^1.0.2"
