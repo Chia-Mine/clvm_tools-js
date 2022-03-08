@@ -3,6 +3,8 @@
 ## [0.9.6]
 ### Changed
 - Updated `clvm` to v2.0.0-beta.0
+### Added
+- Added tests for `div` operator
 
 ## [0.9.5]
 ### Changed
