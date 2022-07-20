@@ -44,10 +44,10 @@ See details [here](https://github.com/Chia-Network/clvm_rs/issues/108).
 
 ## Compatibility
 This code is compatible with:
-- [`c23032ee0aa667358564fd876ad78168a61bf595`](https://github.com/Chia-Network/clvm_tools/tree/c23032ee0aa667358564fd876ad78168a61bf595) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
-  - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/c23032ee0aa667358564fd876ad78168a61bf595...main)
-- [`a6ff35de34308021bdf74dcfae1192838acb378a`](https://github.com/Chia-Network/clvm_rs/tree/a6ff35de34308021bdf74dcfae1192838acb378a) of [clvm_rs@0.1.15](https://github.com/Chia-Network/clvm_rs)
-  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/a6ff35de34308021bdf74dcfae1192838acb378a...main)
+- [`dca2c8e56917055fd86c93cb408e6e99730f558b`](https://github.com/Chia-Network/clvm_tools/tree/dca2c8e56917055fd86c93cb408e6e99730f558b) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
+  - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/dca2c8e56917055fd86c93cb408e6e99730f558b...main)
+- [`611a7b8e13d086fb2e674b5501acbfacd9aad687`](https://github.com/Chia-Network/clvm_rs/tree/611a7b8e13d086fb2e674b5501acbfacd9aad687) of [clvm_rs@0.1.15](https://github.com/Chia-Network/clvm_rs)
+  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/611a7b8e13d086fb2e674b5501acbfacd9aad687...main)
 
 ## Examples
 ### Command line

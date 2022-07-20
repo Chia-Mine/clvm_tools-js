@@ -29,7 +29,7 @@ module.exports = {
       "crypto": false,
     },
     alias: {
-      "clvm_rs": false,
+      "clvm_wasm": false,
     },
   },
   target: ["es5"],

@@ -29,10 +29,10 @@ if(!fs.existsSync(blsWasmSrcPath)){
 }
 fs.copyFileSync(blsWasmSrcPath, blsWasmDestPath);
 
-const clvmrsWasmSrcPath = require.resolve("clvm_rs/clvm_rs_bg.wasm");
-const clvmrsWasmDestPath = path.join(browserDir, "clvm_rs_bg.wasm");
+const clvmrsWasmSrcPath = require.resolve("clvm_wasm/clvm_wasm_bg.wasm");
+const clvmrsWasmDestPath = path.join(browserDir, "clvm_wasm_bg.wasm");
 if(!fs.existsSync(clvmrsWasmSrcPath)){
-  console.error("clvm_rs_bg.wasm not found at:");
+  console.error("clvm_wasm_bg.wasm not found at:");
   console.error(clvmrsWasmSrcPath);
   console.error("Probably you haven't execute npm install yet");
   return;

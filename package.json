@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "clvm": "2.0.0-beta.1",
-    "clvm_rs": "^0.1.15"
+    "clvm_wasm": "^0.1.21"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
