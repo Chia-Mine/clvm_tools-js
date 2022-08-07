@@ -29,7 +29,7 @@
     "typescript"
   ],
   "engines": {
-    "node": ">=12.22.0"
+    "node": ">=14.14.0"
   },
   "dependencies": {
     "clvm": "^2.0.0",
