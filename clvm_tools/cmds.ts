@@ -288,11 +288,26 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
   try{
     const arg_max_cost = parsedArgs["max_cost"] as number;
     const max_cost = Math.max(0, (arg_max_cost !== 0 ? arg_max_cost - cost_offset : 0));
-    const use_rust = (
-      tool_name !== "run"
-      && !pre_eval_f
-      && parsedArgs["experiment_backend"] === "rust"
-    );
+    
+    let use_rust = false;
+    if(parsedArgs["experiment_backend"] === "rust"){
+      use_rust = true;
+    }
+    else if(parsedArgs["experiment_backend"] === "python"){
+      use_rust = false;
+    }
+    else{
+      const is_stage0 = !(
+        typeof (parsedArgs["stage"] as typeof stage_2).run_program_for_search_paths === "function"
+        || typeof (parsedArgs["stage"] as typeof stage_1).make_invocation === "function"
+      )
+  
+      use_rust = (
+        tool_name !== "run"
+        && !pre_eval_f
+        && is_stage0
+      );
+    }
     
     if(use_rust){
       if(input_serialized === None){
