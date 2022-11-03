@@ -46,5 +46,6 @@ module.exports = {
     library: ["clvm_tools"],
     libraryTarget: "umd",
     globalObject: "this",
+    hashFunction: "xxhash64"
   },
 };
