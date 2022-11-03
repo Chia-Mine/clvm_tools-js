@@ -4,6 +4,8 @@
 ### Changed
 - Updated `clvm` to v2.0.0
 - Replaced `clvm_rs` with `clvm_wasm`
+- Renamed `--experiment-backend` flag to `--backend`
+- Now `--backend python` must be `--backend js`
 ### Added
 - Added tests for `div` operator
 

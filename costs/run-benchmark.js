@@ -124,7 +124,7 @@ function run_benchmark_file(fn, existing_results){
   
   const command = [
     "node",
-    `"${commandPath}"`, "brun", "-c", "--quiet", "--time", `--experiment-backend ${useRust ? "rust" : "js"}`,
+    `"${commandPath}"`, "brun", "-c", "--quiet", "--time", `--backend ${useRust ? "rust" : "js"}`,
     `"${toOSPath(fn)}"`, `"${toOSPath(envPath)}"`
   ].join(" ");
   for(let i=0;i<number_of_iterations;i++){

@@ -71,7 +71,7 @@ function invoke_tool(cmd_line: string){
   
   const args = shlex.split(cmd_line);
   if(use_rust && args[0] === "brun"){
-    args.push("--experiment-backend", "rust");
+    args.push("--backend", "rust");
   }
   const v = console_scripts[args[0] as "run"|"brun"|"opc"|"opd"|"read_ir"](args);
   

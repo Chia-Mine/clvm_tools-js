@@ -195,8 +195,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
                               help: "Output result as data, not as a program"},
   );
   parser.add_argument(
-    ["--experiment-backend"], {type: "str",
-                               help: "force use of 'rust' or 'python' backend"},
+    ["--backend"], {type: "str", help: "force use of 'rust' or 'js' backend"},
   );
   parser.add_argument(
     ["-i", "--include"],
@@ -290,10 +289,10 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
     const max_cost = Math.max(0, (arg_max_cost !== 0 ? arg_max_cost - cost_offset : 0));
     
     let use_rust = false;
-    if(parsedArgs["experiment_backend"] === "rust"){
+    if(parsedArgs["backend"] === "rust"){
       use_rust = true;
     }
-    else if(parsedArgs["experiment_backend"] === "python"){
+    else if(parsedArgs["backend"] === "js"){
       use_rust = false;
     }
     else{
