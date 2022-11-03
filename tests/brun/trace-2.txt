@@ -1,4 +1,4 @@
-brun --experiment-backend javascript -c -v '(x)'
+brun --backend js -c -v '(x)'
 FAIL: clvm raise ()
 
 (a 2 3) [((x))] => (didn't finish)

@@ -44,10 +44,10 @@ See details [here](https://github.com/Chia-Network/clvm_rs/issues/108).
 
 ## Compatibility
 This code is compatible with:
-- [`c23032ee0aa667358564fd876ad78168a61bf595`](https://github.com/Chia-Network/clvm_tools/tree/c23032ee0aa667358564fd876ad78168a61bf595) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
-  - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/c23032ee0aa667358564fd876ad78168a61bf595...main)
-- [`a6ff35de34308021bdf74dcfae1192838acb378a`](https://github.com/Chia-Network/clvm_rs/tree/a6ff35de34308021bdf74dcfae1192838acb378a) of [clvm_rs@0.1.15](https://github.com/Chia-Network/clvm_rs)
-  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/a6ff35de34308021bdf74dcfae1192838acb378a...main)
+- [`dca2c8e56917055fd86c93cb408e6e99730f558b`](https://github.com/Chia-Network/clvm_tools/tree/dca2c8e56917055fd86c93cb408e6e99730f558b) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
+  - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/dca2c8e56917055fd86c93cb408e6e99730f558b...main)
+- [`611a7b8e13d086fb2e674b5501acbfacd9aad687`](https://github.com/Chia-Network/clvm_rs/tree/611a7b8e13d086fb2e674b5501acbfacd9aad687) of [clvm_rs@0.1.15](https://github.com/Chia-Network/clvm_rs)
+  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/611a7b8e13d086fb2e674b5501acbfacd9aad687...main)
 
 ## Examples
 ### Command line
@@ -66,7 +66,7 @@ $ npx clvm_tools brun "(+ 1 (q . 3))" "2"
 const clvm_tools = require("clvm_tools");
 
 // You can skip async-initialization below until `op_pubkey_for_exp` or `op_point_add` is called
-// or dispatch run/brun command with "--experiment-backend rust" option
+// or dispatch run/brun command with "--backend rust" option
 await clvm_tools.initialize(); 
 
 clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
@@ -75,7 +75,7 @@ clvm_tools.go("brun", "(+ 1 (q . 3))", "2");
 // 5
 
 // use clvm_rs for backend
-clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--experiment-backend", "rust");
+clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--backend", "rust");
 // assemble_from_ir: 0.00034061598777768154
 // to_sexp_f: 0.0005161969661706678
 // run_program: 0.0003017840385446391
@@ -133,7 +133,7 @@ clvm_tools.setPrintFunction(printFn);
 Some parts of `clvm_tools`/`clvm` depend on WebAssembly.  
 For example:
 - `op_point_add` and `op_pubkey_for_exp` relies on wasm build of [bls-signatures](https://github.com/Chia-Mine/bls-signatures/tree/npm).
-- option `--experiment-backend clvm_rs` for `run` and `brun` commands relies on wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
+- option `--backend rust` for `run` and `brun` commands relies on wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
 
 #### .wasm file installation
 In order for those wasm files to be loaded correctly, you need to make sure that the wasm files are stored in the same folder as the main js file, which `clvm_tools` is bundled into.

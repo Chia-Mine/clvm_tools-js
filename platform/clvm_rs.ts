@@ -55,10 +55,10 @@ export function run_clvm(program: Uint8Array, args: Uint8Array) {
 const defaultClvmRsWasmPath = (() => {
   if(typeof document !== "undefined" && document.currentScript){
     const scriptDir = (document.currentScript as HTMLScriptElement).src.replace(/\/[^/]+$/, "");
-    return scriptDir + "/clvm_rs_bg.wasm";
+    return scriptDir + "/clvm_wasm_bg.wasm";
   }
   else{
-    return "./clvm_rs_bg.wasm";
+    return "./clvm_wasm_bg.wasm";
   }
 })();
 
@@ -69,7 +69,7 @@ export type TInitOption = {
 export async function initialize(option?: TInitOption){
   if (typeof window === "undefined") {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const path = require.resolve("clvm_rs/clvm_rs_bg.wasm");
+    const path = require.resolve("clvm_wasm/clvm_wasm_bg.wasm");
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const bytes = require("fs").readFileSync(path);
   

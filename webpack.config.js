@@ -29,7 +29,7 @@ module.exports = {
       "crypto": false,
     },
     alias: {
-      "clvm_rs": false,
+      "clvm_wasm": false,
     },
   },
   target: ["es5"],
@@ -46,5 +46,6 @@ module.exports = {
     library: ["clvm_tools"],
     libraryTarget: "umd",
     globalObject: "this",
+    hashFunction: "xxhash64"
   },
 };

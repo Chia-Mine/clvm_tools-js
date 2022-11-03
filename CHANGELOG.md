@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.6]
+### Changed
+- Updated `clvm` to v2.0.0
+- Replaced `clvm_rs` with `clvm_wasm`
+- Renamed `--experiment-backend` flag to `--backend`
+- Now `--backend python` must be `--backend js`
+### Added
+- Added tests for `div` operator
+
 ## [0.9.5]
 ### Changed
 - Updated `clvm` to v1.0.9
@@ -68,6 +77,7 @@ This version was deleted/unpublished because I published useless uncompiled modu
 ## [0.1.0] - 2021-06-29
 Initial release.
 
+[0.9.6]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.9.5...v0.9.6
 [0.9.5]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.9.4...v0.9.5
 [0.9.4]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/Chia-Mine/clvm_tools-js/compare/v0.9.2...v0.9.3

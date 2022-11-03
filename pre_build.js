@@ -9,14 +9,14 @@ if(!fs.existsSync(distDir)){
 // clean and create output dir
 const npmDir = path.join(__dirname, ".dist", "npm");
 if(fs.existsSync(npmDir)){
-  fs.rmdirSync(npmDir, {recursive: true});
+  fs.rmSync(npmDir, {recursive: true});
 }
 fs.mkdirSync(npmDir);
 
 // Copy wasm file
 const browserDir = path.join(npmDir, "browser");
 if(fs.existsSync(browserDir)){
-  fs.rmdirSync(browserDir, {recursive: true});
+  fs.rmSync(browserDir, {recursive: true});
 }
 fs.mkdirSync(browserDir);
 const blsWasmSrcPath = path.join(__dirname, "node_modules", "clvm", "browser", "blsjs.wasm");
@@ -29,10 +29,10 @@ if(!fs.existsSync(blsWasmSrcPath)){
 }
 fs.copyFileSync(blsWasmSrcPath, blsWasmDestPath);
 
-const clvmrsWasmSrcPath = require.resolve("clvm_rs/clvm_rs_bg.wasm");
-const clvmrsWasmDestPath = path.join(browserDir, "clvm_rs_bg.wasm");
+const clvmrsWasmSrcPath = require.resolve("clvm_wasm/clvm_wasm_bg.wasm");
+const clvmrsWasmDestPath = path.join(browserDir, "clvm_wasm_bg.wasm");
 if(!fs.existsSync(clvmrsWasmSrcPath)){
-  console.error("clvm_rs_bg.wasm not found at:");
+  console.error("clvm_wasm_bg.wasm not found at:");
   console.error(clvmrsWasmSrcPath);
   console.error("Probably you haven't execute npm install yet");
   return;

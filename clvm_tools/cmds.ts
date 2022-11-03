@@ -195,8 +195,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
                               help: "Output result as data, not as a program"},
   );
   parser.add_argument(
-    ["--experiment-backend"], {type: "str",
-                               help: "force use of 'rust' or 'python' backend"},
+    ["--backend"], {type: "str", help: "force use of 'rust' or 'js' backend"},
   );
   parser.add_argument(
     ["-i", "--include"],
@@ -288,11 +287,28 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
   try{
     const arg_max_cost = parsedArgs["max_cost"] as number;
     const max_cost = Math.max(0, (arg_max_cost !== 0 ? arg_max_cost - cost_offset : 0));
-    const use_rust = (
-      tool_name !== "run"
-      && !pre_eval_f
-      && parsedArgs["experiment_backend"] === "rust"
-    );
+    
+    let use_rust = false;
+    if(parsedArgs["backend"] === "rust"){
+      use_rust = true;
+    }
+    else if(parsedArgs["backend"] === "js"){
+      use_rust = false;
+    }
+    /* // If you uncomment the lines below, the default runtime will be clvm_wasm
+    else{
+      const is_stage0 = !(
+        typeof (parsedArgs["stage"] as typeof stage_2).run_program_for_search_paths === "function"
+        || typeof (parsedArgs["stage"] as typeof stage_1).make_invocation === "function"
+      )
+  
+      use_rust = (
+        tool_name !== "run"
+        && !pre_eval_f
+        && is_stage0
+      );
+    }
+    // */
     
     if(use_rust){
       if(input_serialized === None){
