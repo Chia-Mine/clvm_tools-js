@@ -295,6 +295,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
     else if(parsedArgs["backend"] === "js"){
       use_rust = false;
     }
+    /* // If you uncomment the lines below, the default runtime will be clvm_wasm
     else{
       const is_stage0 = !(
         typeof (parsedArgs["stage"] as typeof stage_2).run_program_for_search_paths === "function"
@@ -307,6 +308,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
         && is_stage0
       );
     }
+    // */
     
     if(use_rust){
       if(input_serialized === None){
