@@ -1,2 +1,3 @@
 brun -c '((+ . foo) 1 2 3)'
-FAIL: in ((X)...) syntax X must be lone atom ((+ . "foo") 1 2 3)
+cost = 1168
+6

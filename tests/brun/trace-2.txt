@@ -1,11 +1,5 @@
-brun --experiment-backend javascript -c -v '(x)'
+brun --backend python -c -v '(x)'
 FAIL: clvm raise ()
-
-(a 2 3) [((x))] => (didn't finish)
-
-3 [((x))] => ()
-
-2 [((x))] => (x)
 
 (x) [()] => (didn't finish)
 

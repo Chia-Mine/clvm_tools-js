@@ -5,14 +5,12 @@ import {initialize} from "../";
 import * as console_scripts from "../clvm_tools/cmds";
 import {fs_readlineSync, os_walk} from "../platform/io";
 import {setStdout, setStderr} from "../platform/print";
-import {initialize as initClvmRs} from "../platform/clvm_rs";
 
 // # If the REPAIR environment variable is set, any tests failing due to
 // # wrong output will be corrected. Be sure to do a "git diff" to validate that
 // # you're getting changes you expect.
 
 const REPAIR = Boolean(process.env.REPAIR);
-let use_rust = false;
 
 function get_test_cases(path: string){
   const PREFIX = __dirname;
@@ -70,9 +68,6 @@ function invoke_tool(cmd_line: string){
   });
   
   const args = shlex.split(cmd_line);
-  if(use_rust && args[0] === "brun"){
-    args.push("--experiment-backend", "rust");
-  }
   const v = console_scripts[args[0] as "run"|"brun"|"opc"|"opd"|"read_ir"](args);
   
   setStdout(console.log);
@@ -126,15 +121,12 @@ function inject(...paths: string[]){
   }
 }
 
-use_rust = false;
-
 beforeAll(async () => {
   return initialize()
 });
 
 inject("opc");
 inject("opd");
-inject("stage_1");
 inject("stage_2");
 inject("clvm_runtime");
 inject("cmd");

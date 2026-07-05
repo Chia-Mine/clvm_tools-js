@@ -23,7 +23,7 @@ export function compile_clvm(input_path: string, output_path: string, search_pat
     const hex = result.as_bin().hex();
     
     const f = new FileStream(output_path);
-    f.write(hex);
+    f.write(insert_newlines(hex));
     f.write("\n");
     f.flush();
   }
@@ -47,4 +47,12 @@ export function find_files(path: string = ""){
     }
   }
   return r;
+}
+
+export function insert_newlines(s: string, every: number = 80){
+  const lines: string[] = [];
+  for(let i=0;i<s.length;i+=every){
+    lines.push(s.substring(i, i+every));
+  }
+  return lines.join("\n");
 }

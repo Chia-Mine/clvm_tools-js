@@ -10,11 +10,6 @@ import {
   TPreEvalF,
   Bytes,
 } from "clvm";
-import * as binutils from "../clvm_tools/binutils";
-
-export const run = binutils.assemble("(a 2 3)");
-export const brun = run;
-
 export type RunProgramOption = Partial<{
   operator_lookup: TOperatorDict;
   max_cost: number|None;
@@ -41,7 +36,19 @@ export function run_program(
     operator_lookup = OperatorDict(operator_lookup, {unknown_op_handler: fatal_error});
   }
   
-  return default_run_program(program, args, operator_lookup, max_cost, pre_eval_f);
+  // clvm's JS `run_program` is deprecated in favor of `run_chia_program`,
+  // but the stage-2 compiler and the tracing/debugging code paths need the
+  // JavaScript evaluator (pre_eval_f is not supported by clvm_wasm).
+  // Suppress the deprecation warning it prints on every call.
+  const warn = console.warn;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  console.warn = () => {};
+  try{
+    return default_run_program(program, args, operator_lookup, max_cost, pre_eval_f);
+  }
+  finally{
+    console.warn = warn;
+  }
 }
 
 export type TRunProgram = typeof run_program;

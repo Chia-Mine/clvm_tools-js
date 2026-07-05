@@ -36,15 +36,12 @@ pnpm test
 ```
 If you find something not compatible with Python's clvm_tools, please report it to GitHub issues.
 
-**Note**: Currently wasm build of `clvm_rs` is not fully compatible with Python's build of `clvm_rs`.
-See details [here](https://github.com/Chia-Network/clvm_rs/issues/108).
-
 ## Compatibility
 This code is compatible with:
-- [`c23032ee0aa667358564fd876ad78168a61bf595`](https://github.com/Chia-Network/clvm_tools/tree/c23032ee0aa667358564fd876ad78168a61bf595) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
-  - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/c23032ee0aa667358564fd876ad78168a61bf595...main)
-- [`a6ff35de34308021bdf74dcfae1192838acb378a`](https://github.com/Chia-Network/clvm_rs/tree/a6ff35de34308021bdf74dcfae1192838acb378a) of [clvm_rs@0.1.15](https://github.com/Chia-Network/clvm_rs)
-  - [Diff to the latest clvm_rs](https://github.com/Chia-Network/clvm_rs/compare/a6ff35de34308021bdf74dcfae1192838acb378a...main)
+- [`2e6c303990ae9b483e17a160a13d0f04de513c72`](https://github.com/Chia-Network/clvm_tools/tree/2e6c303990ae9b483e17a160a13d0f04de513c72) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
+  - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/2e6c303990ae9b483e17a160a13d0f04de513c72...main)
+  - Note: Unlike the Python version, the `run` command uses the JavaScript implementation of the stage-2 compiler instead of delegating to [clvm_tools_rs](https://github.com/Chia-Network/clvm_tools_rs), so it stays usable in web browsers.
+- [`clvm@4.0.0`](https://github.com/Chia-Mine/clvm-js/tree/v4.0.0) of [clvm-js](https://github.com/Chia-Mine/clvm-js), whose bundled `clvm_wasm` provides the Rust (`clvm_rs`) execution backend
 
 ## Examples
 ### Command line
@@ -62,8 +59,7 @@ $ npx clvm_tools brun "(+ 1 (q . 3))" "2"
 ```javascript
 const clvm_tools = require("clvm_tools");
 
-// You can skip async-initialization below until `op_pubkey_for_exp` or `op_point_add` is called
-// or dispatch run/brun command with "--experiment-backend rust" option
+// Async-initialization is always required. It loads wasm files of clvm.
 await clvm_tools.initialize(); 
 
 clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
@@ -71,8 +67,9 @@ clvm_tools.go("run", "(mod ARGUMENT (+ ARGUMENT 3))");
 clvm_tools.go("brun", "(+ 1 (q . 3))", "2");
 // 5
 
-// use clvm_rs for backend
-clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--experiment-backend", "rust");
+// `brun` uses the Rust (clvm_wasm) backend automatically.
+// You can force a backend with the "--backend" option.
+clvm_tools.go("brun", "(+ 1 (q . 3))", "2", "--time", "--backend", "rust");
 // assemble_from_ir: 0.00034061598777768154
 // to_sexp_f: 0.0005161969661706678
 // run_program: 0.0003017840385446391
@@ -129,8 +126,8 @@ clvm_tools.setPrintFunction(printFn);
 ### WebAssembly files
 Some parts of `clvm_tools`/`clvm` depend on WebAssembly.  
 For example:
-- `op_point_add` and `op_pubkey_for_exp` relies on wasm build of [bls-signatures](https://github.com/Chia-Mine/bls-signatures/tree/npm).
-- option `--experiment-backend clvm_rs` for `run` and `brun` commands relies on wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs)
+- `op_point_add` and `op_pubkey_for_exp` on the JavaScript backend rely on wasm build of [bls-signatures](https://github.com/Chia-Mine/bls-signatures/tree/npm).
+- the Rust backend for `run` and `brun` commands relies on `clvm_wasm` (wasm build of [clvm_rs](https://github.com/Chia-Network/clvm_rs)) bundled with [clvm-js](https://github.com/Chia-Mine/clvm-js)
 
 #### .wasm file installation
 In order for those wasm files to be loaded correctly, you need to make sure that the wasm files are stored in the same folder as the main js file, which `clvm_tools` is bundled into.
@@ -138,13 +135,13 @@ In order for those wasm files to be loaded correctly, you need to make sure that
 <pre>
 ├── ...
 ├── main.js          # js file which clvm_tools is compiled into.
-├── clvm_rs_bg.wasm  # copy it from node_modules/clvm_tools/browser/clvm_rs_bg.wasm
+├── clvm_wasm_bg.wasm  # copy it from node_modules/clvm_tools/browser/clvm_wasm_bg.wasm
 └── blsjs.wasm       # copy it from node_modules/clvm_tools/browser/blsjs.wasm
 </pre>
 
-**Note1**: If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_rs_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js/`.  
+**Note1**: If you use [React](https://reactjs.org/), please copy `blsjs.wasm` and `clvm_wasm_bg.wasm` in `node_modules/clvm_tools/browser/` to `<react-project-root>/public/static/js/`.  
 React automatically copies wasm files next to the main js file on building. (if you use react-scripts, or you started project by `create-react-app`)  
-**Note2**: Redistributing your project with bundled `blsjs.wasm` and/or `clvm_rs_bg.wasm` must be compliant with Apache2.0 License provided by [Chia-Network](https://github.com/Chia-Network/)
+**Note2**: Redistributing your project with bundled `blsjs.wasm` and/or `clvm_wasm_bg.wasm` must be compliant with Apache2.0 License provided by [Chia-Network](https://github.com/Chia-Network/)
 
 #### .wasm file manual loading
 The .wasm files are not loaded automatically. It requires programmer to fetch and load wasm files in the following way.
@@ -157,7 +154,7 @@ import * as clvm_tools from "clvm_tools/browser";
 // 
 // For example, if url of the js file currently running is 'https://example.com/aaa/bbb/main.js',
 // it tries to fetch wasm files from 'https://example.com/aaa/bbb/blsjs.wasm'
-// and 'https://example.com/aaa/bbb/clvm_rs_bg.wasm'
+// and 'https://example.com/aaa/bbb/clvm_wasm_bg.wasm'
 await clvm_tools.initialize();
 
 // ...

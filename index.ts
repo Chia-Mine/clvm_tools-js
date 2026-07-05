@@ -10,7 +10,6 @@ export * from "./clvm_tools/sha256tree";
 
 import {setStdout, TPrinter} from "./platform/print";
 import {initialize as initClvm} from "clvm";
-import {initialize as initClvmRs, TInitOption as TInitClvmRsOption} from "./platform/clvm_rs";
 
 const COMMANDS: Record<string, (args: string[]) => unknown> = {
   read_ir,
@@ -53,12 +52,9 @@ export function setPrintFunction(printer: TPrinter){
   setStdout(printer);
 }
 
-export type TInitOption = {
-  initClvmRsOption: TInitClvmRsOption;
-};
 /**
  * Wait wasm files to be loaded before you call any of `clvm_tools` functions.
  */
-export async function initialize(option?: Partial<TInitOption>){
-  await Promise.all([initClvm(), initClvmRs(option?.initClvmRsOption)]);
+export async function initialize(){
+  await initClvm();
 }
