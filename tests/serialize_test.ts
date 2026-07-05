@@ -4,12 +4,12 @@ const TEXT = b("the quick brown fox jumps over the lazy dogs");
 
 function check_serde(s: CastableType){
   const v = to_sexp_f(s);
-  let b = v.as_bin();
+  let b = v.as_bin({max_size: 0x40000000});
   let v1 = sexp_from_stream(new Stream(b), to_sexp_f);
   if(!v.equal_to(v1)){
     console.log(`${v}: ${b.length} ${b} ${v1}`);
     // debugger;
-    b = v.as_bin();
+    b = v.as_bin({max_size: 0x40000000});
     v1 = sexp_from_stream(new Stream(b), to_sexp_f);
   }
   expect(v.equal_to(v1)).toBeTruthy();

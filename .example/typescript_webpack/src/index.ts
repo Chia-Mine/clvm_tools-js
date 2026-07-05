@@ -23,7 +23,7 @@ window.onload = async function(){
     outputEl.textContent = "";
   }
   
-  // Load blsjs.wasm and clvm_rs_bg.wasm
+  // Load blsjs.wasm and clvm_wasm_bg.wasm
   await clvm_tools.initialize();
   
   /*
@@ -53,7 +53,7 @@ function getOptionsFromForm(){
   const options = [];
   for(const [key, value] of fd.entries()){
     if(key === "backend"){
-      options.push("--experiment-backend", "rust");
+      options.push("--backend", "rust");
     }
     else{
       options.push(`--${key}`);

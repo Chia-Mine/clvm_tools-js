@@ -7,13 +7,13 @@ test("test_pattern_match", () => {
   expect(r).toEqual({});
   
   r = match(assemble("($ . $)"), assemble("x"));
-  expect(r).toBeNull();
+  expect(r).toBeUndefined();
   
   r = match(assemble("(: . :)"), assemble(":"));
   expect(r).toEqual({});
   
   r = match(assemble("(: . :)"), assemble("x"));
-  expect(r).toBeNull();
+  expect(r).toBeUndefined();
   
   r = match(assemble("$"), assemble("$"));
   expect(r).toEqual({});
@@ -32,7 +32,7 @@ test("test_pattern_match", () => {
   expect(r?.size.equal_to(assemble("200"))).toBeTruthy();
   
   r = match(assemble("($ . size)"), assemble("(I like cheese)"));
-  expect(r).toBeNull();
+  expect(r).toBeUndefined();
   
   r = match(assemble("(: . size)"), assemble("(I like cheese)"));
   expect(r).toHaveProperty("size");
@@ -57,7 +57,7 @@ test("test_pattern_match", () => {
     assemble("(= (f (r (a))) ($ . pubkey1) ($ . pubkey1))"),
     assemble("(= (f (r (a))) 50000 60000)"),
   );
-  expect(r).toBeNull();
+  expect(r).toBeUndefined();
   
   const a = assemble("(= (f (r (a))) ($ . pubkey1) ($ . pubkey1))");
   const b = assemble("(= (f (r (a))) 50000 50000)");

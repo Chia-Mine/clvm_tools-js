@@ -1,11 +1,33 @@
 # Changelog
 
-## [Unreleased]
+## [0.10.0]
+This version is compatible with [`2e6c303990ae9b483e17a160a13d0f04de513c72`](https://github.com/Chia-Network/clvm_tools/tree/2e6c303990ae9b483e17a160a13d0f04de513c72) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
+### Breaking Change
+- Upgraded `clvm` from `1.0.9` to `4.0.1`
+  - `None` is now `undefined` (previously `null`)
+  - `op_div` no longer accepts negative operands
+  - `sha256tree`/serialization behaviour follows clvm 4.0.1
+- Removed the `clvm_rs` dependency. The Rust execution backend is now provided by `clvm_wasm`, which is bundled with `clvm@4.0.1`
+  - `initialize()` no longer takes an option for loading `clvm_rs_bg.wasm`. Deploy `clvm_wasm_bg.wasm` (from `clvm_tools/browser/`) instead of `clvm_rs_bg.wasm` in browser environments
+- `brun` now uses the Rust (`clvm_wasm`) backend automatically when no tracing options are given, like the Python version. Reported costs change accordingly (the `(a 2 3)` wrapper and its compensating cost offset were removed)
+  (Ported from [clvm_tools#80](https://github.com/Chia-Network/clvm_tools/pull/80), [#82](https://github.com/Chia-Network/clvm_tools/pull/82), [#89](https://github.com/Chia-Network/clvm_tools/pull/89), [#92](https://github.com/Chia-Network/clvm_tools/pull/92), [#100](https://github.com/Chia-Network/clvm_tools/pull/100), [#101](https://github.com/Chia-Network/clvm_tools/pull/101))
+- Renamed the `--experiment-backend` option to `--backend`
+- Added `--mempool` option; `--strict` is now a deprecated alias for it
+- Removed stage 1 (`-s 1`), which upstream declared a dead end and deleted
+- Atoms containing a double-quote or whitespace other than the space character now disassemble as hex instead of a quoted string
+  (Ported from [clvm_tools#97](https://github.com/Chia-Network/clvm_tools/pull/97) and [#109](https://github.com/Chia-Network/clvm_tools/pull/109))
+- `compile_clvm` now wraps hex output at 80 characters per line
+  (Ported from [clvm_tools#76](https://github.com/Chia-Network/clvm_tools/pull/76))
 ### Changed
 - Replaced `yarn.lock` with `pnpm-lock.yaml` (converted with `pnpm import`, keeping dependency versions unchanged)
 - CI now installs with `pnpm install --frozen-lockfile`, runs on pull requests targeting `main` and pushes to `main`, uses a read-only token and SHA-pinned actions, and runs on Node 20
 - Upgraded `webpack` to `5.108.4` so `pnpm build` works on Node 17+ (the previous version used an md4 hash removed from OpenSSL 3)
 - All dependencies in `package.json` are now pinned to exact versions (no `^` ranges) to protect against supply-chain attacks via newly published malicious versions
+- Upgraded the dev toolchain (jest 29, TypeScript 5.4, eslint 8, etc.) and resolved all known security advisories; `pnpm audit` is clean
+- Updated the example projects in `.example/`: bumped `clvm_tools` to `^0.10.0`, replaced `clvm_rs_bg.wasm` with `clvm_wasm_bg.wasm`, migrated the react example from create-react-app to Vite 6 + React 18, modernized and pinned all dependencies
+### Notes
+- Unlike the Python version, the `run` command keeps using the JavaScript stage-2 compiler instead of delegating to `clvm_tools_rs`. This avoids a new wasm dependency and keeps `-i` include paths and `.sym` output working through the pseudo file system in web browsers. All compiler outputs were verified to match the Python version
+- All command outputs were verified against the current Python `clvm_tools`: 923 of 930 test commands produce byte-identical output. The remaining 7 differ only in error-message wording (BLS point decoding) or stricter `((X)...)` validation introduced in newer `clvm_rs` than the bundled `clvm_wasm` build
 
 ## [0.9.5]
 ### Changed

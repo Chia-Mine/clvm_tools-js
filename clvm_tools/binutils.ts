@@ -26,8 +26,11 @@ import {
 import {Type} from "../ir/Type";
 
 function isPrintable(s: string){
-  // eslint-disable-next-line no-control-regex
-  const regex = /^[0-9a-zA-Z!"#$%&'()*+,-./:;<=>?@\\[\]^_`{|}~ \t\n\r\x0b\x0c]+$/;
+  // Corresponds to `printable_chars` in Python's clvm_tools.
+  // Unlike Python's `string.printable`, this excludes double-quote and
+  // whitespace other than the space character, so atoms containing them
+  // are disassembled as hex instead. (clvm_tools#97, #109)
+  const regex = /^[0-9a-zA-Z!#$%&'()*+,-./:;<=>?@[\]^_`{|}~ \\]+$/;
   return regex.test(s);
 }
 

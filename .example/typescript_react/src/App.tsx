@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect, type ChangeEvent, type MouseEvent} from 'react';
 import './App.css';
 import * as clvm_tools from "clvm_tools/browser";
 
@@ -8,9 +8,9 @@ function App() {
   const [env, setEnv] = useState("");
   const [options, setOptions] = useState({
     time: false,
-    experiment_backend_rust: false,
+    backend: false,
     quiet: false,
-    strict: false,
+    mempool: false,
     hex: false,
     verbose: false,
     table: false,
@@ -26,13 +26,13 @@ function App() {
     });
   }, []);
   
-  const onTextAreaChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onTextAreaChanged = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const textareaEl = e.currentTarget as HTMLTextAreaElement;
     const setValue = textareaEl.id === "prg" ? setPrg : setEnv;
     setValue(textareaEl.value);
   };
   
-  const onButtonClicked = (e: React.MouseEvent) => {
+  const onButtonClicked = (e: MouseEvent) => {
     const buttonEl = e.currentTarget as HTMLButtonElement;
     const command = buttonEl.id === "brun-btn" ? "brun" : "run";
     setOutput("");
@@ -41,8 +41,8 @@ function App() {
       if(!v){
         return;
       }
-      if(k === "experiment_backend"){
-        cli_options.push("--experiment-backend", "rust");
+      if(k === "backend"){
+        cli_options.push("--backend", "rust");
       }
       else{
         cli_options.push(`--${k.replace(/_/g, "-")}`);
@@ -53,7 +53,7 @@ function App() {
       clvm_tools.go(command, prg, env, ...cli_options);
     }
     catch (e) {
-      if(Object.prototype.hasOwnProperty.call(e, "name") && Object.prototype.hasOwnProperty("message")){
+      if(e instanceof Error){
         setOutput(`${e.name}: ${e.message}`);
       }
       else{
@@ -66,7 +66,7 @@ function App() {
     setOutput("");
   };
   
-  const onOptionChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onOptionChanged = (e: ChangeEvent<HTMLInputElement>) => {
     const inputEl = e.currentTarget as HTMLInputElement;
     const id = inputEl.id;
     setOptions((prevState => {
@@ -97,16 +97,16 @@ function App() {
           --time
         </label>
         <label>
-          <input type="checkbox" id="experiment_backend" name="experiment_backend" onChange={onOptionChanged} />
-          --experiment-backend rust
+          <input type="checkbox" id="backend" name="backend" onChange={onOptionChanged} />
+          --backend rust
         </label>
         <label>
           <input type="checkbox" id="quiet" name="quiet" onChange={onOptionChanged} />
           --quiet
         </label>
         <label>
-          <input type="checkbox" id="strict" name="strict" onChange={onOptionChanged} />
-          --strict
+          <input type="checkbox" id="mempool" name="mempool" onChange={onOptionChanged} />
+          --mempool
         </label>
         <label>
           <input type="checkbox" id="hex" name="hex" onChange={onOptionChanged} />

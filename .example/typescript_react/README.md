@@ -1,50 +1,19 @@
-# Typescript + React
+# Typescript + React + Vite
 
 ## Setup
 ```shell
-yarn
-yarn build
-# or
-npm install
-npm run build
+pnpm install
+pnpm build # ./.dist folder will be created
 ```
 
-## Start web page
+## Start dev server
 ```shell
-yarn start
-# or
-npm run start
+pnpm start
 ```
 
-## Memo - How to set up react+typescript project from scratch
-```shell
-npx create-react-app some-project --template typescript
-cd some-project
-yarn add clvm_tools
-```
-Then copy wasm files from npm package.
-```shell
-mkdir -p ./public/static/js
-cp ./node_modules/clvm_tools/browser/*.wasm ./public/static/js/
-```
-**Note**: Redistributing your project with bundled `blsjs.wasm` and/or `clvm_rs_bg.wasm` must be compliant with Apache2.0 License provided by [Chia-Network](https://github.com/Chia-Network/)
-
-Additionally, copy and paste below to package.json.  
-This prevents `babel` in `react-scripts` from applying [the problematic transform](https://github.com/facebook/create-react-app/issues/10785).
-```
-  "browserslist": [
-    "edge >= 79",
-    "firefox >= 68",
-    "chrome >= 67",
-    "safari > 14",
-    "opera >= 54",
-    "ios_saf >= 14.4",
-    "android >= 67",
-    "op_mob >= 48",
-    "and_chr >= 67",
-    "and_ff >= 68",
-    "samsung >= 9.2",
-    "node >= 10.4.0",
-    "electron >= 4.0.0"
-  ]
-```
+## WebAssembly files
+`clvm_tools.initialize()` loads `blsjs.wasm` and `clvm_wasm_bg.wasm` from the root path
+of the current url when the code runs as an ESModule. During development, the proxy in
+`vite.config.ts` rewrites those requests to `/public/assets/`.
+When deploying a production build, copy `node_modules/clvm_tools/browser/blsjs.wasm` and
+`node_modules/clvm_tools/browser/clvm_wasm_bg.wasm` to the root path of your site.

@@ -2,32 +2,48 @@
   "name": "sample2",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "clvm_tools": "^0.9.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "typescript": "4.1.2",
-    "web-vitals": "^1.0.1"
+    "clvm_tools": "^0.10.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.11",
+    "@types/react": "18.3.2",
+    "@types/react-dom": "18.3.0",
+    "@typescript-eslint/eslint-plugin": "7.9.0",
+    "@typescript-eslint/parser": "7.9.0",
+    "@vitejs/plugin-react-swc": "3.11.0",
+    "eslint-import-resolver-typescript": "3.6.1",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-react": "7.34.1",
+    "eslint-plugin-react-hooks": "4.6.2",
+    "eslint-plugin-react-refresh": "0.4.7",
+    "typescript": "5.4.5",
+    "vite": "6.4.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "pnpm": {
+    "overrides": {
+      "ajv@<6.14.0": "6.15.0",
+      "brace-expansion@>=1.0.0 <1.1.13": "1.1.15",
+      "brace-expansion@>=2.0.0 <2.0.3": "2.1.1",
+      "braces@<3.0.3": "3.0.3",
+      "cross-spawn@>=7.0.0 <7.0.5": "7.0.6",
+      "flatted@<3.4.2": "3.4.2",
+      "js-yaml@>=4.0.0 <4.2.0": "4.3.0",
+      "micromatch@<4.0.8": "4.0.8",
+      "minimatch@<3.1.4": "3.1.5",
+      "minimatch@>=9.0.0 <9.0.7": "9.0.9",
+      "picomatch@<2.3.2": "2.3.2",
+      "postcss@<8.5.10": "8.5.16",
+      "rollup@>=4.0.0 <4.59.0": "4.62.2"
+    }
   },
   "browserslist": [
     "edge >= 79",

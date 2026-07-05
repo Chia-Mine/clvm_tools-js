@@ -13,8 +13,9 @@ import {
   TPreEvalF,
   Optional,
   CLVMType,
+  run_chia_program,
+  Flag,
 } from "clvm";
-import {run_clvm as run_program_rust} from "../platform/clvm_rs";
 import * as reader from "../ir/reader";
 import * as binutils from "./binutils";
 import {make_trace_pre_eval, trace_to_text, trace_to_table} from "./debug";
@@ -23,7 +24,6 @@ import {fs_exists, fs_isFile, fs_read, path_join} from "../platform/io";
 import {Stream} from "clvm/__type_compatibility__";
 import * as argparse from "../platform/argparse";
 import * as stage_0 from "../stages/stage_0";
-import * as stage_1 from "../stages/stage_1";
 import * as stage_2 from "../stages/stage_2/index";
 import {TRunProgram} from "../stages/stage_0";
 import {now} from "../platform/performance";
@@ -103,9 +103,6 @@ export function stage_import(stage: string){
   if(stage === "0"){
     return stage_0;
   }
-  else if(stage === "1"){
-    return stage_1;
-  }
   else if(stage === "2"){
     return stage_2;
   }
@@ -121,28 +118,14 @@ export function as_bin(streamer_f: (s: Stream) => unknown){
 }
 
 export function run(args: string[]){
+  // NOTE: The Python version of `run` now delegates to the Rust
+  // implementation (`clvm_tools_rs.launch_tool`). This port keeps the
+  // JavaScript stage-2 compiler so it stays usable in web browsers.
   return launch_tool(args, "run", 2);
 }
 
 export function brun(args: string[]){
   return launch_tool(args, "brun");
-}
-
-export function calculate_cost_offset(run_program: TRunProgram, run_script: SExp){
-  /*
-    These commands are used by the test suite, and many of them expect certain costs.
-    If boilerplate invocation code changes by a fixed cost, you can tweak this
-    value so you don't have to change all the tests' expected costs.
-
-    Eventually you should re-tare this to zero and alter the tests' costs though.
-
-    This is a hack and need to go away, probably when we do dialects for real,
-    and then the dialect can have a `run_program` API.
-   */
-  const _null = binutils.assemble("0");
-  const result = run_program(run_script, _null.cons(_null));
-  const cost = result[0] as number;
-  return 53 - cost;
 }
 
 export function launch_tool(args: string[], tool_name: "run"|"brun", default_stage: number = 0){
@@ -152,7 +135,11 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
   });
   parser.add_argument(
     ["--strict"], {action: "store_true",
-                   help: "Unknown opcodes are always fatal errors in strict mode"},
+                   help: "deprecated alias for --mempool"},
+  );
+  parser.add_argument(
+    ["--mempool"], {action: "store_true",
+                    help: "Unknown opcodes are always fatal errors in mempool mode"},
   );
   parser.add_argument(
     ["-x", "--hex"], {action: "store_true",
@@ -195,8 +182,8 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
                               help: "Output result as data, not as a program"},
   );
   parser.add_argument(
-    ["--experiment-backend"], {type: "str",
-                               help: "force use of 'rust' or 'python' backend"},
+    ["--backend"], {type: "str",
+                    help: "force use of 'rust' or 'python' backend"},
   );
   parser.add_argument(
     ["-i", "--include"],
@@ -227,8 +214,8 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
     run_program = (parsedArgs["stage"] as typeof stage_0).run_program;
   }
   
-  let input_serialized: Bytes|None = None;
-  let input_sexp: SExp|None = None;
+  let program_serialized: Bytes;
+  let arg_serialized: Bytes;
   
   const time_start = now();
   let time_read_hex = -1;
@@ -236,14 +223,12 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
   let time_parse_input = -1;
   let time_done = -1;
   if(parsedArgs["hex"]){
-    const assembled_serialized = Bytes.from(parsedArgs["path_or_code"] as string, "hex");
+    program_serialized = Bytes.from(parsedArgs["path_or_code"] as string, "hex");
     if(!parsedArgs["env"]){
       parsedArgs["env"] = "80";
     }
-    const env_serialized = Bytes.from(parsedArgs["env"] as string, "hex");
+    arg_serialized = Bytes.from(parsedArgs["env"] as string, "hex");
     time_read_hex = now();
-    
-    input_serialized = h("0xff").concat(assembled_serialized).concat(env_serialized);
   }
   else{
     const src_text = parsedArgs["path_or_code"] as string;
@@ -255,15 +240,14 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
       print(`FAIL: ${ex instanceof Error ? ex.message : typeof ex === "string" ? ex : JSON.stringify(ex)}`);
       return -1;
     }
-    const assembled_sexp = binutils.assemble_from_ir(src_sexp);
+    program_serialized = binutils.assemble_from_ir(src_sexp).as_bin();
     if(!parsedArgs["env"]){
       parsedArgs["env"] = "()";
     }
     const env_ir = reader.read_ir(parsedArgs["env"] as string);
-    const env = binutils.assemble_from_ir(env_ir);
-    time_assemble = now();
+    arg_serialized = binutils.assemble_from_ir(env_ir).as_bin();
     
-    input_sexp = to_sexp_f(t(assembled_sexp, env));
+    time_assemble = now();
   }
   
   let pre_eval_f: TPreEvalF|None = None;
@@ -278,41 +262,70 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
     pre_eval_f = make_trace_pre_eval(log_entries);
   }
   
-  const run_script = (parsedArgs["stage"] as Record<string, SExp>)[tool_name];
+  const stage_run_script = (parsedArgs["stage"] as Partial<Record<string, SExp>>)[tool_name];
+  if(stage_run_script){
+    arg_serialized = h("0xff").concat(program_serialized).concat(arg_serialized);
+    program_serialized = stage_run_script.as_bin();
+  }
+  
+  const mempool = Boolean(parsedArgs["mempool"]) || Boolean(parsedArgs["strict"]);
   
   let cost = 0;
   let result: SExp;
   let output = "(didn't finish)";
-  const cost_offset = calculate_cost_offset(run_program, run_script);
   
   try{
-    const arg_max_cost = parsedArgs["max_cost"] as number;
-    const max_cost = Math.max(0, (arg_max_cost !== 0 ? arg_max_cost - cost_offset : 0));
-    const use_rust = (
-      tool_name !== "run"
-      && !pre_eval_f
-      && parsedArgs["experiment_backend"] === "rust"
-    );
-    
-    if(use_rust){
-      if(input_serialized === None){
-        input_serialized = (input_sexp as SExp).as_bin();
-      }
-      
-      const run_script2 = run_script.as_bin();
-      time_parse_input = now();
-      
-      const run_program_result = run_program_rust(run_script2.raw(), input_serialized.raw());
-      time_done = now();
-      result = sexp_from_stream(new Stream(new Bytes(run_program_result)), to_sexp_f);
+    const max_cost = parsedArgs["max_cost"] as number;
+    let use_rust: boolean;
+    if(parsedArgs["backend"] === "rust"){
+      use_rust = true;
+    }
+    else if(parsedArgs["backend"] === "python"){
+      use_rust = false;
     }
     else{
-      if(input_sexp === None){
-        input_sexp = sexp_from_stream(new Stream(input_serialized as Bytes), to_sexp_f);
+      use_rust = (
+        tool_name !== "run"
+        && !pre_eval_f
+        && parsedArgs["stage"] === stage_0
+      );
+    }
+    
+    if(use_rust){
+      time_parse_input = now();
+      try{
+        const run_program_result = run_chia_program(
+          program_serialized.raw(),
+          arg_serialized.raw(),
+          BigInt(max_cost),
+          mempool ? Flag.no_unknown_ops() : 0,
+        );
+        cost = Number(run_program_result[0]);
+        // Serialize the LazyNode result back into a standard SExp tree so
+        // downstream code (disassemble, tracing, ...) sees ordinary
+        // CLVMObject/Bytes nodes, like the Python version does with the
+        // objects returned by clvm_rs.
+        const result_blob = new Bytes(run_program_result[1].to_bytes(0x7fffffff));
+        result = sexp_from_stream(new Stream(result_blob), to_sexp_f);
       }
+      catch(ex){
+        // Unlike Python's clvm_rs bindings, clvm_wasm reports errors as an
+        // opaque string without the offending sexp. Re-run on the
+        // JavaScript backend (error paths only) to raise a proper
+        // EvalError so the output matches the Python version.
+        const program = sexp_from_stream(new Stream(program_serialized), to_sexp_f);
+        const arg = sexp_from_stream(new Stream(arg_serialized), to_sexp_f);
+        run_program(program, arg, {max_cost, pre_eval_f, strict: mempool});
+        throw new Error(typeof ex === "string" ? ex : ex instanceof Error ? ex.message : JSON.stringify(ex));
+      }
+      time_done = now();
+    }
+    else{
+      const program = sexp_from_stream(new Stream(program_serialized), to_sexp_f);
+      const arg = sexp_from_stream(new Stream(arg_serialized), to_sexp_f);
       time_parse_input = now();
       const run_program_result = run_program(
-        run_script, input_sexp, {max_cost, pre_eval_f, strict: parsedArgs["strict"] as boolean}
+        program, arg, {max_cost, pre_eval_f, strict: mempool}
       );
       cost = run_program_result[0] as number;
       result = run_program_result[1] as SExp;
@@ -320,7 +333,6 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
     }
     
     if(parsedArgs["cost"]){
-      cost += cost > 0 ? cost_offset : 0;
       print(`cost = ${cost}`);
     }
     
@@ -353,7 +365,7 @@ export function launch_tool(args: string[], tool_name: "run"|"brun", default_sta
       return -1;
     }
     output = ex instanceof Error ? ex.message : typeof ex === "string" ? ex : JSON.stringify(ex);
-    throw new Error(ex.message);
+    throw new Error(output);
   }
   finally {
     print(output);
