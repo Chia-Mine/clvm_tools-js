@@ -25,7 +25,7 @@ This version is compatible with [`2e6c303990ae9b483e17a160a13d0f04de513c72`](htt
 - All dependencies in `package.json` are now pinned to exact versions (no `^` ranges) to protect against supply-chain attacks via newly published malicious versions
 - Upgraded the dev toolchain (jest 29, TypeScript 5.4, eslint 8, etc.) and resolved all known security advisories; `pnpm audit` is clean
 ### Notes
-- Unlike the Python version, the `run` command keeps using the JavaScript stage-2 compiler instead of delegating to `clvm_tools_rs`, so it stays usable in web browsers. All compiler outputs were verified to match the Python version
+- Unlike the Python version, the `run` command keeps using the JavaScript stage-2 compiler instead of delegating to `clvm_tools_rs`. This avoids a new wasm dependency and keeps `-i` include paths and `.sym` output working through the pseudo file system in web browsers. All compiler outputs were verified to match the Python version
 - All command outputs were verified against the current Python `clvm_tools`: 923 of 930 test commands produce byte-identical output. The remaining 7 differ only in error-message wording (BLS point decoding) or stricter `((X)...)` validation introduced in newer `clvm_rs` than the bundled `clvm_wasm` build
 
 ## [0.9.5]
