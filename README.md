@@ -41,7 +41,7 @@ This code is compatible with:
 - [`2e6c303990ae9b483e17a160a13d0f04de513c72`](https://github.com/Chia-Network/clvm_tools/tree/2e6c303990ae9b483e17a160a13d0f04de513c72) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
   - [Diff to the latest clvm_tools](https://github.com/Chia-Network/clvm_tools/compare/2e6c303990ae9b483e17a160a13d0f04de513c72...main)
   - Note: Unlike the Python version, the `run` command uses the JavaScript implementation of the stage-2 compiler instead of delegating to [clvm_tools_rs](https://github.com/Chia-Network/clvm_tools_rs). This avoids a new wasm dependency and keeps `-i` include paths and `.sym` output working through this port's pseudo file system in web browsers. Compiler output has been verified to be identical to the Python version across the whole test suite.
-- [`clvm@4.0.0`](https://github.com/Chia-Mine/clvm-js/tree/v4.0.0) of [clvm-js](https://github.com/Chia-Mine/clvm-js), whose bundled `clvm_wasm` provides the Rust (`clvm_rs`) execution backend
+- [`clvm@4.0.1`](https://github.com/Chia-Mine/clvm-js/tree/v4.0.1) of [clvm-js](https://github.com/Chia-Mine/clvm-js), whose bundled `clvm_wasm` provides the Rust (`clvm_rs`) execution backend
 
 ## Examples
 ### Command line

@@ -3,11 +3,11 @@
 ## [0.10.0]
 This version is compatible with [`2e6c303990ae9b483e17a160a13d0f04de513c72`](https://github.com/Chia-Network/clvm_tools/tree/2e6c303990ae9b483e17a160a13d0f04de513c72) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
 ### Breaking Change
-- Upgraded `clvm` from `1.0.9` to `4.0.0`
+- Upgraded `clvm` from `1.0.9` to `4.0.1`
   - `None` is now `undefined` (previously `null`)
   - `op_div` no longer accepts negative operands
-  - `sha256tree`/serialization behaviour follows clvm 4.0.0
-- Removed the `clvm_rs` dependency. The Rust execution backend is now provided by `clvm_wasm`, which is bundled with `clvm@4.0.0`
+  - `sha256tree`/serialization behaviour follows clvm 4.0.1
+- Removed the `clvm_rs` dependency. The Rust execution backend is now provided by `clvm_wasm`, which is bundled with `clvm@4.0.1`
   - `initialize()` no longer takes an option for loading `clvm_rs_bg.wasm`. Deploy `clvm_wasm_bg.wasm` (from `clvm_tools/browser/`) instead of `clvm_rs_bg.wasm` in browser environments
 - `brun` now uses the Rust (`clvm_wasm`) backend automatically when no tracing options are given, like the Python version. Reported costs change accordingly (the `(a 2 3)` wrapper and its compensating cost offset were removed)
   (Ported from [clvm_tools#80](https://github.com/Chia-Network/clvm_tools/pull/80), [#82](https://github.com/Chia-Network/clvm_tools/pull/82), [#89](https://github.com/Chia-Network/clvm_tools/pull/89), [#92](https://github.com/Chia-Network/clvm_tools/pull/92), [#100](https://github.com/Chia-Network/clvm_tools/pull/100), [#101](https://github.com/Chia-Network/clvm_tools/pull/101))
