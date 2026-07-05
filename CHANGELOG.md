@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.0]
+### Changed
+- Upgraded `clvm` from `4.0.1` to `4.1.0`, whose bundled `clvm_wasm` moved from `0.7.0` to `0.16.2` (about two years of `clvm_rs` runtime updates)
+  - **Behavior change**: `brun` with the Rust backend now allows `div` with negative operands and computes floor division, matching current `clvm_rs` (0.18.0) consensus behaviour. The old wasm's `FAIL: div operator with negative operands is deprecated` was pre-hard-fork behaviour. 4 test expectations updated and verified byte-exact against `clvm_rs` directly
+  - Note: this deliberately diverges from the current Python `clvm_tools` CLI output, whose Rust backend is silently broken with `clvm_rs` >= 0.17 (`run_serialized_chia_program` no longer exists, so it falls back to the python backend, and Python's `clvm` still rejects negative operands)
+### Errata
+- The 0.10.0 notes attributed the acceptance of `((X)...)` forms to the old bundled `clvm_wasm` lagging `clvm_rs`. That was incorrect: `clvm_rs` 0.18 accepts those forms as well; the rejection only exists in Python's `clvm` evaluator. There is no consensus divergence there
+
 ## [0.10.0]
 This version is compatible with [`2e6c303990ae9b483e17a160a13d0f04de513c72`](https://github.com/Chia-Network/clvm_tools/tree/2e6c303990ae9b483e17a160a13d0f04de513c72) of [clvm_tools](https://github.com/Chia-Network/clvm_tools)
 ### Breaking Change
