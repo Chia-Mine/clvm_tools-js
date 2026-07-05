@@ -29,13 +29,14 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {from: path.resolve(__dirname, "node_modules", "clvm_tools", "browser", "blsjs.wasm")},
-        {from: path.resolve(__dirname, "node_modules", "clvm_tools", "browser", "clvm_rs_bg.wasm")},
+        {from: path.resolve(__dirname, "node_modules", "clvm_tools", "browser", "clvm_wasm_bg.wasm")},
       ]
     }),
   ],
+  target: ["web"],
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, ".dist"),
     clean: true,
   },
 };
