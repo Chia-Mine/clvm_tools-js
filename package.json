@@ -72,7 +72,6 @@
   ],
   "pnpm": {
     "overrides": {
-      "clvm": "file:/private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz",
       "@babel/core@<7.29.6": "7.29.7",
       "@babel/helpers@<7.26.10": "7.29.7",
       "@babel/traverse@<7.23.2": "7.29.7",

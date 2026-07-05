@@ -5,7 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  clvm: file:/private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz
   '@babel/core@<7.29.6': 7.29.7
   '@babel/helpers@<7.26.10': 7.29.7
   '@babel/traverse@<7.23.2': 7.29.7
@@ -30,8 +29,8 @@ importers:
   .:
     dependencies:
       clvm:
-        specifier: file:/private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz
-        version: file:../../../../private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz
+        specifier: 4.0.0
+        version: 4.0.0
     devDependencies:
       '@types/jest':
         specifier: 29.5.12
@@ -890,9 +889,8 @@ packages:
     resolution: {integrity: sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ==}
     engines: {node: '>=6'}
 
-  clvm@file:../../../../private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz:
-    resolution: {integrity: sha512-J/bg9iERPG/UbiBn8xb9HYgVRvwdySXJQRz9c1rKUNVnJHKdTjoeF4wvFQy9Yx64yjWJWdbIpVSC2X2aQDknJw==, tarball: file:../../../../private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz}
-    version: 4.0.0
+  clvm@4.0.0:
+    resolution: {integrity: sha512-J/bg9iERPG/UbiBn8xb9HYgVRvwdySXJQRz9c1rKUNVnJHKdTjoeF4wvFQy9Yx64yjWJWdbIpVSC2X2aQDknJw==}
     engines: {node: '>=12.13.0'}
 
   clvm_wasm@0.7.0:
@@ -3695,7 +3693,7 @@ snapshots:
       kind-of: 6.0.3
       shallow-clone: 3.0.1
 
-  clvm@file:../../../../private/tmp/claude-501/-Users-cmj-projects-clvm-js/f6802a0a-20e9-4997-af61-0f14b187d951/scratchpad/clvm-4.0.0.tgz:
+  clvm@4.0.0:
     dependencies:
       bls-signatures: 2.0.3
       clvm_wasm: 0.7.0
