@@ -31,11 +31,8 @@ To run the test, execute the following command.
 git clone https://github.com/Chia-Mine/clvm_tools-js
 cd clvm_tools-js
 
-npm install
-npm run test
-# or
-yarn
-yarn test
+pnpm install
+pnpm test
 ```
 If you find something not compatible with Python's clvm_tools, please report it to GitHub issues.
 
