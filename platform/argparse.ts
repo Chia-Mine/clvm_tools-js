@@ -12,7 +12,10 @@ export type Arg = {
 };
 
 function isOptional(arg: string){
-  return /^[-]./.test(arg);
+  // Like Python's argparse, an argument that looks like a negative number
+  // (e.g. "-1" passed as a clvm environment) is treated as a positional
+  // argument, since no registered option looks like a negative number.
+  return /^[-]./.test(arg) && !/^-\d/.test(arg);
 }
 
 export type TArgumentParserProps = {
