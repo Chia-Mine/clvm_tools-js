@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+### Changed
+- Replaced `yarn.lock` with `pnpm-lock.yaml` (converted with `pnpm import`, keeping dependency versions unchanged)
+- CI now installs with `pnpm install --frozen-lockfile`, runs on pull requests targeting `main` and pushes to `main`, uses a read-only token and SHA-pinned actions, and runs on Node 20
+- Upgraded `webpack` to `5.108.4` so `pnpm build` works on Node 17+ (the previous version used an md4 hash removed from OpenSSL 3)
+
 ## [0.9.5]
 ### Changed
 - Updated `clvm` to v1.0.9
